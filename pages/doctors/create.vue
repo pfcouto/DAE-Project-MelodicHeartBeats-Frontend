@@ -34,7 +34,6 @@
       <b-input
         ref="email"
         v-model.trim="email"
-        type="email"
         :state="isEmailValid"
         required
         pattern=".+@my.ipleiria.pt"
@@ -44,7 +43,6 @@ your e-mail"
       <b-input
         ref="phoneNumber"
         v-model.trim="phoneNumber"
-        type="phoneNumber"
         :state="isPhoneNumberValid"
         required
         placeholder="Enter your phone number"
@@ -53,7 +51,6 @@ your e-mail"
       <b-input
         ref="office"
         v-model.trim="office"
-        type="office"
         :state="isOfficeValid"
         required
         placeholder="Enter your office"
@@ -73,9 +70,10 @@ export default {
       username: null,
       password: null,
       name: null,
+      birthDate: null,
       email: null,
-      courseCode: null,
       phoneNumber: null,
+      office: null,
       errorMsg: false
     }
   },
@@ -118,6 +116,12 @@ export default {
       }
       return true
     },
+    isBirthDateValid() {
+      if (!this.birthDate) {
+        return null
+      }
+      return true
+    },
     isEmailValid() {
       if (!this.email) {
         return null
@@ -155,13 +159,16 @@ export default {
       if (!this.isNameValid) {
         return false
       }
+      if (!this.isBirthDateValid) {
+        return false
+      }
       if (!this.isEmailValid) {
         return false
       }
       if (!this.isPhoneNumberValid) {
         return false
       }
-      if (!this.isOfficeValid()) {
+      if (!this.isOfficeValid) {
         return false
       }
       return true

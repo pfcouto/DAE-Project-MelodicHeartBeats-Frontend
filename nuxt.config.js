@@ -44,7 +44,7 @@ export default {
   },
   proxy: {
     '/api/': {
-      target: 'http://localhost:8080/academics/api/',
+      target: 'http://localhost:8080/projetoDAE/api/',
       pathRewrite: {
         '^/api/': ''
       }
