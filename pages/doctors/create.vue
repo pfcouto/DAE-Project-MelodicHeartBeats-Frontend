@@ -5,7 +5,7 @@
       <b-form-group
         id="username"
         description="The username is required"
-        label="Enter your username"
+        label="Username"
         label-for="username"
         :invalid-feedback="invalidUsernameFeedback"
         :state="isUsernameValid"
@@ -17,49 +17,101 @@
           trim
         ></b-input>
       </b-form-group>
-      <b-input
-        v-model="password"
+      <b-form-group
+        id="password"
+        description="The password is required"
+        label="Password"
+        label-for="password"
+        :invalid-feedback="invalidPasswordFeedback"
         :state="isPasswordValid"
-        required
-        placeholder="Enter your password"
-      />
-      <b-input
-        v-model.trim="name"
+      >
+        <b-input
+          v-model="password"
+          :state="isPasswordValid"
+          required
+          placeholder="Enter your password"
+        />
+      </b-form-group>
+      <b-form-group
+        id="name"
+        description="The name is required"
+        label="Name"
+        label-for="name"
+        :invalid-feedback="invalidNameFeedback"
         :state="isNameValid"
-        required
-        placeholder="Enter your name"
-      />
+      >
+        <b-input
+          v-model.trim="name"
+          :state="isNameValid"
+          required
+          placeholder="Enter your name"
+        />
+      </b-form-group>
       <!-- <b-form-datepicker id="birthDate" v-model="birthDate"></b-form-datepicker> -->
-
-      <b-input
-        ref="email"
-        v-model.trim="email"
+      <b-form-group
+        id="email"
+        description="The email is required"
+        label="Email"
+        label-for="email"
+        :invalid-feedback="invalidEmailFeedback"
         :state="isEmailValid"
-        required
-        pattern=".+@my.ipleiria.pt"
-        placeholder="Enter
-your e-mail"
-      />
-      <b-input
-        ref="phoneNumber"
-        v-model.trim="phoneNumber"
+      >
+        <b-input
+          ref="email"
+          v-model.trim="email"
+          :state="isEmailValid"
+          required
+          pattern=".+@my.ipleiria.pt"
+          placeholder="Enter your e-mail"
+        />
+      </b-form-group>
+      <b-form-group
+        id="phoneNumber"
+        description="The Phone Number is required"
+        label="Phone Number"
+        label-for="phoneNumber"
+        :invalid-feedback="invalidPhoneNumberFeedback"
         :state="isPhoneNumberValid"
-        required
-        placeholder="Enter your phone number"
-      />
-
-      <b-input
-        ref="office"
-        v-model.trim="office"
+      >
+        <b-input
+          ref="phoneNumber"
+          v-model.trim="phoneNumber"
+          :state="isPhoneNumberValid"
+          required
+          placeholder="Enter your phone number"
+        />
+      </b-form-group>
+      <b-form-group
+        id="office"
+        description="The office is required"
+        label="Office"
+        label-for="office"
+        :invalid-feedback="invalidOfficeback"
         :state="isOfficeValid"
-        required
-        placeholder="Enter your office"
-      />
+      >
+        <b-input
+          ref="office"
+          v-model.trim="office"
+          :state="isOfficeValid"
+          required
+          placeholder="Enter your office"
+        />
+      </b-form-group>
 
       <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-      <nuxt-link to="/doctors">Return</nuxt-link>
-      <button type="reset" @click="reset">RESET</button>
-      <button :disabled="!isFormValid" @click.prevent="create">CREATE</button>
+      <nuxt-link to="/doctors">
+        <b-button variant="light"> Return </b-button>
+      </nuxt-link>
+      <div style="float: right">
+        <b-button variant="dark" type="reset" @click="reset"> RESET </b-button>
+        <b-button
+          variant="success"
+          :disabled="!isFormValid"
+          @click.prevent="create"
+        >
+          CREATE
+        </b-button>
+      </div>
     </form>
   </div>
 </template>
@@ -67,22 +119,23 @@ your e-mail"
 export default {
   data() {
     return {
-      username: null,
-      password: null,
-      name: null,
-      email: null,
-      phoneNumber: null,
-      office: null,
+      doctor: {
+        username: null,
+        password: null,
+        name: null,
+        email: null,
+        phoneNumber: null,
+        office: null
+      },
       errorMsg: false
     }
   },
-
   computed: {
     invalidUsernameFeedback() {
-      if (!this.username) {
+      if (!this.doctor.username) {
         return null
       }
-      const usernameLen = this.username.length
+      const usernameLen = this.doctor.username.length
       if (usernameLen < 3 || usernameLen > 15) {
         return 'The username must be between [3, 15] characters.'
       }
@@ -95,51 +148,91 @@ export default {
       return this.invalidUsernameFeedback === ''
     },
 
-    isPasswordValid() {
-      if (!this.password) {
-        return null
-      }
-      const passwordLen = this.password.length
-      if (passwordLen < 3 || passwordLen > 255) {
-        return false
-      }
-      return true
-    },
-    isNameValid() {
-      if (!this.name) {
-        return null
-      }
-      const nameLen = this.name.length
-      if (nameLen < 3 || nameLen > 25) {
-        return false
-      }
-      return true
-    },
-    isEmailValid() {
-      if (!this.email) {
+    invalidPasswordFeedback() {
+      if (!this.doctor.password) {
         return null
       }
 
-      // asks the component if it’s valid. We don’t need to use a regex for
-      // the e-mail. The input field already does the job for us, because it is of type
-      // “email” and validates that the user writes an e-mail that belongs to the domain
-      // of IPLeiria.
+      const passwordLen = this.doctor.password.length
+
+      if (passwordLen < 3 || passwordLen > 255) {
+        return 'The password must be between [3, 255] characters.'
+      }
+      return ''
+    },
+
+    isPasswordValid() {
+      if (this.invalidPasswordFeedback === null) {
+        return null
+      }
+      return this.invalidPasswordFeedback === ''
+    },
+
+    invalidNameFeedback() {
+      if (!this.doctor.name) {
+        return null
+      }
+      const nameLen = this.doctor.name.length
+      if (nameLen < 3 || nameLen > 50) {
+        return 'The name must be between [3, 50] characters.'
+      }
+      return ''
+    },
+    isNameValid() {
+      if (this.invalidNameFeedback === null) {
+        return null
+      }
+      return this.invalidNameFeedback === ''
+    },
+    invalidEmailFeedback() {
+      if (!this.doctor.name) {
+        return null
+      }
+      const nameLen = this.doctor.name.length
+      if (nameLen < 3 || nameLen > 50) {
+        return 'The name must be between [3, 50] characters.'
+      }
+      return ''
+    },
+    isEmailValid() {
+      if (!this.doctor.email) {
+        return null
+      }
       return this.$refs.email.checkValidity()
     },
-    isPhoneNumberValid() {
-      if (!this.phoneNumber) {
+    invalidPhoneNumberFeedback() {
+      if (!this.doctor.phoneNumber) {
         return null
       }
-      if (this.phoneNumber.length !== 9) {
-        return false
+      if (this.doctor.phoneNumber.length !== 9) {
+        return 'The Phone Number must have exactly 9 characters'
       }
-      return true
+      return ''
     },
-    isOfficeValid() {
-      if (!this.office) {
+
+    isPhoneNumberValid() {
+      if (this.invalidPhoneNumberFeedback === null) {
         return null
       }
-      return true
+      return this.invalidPhoneNumberFeedback === ''
+    },
+
+    invalidOfficeFeedback() {
+      if (!this.doctor.office) {
+        return null
+      }
+      const officeLen = this.doctor.office.length
+      if (officeLen < 3 || officeLen > 5) {
+        return 'The Phone Number must be between 3 and 5 characters'
+      }
+      return ''
+    },
+
+    isOfficeValid() {
+      if (this.invalidPhoneNumberFeedback === null) {
+        return null
+      }
+      return this.invalidPhoneNumberFeedback === ''
     },
 
     isFormValid() {
@@ -164,26 +257,13 @@ export default {
       return true
     }
   },
-  // created() {
-  //   this.$axios.$get('/api/courses').then((courses) => {
-  //     this.courses = courses
-  //   })
-  // },
   methods: {
     reset() {
       this.errorMsg = false
     },
     create() {
       this.$axios
-        .$post('/api/doctors', {
-          username: this.username,
-          password: this.password,
-          name: this.name,
-          birthDate: this.birthDate,
-          email: this.email,
-          phoneNumber: this.phoneNumber,
-          office: this.office
-        })
+        .$post('/api/doctors', this.doctor)
         .then(() => {
           this.$router.push('/doctors')
         })
