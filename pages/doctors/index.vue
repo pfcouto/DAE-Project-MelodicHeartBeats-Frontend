@@ -27,14 +27,7 @@
 export default {
   data() {
     return {
-      fields: [
-        'username',
-        'name',
-        'birthDate',
-        'email',
-        'phoneNumber',
-        'office'
-      ],
+      fields: ['username', 'name', 'email', 'phoneNumber', 'office'],
       doctors: []
     }
   },

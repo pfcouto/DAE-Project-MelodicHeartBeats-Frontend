@@ -29,7 +29,7 @@
         required
         placeholder="Enter your name"
       />
-      <b-form-datepicker id="birthDate" v-model="birthDate"></b-form-datepicker>
+      <!-- <b-form-datepicker id="birthDate" v-model="birthDate"></b-form-datepicker> -->
 
       <b-input
         ref="email"
@@ -70,7 +70,6 @@ export default {
       username: null,
       password: null,
       name: null,
-      birthDate: null,
       email: null,
       phoneNumber: null,
       office: null,
@@ -116,12 +115,6 @@ export default {
       }
       return true
     },
-    isBirthDateValid() {
-      if (!this.birthDate) {
-        return null
-      }
-      return true
-    },
     isEmailValid() {
       if (!this.email) {
         return null
@@ -157,9 +150,6 @@ export default {
         return false
       }
       if (!this.isNameValid) {
-        return false
-      }
-      if (!this.isBirthDateValid) {
         return false
       }
       if (!this.isEmailValid) {
