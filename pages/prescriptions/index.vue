@@ -9,10 +9,10 @@
         </template>
       </b-table>
       <nuxt-link to="/">
-        <b-button variant="danger"> Back </b-button>
+        <b-button variant="danger"> Back</b-button>
       </nuxt-link>
       <nuxt-link to="prescriptions/create" style="float: right">
-        <b-button variant="success"> Create New Prescription </b-button>
+        <b-button variant="success"> Create New Prescription</b-button>
       </nuxt-link>
     </b-container>
   </div>
@@ -21,7 +21,7 @@
 export default {
   data() {
     return {
-      fields: ['id', 'doctor', 'patient', 'description'],
+      fields: ['id', 'doctor', 'patient', 'description', 'startDate', 'endDate'],
       prescriptions: []
     }
   },
