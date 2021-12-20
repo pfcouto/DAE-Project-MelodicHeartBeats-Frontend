@@ -10,6 +10,9 @@
     <nuxt-link to="/patients" class="btn btn-link">
       <b-button variant="danger"> Patients </b-button>
     </nuxt-link>
+    <nuxt-link to="/prescriptions" class="btn btn-link">
+      <b-button variant="warning"> Prescriptions </b-button>
+    </nuxt-link>
     <!-- <script src="https://unpkg.com/vee-validate@next"></script> -->
   </b-container>
 </template>

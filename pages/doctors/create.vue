@@ -29,7 +29,7 @@
         required
         placeholder="Enter your name"
       />
-      <!-- <b-form-datepicker id="birthDate" v-model="birthDate"></b-form-datepicker> -->
+       <b-form-datepicker id="birthDate" v-model="birthDate"></b-form-datepicker>
 
       <b-input
         ref="email"
@@ -37,8 +37,7 @@
         :state="isEmailValid"
         required
         pattern=".+@my.ipleiria.pt"
-        placeholder="Enter
-your e-mail"
+        placeholder="Enter your e-mail"
       />
       <b-input
         ref="phoneNumber"
