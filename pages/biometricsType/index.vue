@@ -6,6 +6,14 @@
           <nuxt-link class="btn btn-link" :to="`/prescriptions/${row.item.id}`">
             <b-button variant="info"> Details</b-button>
           </nuxt-link>
+          <b-button
+            :variant="`${row.item.delete}` == 'false' ? 'danger' : 'success'"
+            @click="deleteBioType(`${row.item.code}`)"
+          >
+            {{
+              `${row.item.delete}` == 'false' ? 'Delete' : 'Restore'
+            }}</b-button
+          >
         </template>
       </b-table>
       <div class="spaceBetween">
@@ -33,19 +41,35 @@ export default {
         },
         'unity',
         'admin',
+        'delete',
         {
           key: 'details',
-		  label:'',
-		  tdClass:'text-center'
-        },
+          label: '',
+          tdClass: 'text-center'
+        }
       ],
       biometricsTypes: []
     }
   },
   created() {
-    this.$axios.$get('/api/biometricsType/').then((response) => {
-      this.biometricsTypes = response
-    })
+    this.fetchBiometricTypes()
+  },
+  methods: {
+    deleteBioType(code) {
+      this.$axios
+        .$delete('/api/biometricsType/' + code)
+        .then(() => {
+          this.fetchBiometricTypes()
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
+    },
+    fetchBiometricTypes() {
+      this.$axios.$get('/api/biometricsType/').then((response) => {
+        this.biometricsTypes = response
+      })
+    }
   }
 }
 </script>
