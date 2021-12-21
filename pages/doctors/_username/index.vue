@@ -5,8 +5,8 @@
     <p>Name: {{ doctor.name }}</p>
     <p>BirthDate {{ doctor.birthDate }}</p>
     <p>Email: {{ doctor.email }}</p>
-    <p>Phone Number: {{ doctor.courseName }}</p>
-    <p>Office: {{ doctor.courseName }}</p>
+    <p>Phone Number: {{ doctor.phoneNumber }}</p>
+    <p>Office: {{ doctor.office }}</p>
     <h4>Prescriptions</h4>
     <b-table
       v-if="prescriptions.length"
@@ -62,7 +62,7 @@ export default {
       return this.$route.params.username
     },
     prescriptions() {
-      return this.doctor.prescriptions || []
+      return this.doctor.prescriptionDTOS || []
     }
     // documents() {
     //   return this.doctor.documents || []
