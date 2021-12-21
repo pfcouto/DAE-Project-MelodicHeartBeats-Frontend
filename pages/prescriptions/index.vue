@@ -2,7 +2,7 @@
   <div>
     <b-container>
       <b-table striped over :items="prescriptions" :fields="fields">
-        <template #cell(actions)="row">
+        <template #cell(details)="row">
           <nuxt-link class="btn btn-link" :to="`/prescriptions/${row.item.id}`">
             Details
           </nuxt-link>
@@ -21,7 +21,13 @@
 export default {
   data() {
     return {
-      fields: ['id', 'doctor', 'patient', 'description', 'startDate', 'endDate'],
+      fields: ['id', {sortable: true, key: 'doctor'}, {sortable: true, key: 'patient'}, 'description', {
+        sortable: true,
+        key: 'startDate'
+      }, {sortable: true, key: 'endDate'}, {
+        key: 'details',
+        label: ''
+      }],
       prescriptions: []
     }
   },
