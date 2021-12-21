@@ -1,9 +1,20 @@
 <template>
   <b-container class="major">
-    <b-container class="userInfoContainer">
+    <b-container class="userContainer">
       <b-card-img style="border-radius: 0" src="~/assets/homePage.jpg">
       </b-card-img>
-      <h4 style="padding:15px">Americo Sousa</h4>
+      <b-container class="userInfoContainer">
+        <h4>Americo Sousa</h4>
+        <hr/>
+        <div class="percentExternal">
+          <div class="percentInternal" style="width:80%;">80%</div>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <b-button class="logout" @click="logout">Logout</b-button>
+      </b-container>
     </b-container>
     <b-container class="cardGroup">
       <b-container
@@ -28,6 +39,18 @@
     </b-container>
   </b-container>
 </template>
+<script>
+export default {
+  data() {
+    return {}
+  },
+  methods: {
+    logout() {
+      alert("Logout not implemented yet");
+    }
+  }
+}
+</script>
 <style>
 .major {
   padding: 12px !important;
@@ -35,7 +58,7 @@
   flex-direction: row;
 }
 
-.userInfoContainer {
+.userContainer {
   padding: 0 !important;
   margin-right: 6px;
   display: flex;
@@ -44,6 +67,10 @@
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   align-items: flex-start;
   background-color: white;
+}
+
+.userInfoContainer {
+  padding: 10px;
 }
 
 .headerCard {
@@ -56,25 +83,29 @@
   margin-right: auto;
 }
 
+hr {
+  margin-bottom: 20px;
+}
+
 .headerCardComponent {
   margin-right: 12px;
   display: flex;
   flex: 1;
   justify-content: center;
   padding: 10px;
-  background-color: cyan;
+  background-color: white;
   flex-direction: row;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   align-items: center;
-  color: #757575 !important;
+  color: #757575;
   flex-shrink: inherit;
   box-sizing: content-box;
-  filter: grayscale(90%);
 }
 
 .headerCardComponent:hover {
   text-decoration: none;
-  filter: none;
+  background-color: lightcyan;
+  color: darkcyan;
 }
 
 .customCard {
@@ -88,6 +119,26 @@
   color: #757575 !important;
 }
 
+.percentExternal {
+  border-radius: 16px;
+  background-color: lightgrey;
+  width: 100%;
+  height: 18px;
+}
+
+.percentInternal {
+  border-radius: 16px;
+  background-color: darkcyan;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  font-size: 12px;
+  color: white;
+  height: 100%;
+}
+
 .cardGroup {
   padding: 0;
   margin-left: 6px;
@@ -96,6 +147,23 @@
 
 h1, h2, h3, h4, h5, h6 {
   margin: auto;
+}
+
+.logout {
+  border-radius: 4px;
+  background-color: darkcyan;
+  width: 40%;
+  margin: auto;
+  height: 28px;
+  color: #ff4242;
+  font-weight: bold;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  border-width: 0;
 }
 
 @media (max-width: 576px) {
