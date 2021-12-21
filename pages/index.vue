@@ -5,35 +5,36 @@
       </b-card-img>
       <b-container class="userInfoContainer">
         <h4>Americo Sousa</h4>
-        <hr/>
+        <hr />
         <div class="percentExternal">
-          <div class="percentInternal" style="width:80%;">80%</div>
+          <div class="percentInternal" style="width: 80%">80%</div>
         </div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <br />
+        <br />
         <b-button class="logout" @click="logout">Logout</b-button>
       </b-container>
     </b-container>
     <b-container class="cardGroup">
-      <b-container
-        class="headerCard">
+      <b-container class="headerCard">
         <nuxt-link to="/administrators" class="headerCardComponent">
-          <h6> Administrators</h6>
+          <h6>Administrators</h6>
+        </nuxt-link>
+        <nuxt-link to="/biometricsType" class="headerCardComponent">
+          <h6>Biometric Types</h6>
         </nuxt-link>
         <nuxt-link to="/doctors" class="headerCardComponent">
-          <h6> Doctors</h6>
+          <h6>Doctors</h6>
         </nuxt-link>
         <nuxt-link to="/patients" class="headerCardComponent">
-          <h6> Patients</h6>
+          <h6>Patients</h6>
         </nuxt-link>
         <nuxt-link to="/prescriptions" class="headerCardComponent">
-          <h6> Prescriptions</h6>
+          <h6>Prescriptions</h6>
         </nuxt-link>
       </b-container>
-      <b-container
-        class="customCard">
+      <b-container class="customCard">
         <h2 style="margin-bottom: 50px">Welcome to Academics Management</h2>
       </b-container>
     </b-container>
@@ -46,7 +47,7 @@ export default {
   },
   methods: {
     logout() {
-      alert("Logout not implemented yet");
+      alert('Logout not implemented yet')
     }
   }
 }
@@ -142,10 +143,15 @@ hr {
 .cardGroup {
   padding: 0;
   margin-left: 6px;
-  flex: 9
+  flex: 9;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: auto;
 }
 
