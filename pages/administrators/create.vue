@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Create a new Doctor</h1>
+    <h1>Create a new Administrator</h1>
     <form :disabled="!isFormValid" @submit.prevent="create">
       <b-form-group
         id="username"
@@ -12,10 +12,10 @@
       >
         <b-input
           id="username"
-          v-model.trim="username"
+          v-model.trim="administrator.username"
           :state="isUsernameValid"
           trim
-        ></b-input>
+        />
       </b-form-group>
       <b-form-group
         id="password"
@@ -26,10 +26,10 @@
         :state="isPasswordValid"
       >
         <b-input
-          v-model="password"
+          v-model="administrator.password"
           :state="isPasswordValid"
+          type="password"
           required
-          placeholder="Enter your password"
         />
       </b-form-group>
       <b-form-group
@@ -41,10 +41,9 @@
         :state="isNameValid"
       >
         <b-input
-          v-model.trim="name"
+          v-model.trim="administrator.name"
           :state="isNameValid"
           required
-          placeholder="Enter your name"
         />
       </b-form-group>
       <!-- <b-form-datepicker id="birthDate" v-model="birthDate"></b-form-datepicker> -->
@@ -58,11 +57,10 @@
       >
         <b-input
           ref="email"
-          v-model.trim="email"
+          v-model.trim="administrator.email"
           :state="isEmailValid"
           required
           pattern=".+@my.ipleiria.pt"
-          placeholder="Enter your e-mail"
         />
       </b-form-group>
       <b-form-group
@@ -75,31 +73,15 @@
       >
         <b-input
           ref="phoneNumber"
-          v-model.trim="phoneNumber"
+          v-model.trim="administrator.phoneNumber"
           :state="isPhoneNumberValid"
           required
-          placeholder="Enter your phone number"
-        />
-      </b-form-group>
-      <b-form-group
-        id="office"
-        description="The office is required"
-        label="Office"
-        label-for="office"
-        :invalid-feedback="invalidOfficeback"
-        :state="isOfficeValid"
-      >
-        <b-input
-          ref="office"
-          v-model.trim="office"
-          :state="isOfficeValid"
-          required
-          placeholder="Enter your office"
         />
       </b-form-group>
 
       <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-      <nuxt-link to="/doctors">
+
+      <nuxt-link to="/administrators">
         <b-button variant="light"> Return </b-button>
       </nuxt-link>
       <div style="float: right">
@@ -119,23 +101,24 @@
 export default {
   data() {
     return {
-      doctor: {
+      administrator: {
         username: null,
         password: null,
         name: null,
         email: null,
-        phoneNumber: null,
-        office: null
+        phoneNumber: null
       },
+
       errorMsg: false
     }
   },
+
   computed: {
     invalidUsernameFeedback() {
-      if (!this.doctor.username) {
+      if (!this.administrator.username) {
         return null
       }
-      const usernameLen = this.doctor.username.length
+      const usernameLen = this.administrator.username.length
       if (usernameLen < 3 || usernameLen > 15) {
         return 'The username must be between [3, 15] characters.'
       }
@@ -149,11 +132,11 @@ export default {
     },
 
     invalidPasswordFeedback() {
-      if (!this.doctor.password) {
+      if (!this.administrator.password) {
         return null
       }
 
-      const passwordLen = this.doctor.password.length
+      const passwordLen = this.administrator.password.length
 
       if (passwordLen < 3 || passwordLen > 255) {
         return 'The password must be between [3, 255] characters.'
@@ -169,10 +152,10 @@ export default {
     },
 
     invalidNameFeedback() {
-      if (!this.doctor.name) {
+      if (!this.administrator.name) {
         return null
       }
-      const nameLen = this.doctor.name.length
+      const nameLen = this.administrator.name.length
       if (nameLen < 3 || nameLen > 50) {
         return 'The name must be between [3, 50] characters.'
       }
@@ -185,50 +168,32 @@ export default {
       return this.invalidNameFeedback === ''
     },
     invalidEmailFeedback() {
-      if (!this.doctor.name) {
+      if (!this.administrator.name) {
         return null
       }
-      const nameLen = this.doctor.name.length
+      const nameLen = this.administrator.name.length
       if (nameLen < 3 || nameLen > 50) {
         return 'The name must be between [3, 50] characters.'
       }
       return ''
     },
     isEmailValid() {
-      if (!this.doctor.email) {
+      if (!this.administrator.email) {
         return null
       }
       return this.$refs.email.checkValidity()
     },
     invalidPhoneNumberFeedback() {
-      if (!this.doctor.phoneNumber) {
+      if (!this.administrator.phoneNumber) {
         return null
       }
-      if (this.doctor.phoneNumber.length !== 9) {
+      if (this.administrator.phoneNumber.length !== 9) {
         return 'The Phone Number must have exactly 9 characters'
       }
       return ''
     },
 
     isPhoneNumberValid() {
-      if (this.invalidPhoneNumberFeedback === null) {
-        return null
-      }
-      return this.invalidPhoneNumberFeedback === ''
-    },
-
-    invalidOfficeFeedback() {
-      if (!this.doctor.office) {
-        return null
-      }
-      const officeLen = this.doctor.office.length
-      if (officeLen < 3 || officeLen > 5) {
-        return 'The Phone Number must be between 3 and 5 characters'
-      }
-      return ''
-    },
-
-    isOfficeValid() {
       if (this.invalidPhoneNumberFeedback === null) {
         return null
       }
@@ -251,21 +216,23 @@ export default {
       if (!this.isPhoneNumberValid) {
         return false
       }
-      if (!this.isOfficeValid) {
-        return false
-      }
       return true
     }
   },
+  // created() {
+  //   this.$axios.$get('/api/courses').then((courses) => {
+  //     this.courses = courses
+  //   })
+  // },
   methods: {
     reset() {
       this.errorMsg = false
     },
     create() {
       this.$axios
-        .$post('/api/doctors', this.doctor)
+        .$post('/api/administrators', this.administrator)
         .then(() => {
-          this.$router.push('/doctors')
+          this.$router.push('/administrators')
         })
         .catch((error) => {
           this.errorMsg = error.response.data

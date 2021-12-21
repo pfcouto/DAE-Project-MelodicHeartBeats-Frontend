@@ -20,9 +20,9 @@
       <nuxt-link to="/">
         <b-button variant="danger"> Back </b-button>
       </nuxt-link>
-      <!-- <nuxt-link to="patients/create" style="float: right">
-        <b-button variant="success"> Create New Doctor </b-button>
-      </nuxt-link> -->
+      <nuxt-link to="patients/create" style="float: right">
+        <b-button variant="success"> Create New Patient </b-button>
+      </nuxt-link>
     </b-container>
   </div>
 </template>
