@@ -34,7 +34,7 @@ export default {
         'birthDate',
         'email',
         'phoneNumber',
-        {key: 'actions', label: ''}
+        {key: 'actions', tdClass: 'text-center', label: ''}
       ],
       administrators: []
     }

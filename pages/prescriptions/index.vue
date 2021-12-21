@@ -3,8 +3,17 @@
     <div class="middleCard">
       <b-table striped over :items="prescriptions" :fields="fields">
         <template #cell(details)="row">
-          <nuxt-link class="btn btn-link" :to="`/prescriptions/${row.item.id}`">
+          <nuxt-link class="btn btn-link align-self-auto" :to="`/prescriptions/${row.item.id}`">
             <b-button variant="info"> Details</b-button>
+          </nuxt-link>
+          <nuxt-link
+            class="btn btn-link"
+            :to="{
+              name: 'prescriptions-create',
+              query: { id: `${row.item.id}` }
+            }"
+          >
+            <b-button variant="info"> Update</b-button>
           </nuxt-link>
         </template>
       </b-table>
@@ -28,6 +37,7 @@ export default {
         key: 'startDate'
       }, {sortable: true, key: 'endDate'}, {
         key: 'details',
+        tdClass: 'text-center',
         label: ''
       }],
       prescriptions: []

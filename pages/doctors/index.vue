@@ -41,7 +41,7 @@ export default {
         'birthDate',
         'phoneNumber',
         'office',
-        {key: 'actions', label: ''}
+        {key: 'actions', tdClass: 'text-center', label: ''}
       ],
       doctors: []
     }

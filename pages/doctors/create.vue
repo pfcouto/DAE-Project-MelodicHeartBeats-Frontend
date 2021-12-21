@@ -2,9 +2,7 @@
   <b-container>
     <div class="middleCard">
       <h1>
-        {{
-          isEditing ? 'Update ' + $route.query.username : 'Create a new Doctor'
-        }}
+        {{ isEditing ? 'Update ' + $route.query.username : 'Create a new Doctor' }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
@@ -152,7 +150,6 @@ export default {
         office: null
       },
       errorMsg: false,
-      params: {}
     }
   },
   computed: {
