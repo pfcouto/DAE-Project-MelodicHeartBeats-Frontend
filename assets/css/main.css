@@ -10,6 +10,24 @@
   }
 }
 
+.middleCard {
+  padding: 20px;
+  display: flex;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  flex-direction: column;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  justify-content: center;
+  background-color: white;
+  color: #757575 !important;
+}
+
+.spaceBetween {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 @media (min-width: 768px) {
   .container, .container-sm {
     max-width: 100% !important;

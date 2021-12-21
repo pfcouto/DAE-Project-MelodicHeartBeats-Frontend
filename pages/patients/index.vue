@@ -1,30 +1,26 @@
 <template>
-  <div>
-    <b-container>
+  <b-container>
+    <div class="middleCard">
       <b-table striped over :items="patients" :fields="fields">
         <template #cell(actions)="row">
           <nuxt-link
             class="btn btn-link"
             :to="`/patients/${row.item.username}`"
           >
-            <b-button variant="outline-primary"> Details </b-button>
+            <b-button variant="info"> Details</b-button>
           </nuxt-link>
-          <!-- <nuxt-link
-            class="btn btn-link"
-            :to="`/patients/${row.item.username}/send-email`"
-          >
-            Send Email
-          </nuxt-link> -->
         </template>
       </b-table>
-      <nuxt-link to="/">
-        <b-button variant="danger"> Back </b-button>
-      </nuxt-link>
-      <nuxt-link to="patients/create" style="float: right">
-        <b-button variant="success"> Create New Patient </b-button>
-      </nuxt-link>
-    </b-container>
-  </div>
+      <div class="spaceBetween">
+        <nuxt-link to="/">
+          <b-button variant="danger"> Back</b-button>
+        </nuxt-link>
+        <nuxt-link to="patients/create" style="float: right">
+          <b-button variant="success"> Create New Patient</b-button>
+        </nuxt-link>
+      </div>
+    </div>
+  </b-container>
 </template>
 <script>
 export default {
@@ -36,7 +32,7 @@ export default {
         'birthDate',
         'email',
         'phoneNumber',
-        'actions'
+        {key: 'actions', label: ''}
       ],
       patients: []
     }

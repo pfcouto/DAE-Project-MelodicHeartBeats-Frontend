@@ -1,22 +1,26 @@
 <template>
   <div>
     <b-container>
-      <b-table striped over :items="administrators" :fields="fields">
-        <template #cell(actions)="row">
-          <nuxt-link
-            class="btn btn-link"
-            :to="`/administrators/${row.item.username}`"
-          >
-            <b-button variant="outline-primary"> Details </b-button>
+      <div class="middleCard">
+        <b-table striped over :items="administrators" :fields="fields">
+          <template #cell(actions)="row">
+            <nuxt-link
+              class="btn btn-link"
+              :to="`/administrators/${row.item.username}`"
+            >
+              <b-button variant="info"> Details</b-button>
+            </nuxt-link>
+          </template>
+        </b-table>
+        <div class="spaceBetween">
+          <nuxt-link to="/">
+            <b-button variant="danger"> Back</b-button>
           </nuxt-link>
-        </template>
-      </b-table>
-      <nuxt-link to="/">
-        <b-button variant="danger"> Back </b-button>
-      </nuxt-link>
-      <nuxt-link to="administrators/create" style="float: right">
-        <b-button variant="success"> Create New administrator </b-button>
-      </nuxt-link>
+          <nuxt-link to="administrators/create" style="float: right">
+            <b-button variant="success"> Create New administrator</b-button>
+          </nuxt-link>
+        </div>
+      </div>
     </b-container>
   </div>
 </template>
@@ -30,7 +34,7 @@ export default {
         'birthDate',
         'email',
         'phoneNumber',
-        'actions'
+        {key: 'actions', label: ''}
       ],
       administrators: []
     }

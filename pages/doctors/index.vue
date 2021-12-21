@@ -1,34 +1,32 @@
 <template>
   <div>
     <b-container>
-      <b-table striped over :items="doctors" :fields="fields">
-        <template #cell(actions)="row">
-          <nuxt-link class="btn btn-link" :to="`/doctors/${row.item.username}`">
-            <b-button variant="outline-primary"> Details </b-button>
-          </nuxt-link>
-          <nuxt-link
-            class="btn btn-link"
-            :to="{
+      <div class="middleCard">
+        <b-table striped over :items="doctors" :fields="fields">
+          <template #cell(actions)="row">
+            <nuxt-link class="btn btn-link" :to="`/doctors/${row.item.username}`">
+              <b-button variant="info"> Details</b-button>
+            </nuxt-link>
+            <nuxt-link
+              class="btn btn-link"
+              :to="{
               name: 'doctors-create',
               query: { username: `${row.item.username}` }
             }"
-          >
-            <b-button variant="outline-primary"> Update </b-button>
+            >
+              <b-button variant="info"> Update</b-button>
+            </nuxt-link>
+          </template>
+        </b-table>
+        <div class="spaceBetween">
+          <nuxt-link to="/">
+            <b-button variant="danger"> Back</b-button>
           </nuxt-link>
-          <!-- <nuxt-link
-            class="btn btn-link"
-            :to="`/doctors/${row.item.username}/send-email`"
-          >
-            Send Email
-          </nuxt-link> -->
-        </template>
-      </b-table>
-      <nuxt-link to="/">
-        <b-button variant="danger"> Back </b-button>
-      </nuxt-link>
-      <nuxt-link to="doctors/create" style="float: right">
-        <b-button variant="success"> Create New Doctor </b-button>
-      </nuxt-link>
+          <nuxt-link to="doctors/create" style="float: right">
+            <b-button variant="success"> Create New Doctor</b-button>
+          </nuxt-link>
+        </div>
+      </div>
     </b-container>
   </div>
 </template>
@@ -43,7 +41,7 @@ export default {
         'birthDate',
         'phoneNumber',
         'office',
-        'actions'
+        {key: 'actions', label: ''}
       ],
       doctors: []
     }

@@ -1,104 +1,106 @@
 <template>
-  <div>
-    <h1>Create a new Patient</h1>
-    <form :disabled="!isFormValid" @submit.prevent="create">
-      <b-form-group
-        id="username"
-        description="The username is required"
-        label="Username"
-        label-for="username"
-        :invalid-feedback="invalidUsernameFeedback"
-        :state="isUsernameValid"
-      >
-        <b-input
+  <b-container>
+    <div class="middleCard">
+      <h1>Create a new Patient</h1>
+      <form :disabled="!isFormValid" @submit.prevent="create">
+        <b-form-group
           id="username"
-          v-model.trim="patient.username"
+          description="The username is required"
+          label="Username"
+          label-for="username"
+          :invalid-feedback="invalidUsernameFeedback"
           :state="isUsernameValid"
-          trim
-        />
-      </b-form-group>
-      <b-form-group
-        id="password"
-        description="The password is required"
-        label="Password"
-        label-for="password"
-        :invalid-feedback="invalidPasswordFeedback"
-        :state="isPasswordValid"
-      >
-        <b-input
-          v-model="patient.password"
-          :state="isPasswordValid"
-          type="password"
-          required
-        />
-      </b-form-group>
-      <b-form-group
-        id="name"
-        description="The name is required"
-        label="Name"
-        label-for="name"
-        :invalid-feedback="invalidNameFeedback"
-        :state="isNameValid"
-      >
-        <b-input v-model.trim="patient.name" :state="isNameValid" required />
-      </b-form-group>
-
-      <b-form-group
-        id="birthDate"
-        description="The birthDate is required"
-        label="Birth Date"
-        label-for="birthDate"
-      >
-        <b-form-datepicker id="birthDate" v-model="patient.birthDate">
-        </b-form-datepicker>
-      </b-form-group>
-
-      <b-form-group
-        id="email"
-        description="The email is required"
-        label="Email"
-        label-for="email"
-        :invalid-feedback="invalidEmailFeedback"
-        :state="isEmailValid"
-      >
-        <b-input
-          ref="email"
-          v-model.trim="patient.email"
-          :state="isEmailValid"
-          required
-        />
-      </b-form-group>
-      <b-form-group
-        id="phoneNumber"
-        description="The Phone Number is required"
-        label="Phone Number"
-        label-for="phoneNumber"
-        :invalid-feedback="invalidPhoneNumberFeedback"
-        :state="isPhoneNumberValid"
-      >
-        <b-input
-          ref="phoneNumber"
-          v-model.trim="patient.phoneNumber"
-          :state="isPhoneNumberValid"
-          required
-        />
-      </b-form-group>
-
-      <nuxt-link to="/patients">
-        <b-button variant="light"> Return </b-button>
-      </nuxt-link>
-      <div style="float: right">
-        <b-button variant="dark" type="reset" @click="reset"> RESET </b-button>
-        <b-button
-          variant="success"
-          :disabled="!isFormValid"
-          @click.prevent="create"
         >
-          CREATE
-        </b-button>
-      </div>
-    </form>
-  </div>
+          <b-input
+            id="username"
+            v-model.trim="patient.username"
+            :state="isUsernameValid"
+            trim
+          />
+        </b-form-group>
+        <b-form-group
+          id="password"
+          description="The password is required"
+          label="Password"
+          label-for="password"
+          :invalid-feedback="invalidPasswordFeedback"
+          :state="isPasswordValid"
+        >
+          <b-input
+            v-model="patient.password"
+            :state="isPasswordValid"
+            type="password"
+            required
+          />
+        </b-form-group>
+        <b-form-group
+          id="name"
+          description="The name is required"
+          label="Name"
+          label-for="name"
+          :invalid-feedback="invalidNameFeedback"
+          :state="isNameValid"
+        >
+          <b-input v-model.trim="patient.name" :state="isNameValid" required/>
+        </b-form-group>
+
+        <b-form-group
+          id="birthDate"
+          description="The birthDate is required"
+          label="Birth Date"
+          label-for="birthDate"
+        >
+          <b-form-datepicker id="birthDate" v-model="patient.birthDate">
+          </b-form-datepicker>
+        </b-form-group>
+
+        <b-form-group
+          id="email"
+          description="The email is required"
+          label="Email"
+          label-for="email"
+          :invalid-feedback="invalidEmailFeedback"
+          :state="isEmailValid"
+        >
+          <b-input
+            ref="email"
+            v-model.trim="patient.email"
+            :state="isEmailValid"
+            required
+          />
+        </b-form-group>
+        <b-form-group
+          id="phoneNumber"
+          description="The Phone Number is required"
+          label="Phone Number"
+          label-for="phoneNumber"
+          :invalid-feedback="invalidPhoneNumberFeedback"
+          :state="isPhoneNumberValid"
+        >
+          <b-input
+            ref="phoneNumber"
+            v-model.trim="patient.phoneNumber"
+            :state="isPhoneNumberValid"
+            required
+          />
+        </b-form-group>
+
+        <nuxt-link to="/patients">
+          <b-button variant="info"> Return</b-button>
+        </nuxt-link>
+        <div style="float: right">
+          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
+          <b-button
+            variant="success"
+            :disabled="!isFormValid"
+            @click.prevent="create"
+          >
+            CREATE
+          </b-button>
+        </div>
+      </form>
+    </div>
+  </b-container>
 </template>
 <script>
 export default {

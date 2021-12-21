@@ -1,66 +1,78 @@
 <template>
-  <div>
-    <h1>Create a new Prescription</h1>
-    <form :disabled="!isFormValid" @submit.prevent="create">
-      <b-form-group
-        id="doctor"
-        label="Doctor"
-        description="The doctor is required"
-        :state="isDoctorValid"
-      >
-        <b-input
-          id="patient"
-          v-model.trim="prescription.doctor"
+  <b-container>
+    <div class="middleCard">
+      <h1>Create a new Prescription</h1>
+      <form :disabled="!isFormValid" @submit.prevent="create">
+        <b-form-group
+          id="doctor"
+          label="Doctor"
+          description="The doctor is required"
           :state="isDoctorValid"
-          trim
-        ></b-input>
-      </b-form-group>
-      <b-form-group
-        id="patient"
-        label="Patient"
-        description="The patient is required"
-        :state="isPatientValid"
-      >
-        <b-form-select id="patient" v-model="prescription.patient" required>
-          <option
-            v-for="patient in patients"
-            :key="patient.username"
-            :value="patient.username"
+        >
+          <b-input
+            id="patient"
+            v-model.trim="prescription.doctor"
+            :state="isDoctorValid"
+            trim
+          ></b-input>
+        </b-form-group>
+        <b-form-group
+          id="patient"
+          label="Patient"
+          description="The patient is required"
+          :state="isPatientValid"
+        >
+          <b-form-select id="patient" v-model="prescription.patient" required>
+            <option
+              v-for="patient in patients"
+              :key="patient.username"
+              :value="patient.username"
+            >
+              {{ patient.name }}
+            </option>
+          </b-form-select>
+        </b-form-group>
+
+        <b-form-group id="description" label="Prescription">
+          <b-input
+            id="description"
+            v-model.trim="prescription.description"
+            trim
+          ></b-input>
+        </b-form-group>
+        <b-form-group id="startDate" label="Start Date">
+          <b-form-datepicker
+            id="startDate"
+            v-model="prescription.startDate"
+            :min="new Date()"
+            :max="prescription.endDate"
+          ></b-form-datepicker>
+        </b-form-group>
+        <b-form-group id="endDate" label="End Date">
+          <b-form-datepicker
+            id="endDate"
+            v-model="prescription.endDate"
+            :min="prescription.startDate"
+          ></b-form-datepicker>
+        </b-form-group>
+
+        <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
+        <nuxt-link to="/patients">
+          <b-button variant="info"> Return</b-button>
+        </nuxt-link>
+        <div style="float: right">
+          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
+          <b-button
+            variant="success"
+            :disabled="!isFormValid"
+            @click.prevent="create"
           >
-            {{ patient.name }}
-          </option>
-        </b-form-select>
-      </b-form-group>
-
-      <b-form-group id="description" label="Prescription">
-        <b-input
-          id="description"
-          v-model.trim="prescription.description"
-          trim
-        ></b-input>
-      </b-form-group>
-      <b-form-group id="startDate" label="Start Date">
-        <b-form-datepicker
-          id="startDate"
-          v-model="prescription.startDate"
-          :min="new Date()"
-          :max="prescription.endDate"
-        ></b-form-datepicker>
-      </b-form-group>
-      <b-form-group id="endDate" label="End Date">
-        <b-form-datepicker
-          id="endDate"
-          v-model="prescription.endDate"
-          :min="prescription.startDate"
-        ></b-form-datepicker>
-      </b-form-group>
-
-      <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-      <nuxt-link to="/prescriptions">Return</nuxt-link>
-      <button type="reset" @click="reset">RESET</button>
-      <button :disabled="!isFormValid" @click.prevent="create">CREATE</button>
-    </form>
-  </div>
+            CREATE
+          </b-button>
+        </div>
+      </form>
+    </div>
+  </b-container>
 </template>
 <script>
 export default {

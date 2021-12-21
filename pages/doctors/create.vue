@@ -1,140 +1,142 @@
 <template>
-  <div>
-    <h1>
-      {{
-        isEditing ? 'Update ' + $route.query.username : 'Create a new Doctor'
-      }}
-    </h1>
-    <form :disabled="!isFormValid" @submit.prevent="create">
-      <b-form-group
-        id="username"
-        description="The username is required"
-        label="Username"
-        label-for="username"
-        :invalid-feedback="invalidUsernameFeedback"
-        :state="isUsernameValid"
-      >
-        <b-input
+  <b-container>
+    <div class="middleCard">
+      <h1>
+        {{
+          isEditing ? 'Update ' + $route.query.username : 'Create a new Doctor'
+        }}
+      </h1>
+      <form :disabled="!isFormValid" @submit.prevent="create">
+        <b-form-group
           id="username"
-          v-model.trim="doctor.username"
+          description="The username is required"
+          label="Username"
+          label-for="username"
+          :invalid-feedback="invalidUsernameFeedback"
           :state="isUsernameValid"
-          trim
-        ></b-input>
-      </b-form-group>
-      <b-form-group
-        id="password"
-        description="The password is required"
-        label="Password"
-        label-for="password"
-        :invalid-feedback="invalidPasswordFeedback"
-        :state="isPasswordValid"
-      >
-        <b-input
-          v-model="doctor.password"
+        >
+          <b-input
+            id="username"
+            v-model.trim="doctor.username"
+            :state="isUsernameValid"
+            trim
+          ></b-input>
+        </b-form-group>
+        <b-form-group
+          id="password"
+          description="The password is required"
+          label="Password"
+          label-for="password"
+          :invalid-feedback="invalidPasswordFeedback"
           :state="isPasswordValid"
-          required
-          placeholder="Enter your password"
-        />
-      </b-form-group>
-      <b-form-group
-        id="name"
-        description="The name is required"
-        label="Name"
-        label-for="name"
-        :invalid-feedback="invalidNameFeedback"
-        :state="isNameValid"
-      >
-        <b-input
-          v-model.trim="doctor.name"
+        >
+          <b-input
+            v-model="doctor.password"
+            :state="isPasswordValid"
+            required
+            placeholder="Enter your password"
+          />
+        </b-form-group>
+        <b-form-group
+          id="name"
+          description="The name is required"
+          label="Name"
+          label-for="name"
+          :invalid-feedback="invalidNameFeedback"
           :state="isNameValid"
-          required
-          placeholder="Enter your name"
-        />
-      </b-form-group>
-      <b-form-group
-        id="birthDate"
-        description="The birthDate is required"
-        label="Birth Date"
-        label-for="birthDate"
-      >
-        <b-form-datepicker id="birthDate" v-model="doctor.birthDate">
-        </b-form-datepicker>
-      </b-form-group>
+        >
+          <b-input
+            v-model.trim="doctor.name"
+            :state="isNameValid"
+            required
+            placeholder="Enter your name"
+          />
+        </b-form-group>
+        <b-form-group
+          id="birthDate"
+          description="The birthDate is required"
+          label="Birth Date"
+          label-for="birthDate"
+        >
+          <b-form-datepicker id="birthDate" v-model="doctor.birthDate">
+          </b-form-datepicker>
+        </b-form-group>
 
-      <b-form-group
-        id="email"
-        description="The email is required"
-        label="Email"
-        label-for="email"
-        :invalid-feedback="invalidEmailFeedback"
-        :state="isEmailValid"
-      >
-        <b-input
-          ref="email"
-          v-model.trim="doctor.email"
+        <b-form-group
+          id="email"
+          description="The email is required"
+          label="Email"
+          label-for="email"
+          :invalid-feedback="invalidEmailFeedback"
           :state="isEmailValid"
-          required
-          placeholder="Enter your e-mail"
-        />
-      </b-form-group>
-      <b-form-group
-        id="phoneNumber"
-        description="The Phone Number is required"
-        label="Phone Number"
-        label-for="phoneNumber"
-        :invalid-feedback="invalidPhoneNumberFeedback"
-        :state="isPhoneNumberValid"
-      >
-        <b-input
-          ref="phoneNumber"
-          v-model.trim="doctor.phoneNumber"
+        >
+          <b-input
+            ref="email"
+            v-model.trim="doctor.email"
+            :state="isEmailValid"
+            required
+            placeholder="Enter your e-mail"
+          />
+        </b-form-group>
+        <b-form-group
+          id="phoneNumber"
+          description="The Phone Number is required"
+          label="Phone Number"
+          label-for="phoneNumber"
+          :invalid-feedback="invalidPhoneNumberFeedback"
           :state="isPhoneNumberValid"
-          required
-          placeholder="Enter your phone number"
-        />
-      </b-form-group>
-      <b-form-group
-        id="office"
-        description="The office is required"
-        label="Office"
-        label-for="office"
-        :invalid-feedback="invalidOfficeFeedback"
-        :state="isOfficeValid"
-      >
-        <b-input
-          ref="office"
-          v-model.trim="doctor.office"
+        >
+          <b-input
+            ref="phoneNumber"
+            v-model.trim="doctor.phoneNumber"
+            :state="isPhoneNumberValid"
+            required
+            placeholder="Enter your phone number"
+          />
+        </b-form-group>
+        <b-form-group
+          id="office"
+          description="The office is required"
+          label="Office"
+          label-for="office"
+          :invalid-feedback="invalidOfficeFeedback"
           :state="isOfficeValid"
-          required
-          placeholder="Enter your office"
-        />
-      </b-form-group>
+        >
+          <b-input
+            ref="office"
+            v-model.trim="doctor.office"
+            :state="isOfficeValid"
+            required
+            placeholder="Enter your office"
+          />
+        </b-form-group>
 
-      <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-      <nuxt-link to="/doctors">
-        <b-button variant="light"> Return </b-button>
-      </nuxt-link>
-      <div style="float: right">
-        <b-button variant="dark" type="reset" @click="reset"> RESET </b-button>
-        <b-button
-          v-if="!isEditing"
-          variant="success"
-          :disabled="!isFormValid"
-          @click.prevent="create"
-        >
-          CREATE
-        </b-button>
-        <b-button
-          v-else
-          variant="success"
-          :disabled="!isFormValid"
-          @click.prevent="update"
-        >
-          UPDATE
-        </b-button>
-      </div>
-    </form>
-  </div>
+        <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
+        <nuxt-link to="/doctors">
+          <b-button variant="info"> Return</b-button>
+        </nuxt-link>
+        <div style="float: right">
+          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
+          <b-button
+            v-if="!isEditing"
+            variant="success"
+            :disabled="!isFormValid"
+            @click.prevent="create"
+          >
+            CREATE
+          </b-button>
+          <b-button
+            v-else
+            variant="success"
+            :disabled="!isFormValid"
+            @click.prevent="update"
+          >
+            UPDATE
+          </b-button>
+        </div>
+      </form>
+    </div>
+  </b-container>
 </template>
 <script>
 export default {
