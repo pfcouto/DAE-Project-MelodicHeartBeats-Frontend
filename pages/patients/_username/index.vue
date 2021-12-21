@@ -6,15 +6,15 @@
     <p>BirthDate: {{ patient.birthDate }}</p>
     <p>Email: {{ patient.email }}</p>
     <p>PhoneNumber: {{ patient.phoneNumber }}</p>
-    <!-- <h4>Subjects</h4>
+    <h4>Prescriptions</h4>
     <b-table
-      v-if="subjects.length"
+      v-if="prescriptions.length"
       striped
       over
-      :items="subjects"
-      :fields="subjectFields"
+      :items="prescriptions"
+      :fields="prescriptionsFields"
     />
-    <p v-else>No subjects enrolled.</p> -->
+    <p v-else>No prescriptions passed.</p>
     <!-- <h4>Documents</h4>
     <b-table
       v-if="documents.length"
@@ -44,24 +44,25 @@
 export default {
   data() {
     return {
-      patient: {}
-      // subjectFields: [
-      //   'code',
-      //   'name',
-      //   'courseCode',
-      //   'courseYear',
-      //   'scholarYear'
-      // ],
-      // documentsFields: ['filename', 'actions']
+      patient: {},
+      prescriptionFields: [
+        'id',
+        'doctor',
+        'patient',
+        'description',
+        'startDate',
+        'endDate'
+      ]
+      //   documentsFields: ['filename', 'actions']
     }
   },
   computed: {
     username() {
       return this.$route.params.username
+    },
+    prescriptions() {
+      return this.patient.prescriptionDTOS || []
     }
-    // subjects() {
-    //   return this.student.subjects || []
-    // },
     // documents() {
     //   return this.student.documents || []
     // }
