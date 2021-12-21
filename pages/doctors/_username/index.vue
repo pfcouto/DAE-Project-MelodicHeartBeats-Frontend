@@ -1,21 +1,22 @@
 <template>
   <b-container>
     <h4>Doctor Details</h4>
-    <p>Username: {{ student.username }}</p>
-    <p>Name: {{ student.name }}</p>
-    <p>BirthDate</p>
-    <p>Email: {{ student.email }}</p>
-    <p>Course: {{ student.courseName }}</p>
-    <h4>Subjects</h4>
+    <p>Username: {{ doctor.username }}</p>
+    <p>Name: {{ doctor.name }}</p>
+    <p>BirthDate {{ doctor.birthDate }}</p>
+    <p>Email: {{ doctor.email }}</p>
+    <p>Phone Number: {{ doctor.courseName }}</p>
+    <p>Office: {{ doctor.courseName }}</p>
+    <h4>Prescriptions</h4>
     <b-table
-      v-if="subjects.length"
+      v-if="prescriptions.length"
       striped
       over
-      :items="subjects"
-      :fields="subjectFields"
+      :items="prescriptions"
+      :fields="prescriptionsFields"
     />
-    <p v-else>No subjects enrolled.</p>
-    <h4>Documents</h4>
+    <p v-else>No prescriptions passed.</p>
+    <!-- <h4>Documents</h4>
     <b-table
       v-if="documents.length"
       striped
@@ -32,61 +33,62 @@
         >
       </template>
     </b-table>
-    <p v-else>No documents.</p>
-    <nuxt-link to="/students">Back</nuxt-link>
+    <p v-else>No documents.</p> -->
+    <nuxt-link to="/doctors">Back</nuxt-link>
     &nbsp;
-    <nuxt-link :to="`/students/${username}/send-email`">Send e-mail</nuxt-link>
+    <!-- <nuxt-link :to="`/doctors/${username}/send-email`">Send e-mail</nuxt-link> -->
     &nbsp;
-    <nuxt-link :to="`/students/upload`">Upload</nuxt-link>
+    <nuxt-link :to="`/doctors/upload`">Upload</nuxt-link>
   </b-container>
 </template>
 <script>
 export default {
   data() {
     return {
-      student: {},
-      subjectFields: [
-        'code',
-        'name',
-        'courseCode',
-        'courseYear',
-        'scholarYear'
-      ],
-      documentsFields: ['filename', 'actions']
+      doctor: {},
+      prescriptionFields: [
+        'id',
+        'doctor',
+        'patient',
+        'description',
+        'startDate',
+        'endDate'
+      ]
+      //   documentsFields: ['filename', 'actions']
     }
   },
   computed: {
     username() {
       return this.$route.params.username
     },
-    subjects() {
-      return this.student.subjects || []
-    },
-    documents() {
-      return this.student.documents || []
+    prescriptions() {
+      return this.doctor.prescriptions || []
     }
+    // documents() {
+    //   return this.doctor.documents || []
+    // }
   },
   created() {
-    this.$axios.$get(`/api/students/${this.username}`).then((student) => {
-      this.student = student || {}
+    this.$axios.$get(`/api/doctors/${this.username}`).then((doctor) => {
+      this.doctor = doctor || {}
     })
   },
   methods: {
-    download(fileToDownload) {
-      const documentId = fileToDownload.id
-      this.$axios
-        .$get('/api/documents/download/' + documentId, {
-          responseType: 'arraybuffer'
-        })
-        .then((file) => {
-          const url = window.URL.createObjectURL(new Blob([file]))
-          const link = document.createElement('a')
-          link.href = url
-          link.setAttribute('download', fileToDownload.filename)
-          document.body.appendChild(link)
-          link.click()
-        })
-    }
+    // download(fileToDownload) {
+    //   const documentId = fileToDownload.id
+    //   this.$axios
+    //     .$get('/api/documents/download/' + documentId, {
+    //       responseType: 'arraybuffer'
+    //     })
+    //     .then((file) => {
+    //       const url = window.URL.createObjectURL(new Blob([file]))
+    //       const link = document.createElement('a')
+    //       link.href = url
+    //       link.setAttribute('download', fileToDownload.filename)
+    //       document.body.appendChild(link)
+    //       link.click()
+    //     })
+    // }
   }
 }
 </script>

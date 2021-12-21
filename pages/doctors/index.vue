@@ -6,6 +6,9 @@
           <nuxt-link class="btn btn-link" :to="`/doctors/${row.item.username}`">
             <b-button variant="outline-primary"> Details </b-button>
           </nuxt-link>
+          <nuxt-link class="btn btn-link" to="doctors/create">
+            <b-button variant="outline-primary"> Update </b-button>
+          </nuxt-link>
           <!-- <nuxt-link
             class="btn btn-link"
             :to="`/doctors/${row.item.username}/send-email`"
