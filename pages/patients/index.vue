@@ -7,7 +7,7 @@
             class="btn btn-link"
             :to="`/patients/${row.item.username}`"
           >
-            Details
+            <b-button variant="outline-primary"> Details </b-button>
           </nuxt-link>
           <!-- <nuxt-link
             class="btn btn-link"
@@ -30,7 +30,14 @@
 export default {
   data() {
     return {
-      fields: ['username', 'name', 'birthDate', 'email', 'phoneNumber'],
+      fields: [
+        'username',
+        'name',
+        'birthDate',
+        'email',
+        'phoneNumber',
+        'actions'
+      ],
       patients: []
     }
   },

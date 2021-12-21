@@ -4,7 +4,7 @@
       <b-table striped over :items="doctors" :fields="fields">
         <template #cell(actions)="row">
           <nuxt-link class="btn btn-link" :to="`/doctors/${row.item.username}`">
-            Details
+            <b-button variant="outline-primary"> Details </b-button>
           </nuxt-link>
           <!-- <nuxt-link
             class="btn btn-link"
@@ -27,7 +27,15 @@
 export default {
   data() {
     return {
-      fields: ['username', 'name', 'email','birthDate', 'phoneNumber', 'office'],
+      fields: [
+        'username',
+        'name',
+        'email',
+        'birthDate',
+        'phoneNumber',
+        'office',
+        'actions'
+      ],
       doctors: []
     }
   },
