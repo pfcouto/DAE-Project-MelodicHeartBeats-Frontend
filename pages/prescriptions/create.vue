@@ -63,6 +63,7 @@
           <b-button variant="info"> Return</b-button>
         </nuxt-link>
         <div style="float: right">
+          <b-button v-if="isEditing" variant="danger" @click="del">Delete</b-button>
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
             v-if="!isEditing"
@@ -161,6 +162,15 @@ export default {
     }
   },
   methods: {
+    del() {
+      this.$axios.$delete('/api/prescriptions/' + this.$route.query.id).then((response) => {
+        this.$toast.success("Transaction #" + this.$route.query.id + " deleted successfuly")
+        this.$router.push('/prescriptions')
+      }).catch((error) => {
+        this.$toast.danger("Transaction #" + this.$route.query.id + " was not deleted")
+        this.errorMsg = error.response.data
+      })
+    },
     reset() {
       this.errorMsg = false
       this.prescription = {}
@@ -175,9 +185,11 @@ export default {
       this.$axios
         .$post('/api/prescriptions', this.prescription)
         .then(() => {
+          this.$toast.success("Transaction #" + this.$route.query.id + " created successfuly")
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
+          this.$toast.danger("Transaction #" + this.$route.query.id + " was not created")
           this.errorMsg = error.response.data
         })
     },
@@ -185,9 +197,11 @@ export default {
       this.$axios
         .$put('/api/prescriptions/' + this.$route.query.id, this.prescription)
         .then(() => {
+          this.$toast.success("Transaction #" + this.$route.query.id + " updated successfuly")
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
+          this.$toast.danger("Transaction #" + this.$route.query.id + " was not updated")
           this.errorMsg = error.response.data
         })
     },

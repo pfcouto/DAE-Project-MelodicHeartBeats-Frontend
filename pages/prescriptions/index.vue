@@ -4,7 +4,7 @@
       <b-table striped over :items="prescriptions" :fields="fields">
         <template #cell(details)="row">
           <nuxt-link class="btn btn-link align-self-auto" :to="`/prescriptions/${row.item.id}`">
-            <b-button variant="info"> Details</b-button>
+            <b-button variant="info">Details</b-button>
           </nuxt-link>
           <nuxt-link
             class="btn btn-link"
@@ -13,7 +13,7 @@
               query: { id: `${row.item.id}` }
             }"
           >
-            <b-button variant="info"> Update</b-button>
+            <b-button variant="info">Update</b-button>
           </nuxt-link>
         </template>
       </b-table>
@@ -43,10 +43,21 @@ export default {
       prescriptions: []
     }
   },
+
   created() {
     this.$axios.$get('/api/prescriptions/').then((prescriptions) => {
       this.prescriptions = prescriptions
     })
+  },
+  methods: {
+    delete(id) {
+      console.log("Here:" + id)
+      this.$axios.$delete('/api/prescriptions/' + id).then((response) => {
+        console.log(response)
+      }).catch(error => {
+        console.log(error)
+      })
+    }
   }
 }
 </script>
