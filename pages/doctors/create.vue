@@ -2,7 +2,9 @@
   <b-container>
     <div class="middleCard">
       <h1>
-        {{ isEditing ? 'Update ' + $route.query.username : 'Create a new Doctor' }}
+        {{
+          isEditing ? 'Update ' + $route.query.username : 'Create a new Doctor'
+        }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
@@ -21,6 +23,7 @@
           ></b-input>
         </b-form-group>
         <b-form-group
+          v-if="!isEditing"
           id="password"
           description="The password is required"
           label="Password"
@@ -149,7 +152,7 @@ export default {
         phoneNumber: null,
         office: null
       },
-      errorMsg: false,
+      errorMsg: false
     }
   },
   computed: {
@@ -269,8 +272,10 @@ export default {
       if (!this.isUsernameValid) {
         return false
       }
-      if (!this.isPasswordValid) {
-        return false
+      if (!this.isEditing) {
+        if (!this.isPasswordValid) {
+          return false
+        }
       }
       if (!this.isNameValid) {
         return false
