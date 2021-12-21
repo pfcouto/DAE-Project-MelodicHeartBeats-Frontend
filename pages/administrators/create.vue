@@ -70,7 +70,6 @@
           v-model.trim="administrator.email"
           :state="isEmailValid"
           required
-          pattern=".+@my.ipleiria.pt"
         />
       </b-form-group>
       <b-form-group

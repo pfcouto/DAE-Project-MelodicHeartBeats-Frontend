@@ -1,6 +1,10 @@
 <template>
   <div>
-    <h1>Create a new Doctor</h1>
+    <h1>
+      {{
+        isEditing ? 'Update ' + $route.query.username : 'Create a new Doctor'
+      }}
+    </h1>
     <form :disabled="!isFormValid" @submit.prevent="create">
       <b-form-group
         id="username"
@@ -70,7 +74,6 @@
           v-model.trim="doctor.email"
           :state="isEmailValid"
           required
-          pattern=".+@my.ipleiria.pt"
           placeholder="Enter your e-mail"
         />
       </b-form-group>
@@ -114,11 +117,20 @@
       <div style="float: right">
         <b-button variant="dark" type="reset" @click="reset"> RESET </b-button>
         <b-button
+          v-if="!isEditing"
           variant="success"
           :disabled="!isFormValid"
           @click.prevent="create"
         >
           CREATE
+        </b-button>
+        <b-button
+          v-else
+          variant="success"
+          :disabled="!isFormValid"
+          @click.prevent="update"
+        >
+          UPDATE
         </b-button>
       </div>
     </form>
@@ -137,10 +149,15 @@ export default {
         phoneNumber: null,
         office: null
       },
-      errorMsg: false
+      errorMsg: false,
+      params: {}
     }
   },
   computed: {
+    isEditing() {
+      return this.$route.query.username != null
+    },
+
     invalidUsernameFeedback() {
       if (!this.doctor.username) {
         return null
@@ -208,7 +225,7 @@ export default {
       if (!this.doctor.email) {
         return null
       }
-      return this.$refs.email.checkValidity()
+      return this.invalidEmailFeedback === ''
     },
     invalidPhoneNumberFeedback() {
       if (!this.doctor.phoneNumber) {
@@ -274,6 +291,21 @@ export default {
       return true
     }
   },
+  async mounted() {
+    await this.$route
+
+    if (this.isEditing) {
+      this.$axios
+        .$get('/api/doctors/' + this.$route.query.username)
+        .then((response) => {
+          this.initializeDoctor(response)
+          // console.log(response)
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
+    }
+  },
   methods: {
     reset() {
       this.errorMsg = false
@@ -287,6 +319,19 @@ export default {
         .catch((error) => {
           this.errorMsg = error.response.data
         })
+    },
+    update() {
+      this.$axios
+        .$put('/api/doctors/' + this.$route.query.username, this.doctor)
+        .then(() => {
+          this.$router.push('/doctors')
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
+    },
+    initializeDoctor(editingDoctor) {
+      this.doctor = editingDoctor
     }
   }
 }

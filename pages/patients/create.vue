@@ -66,7 +66,6 @@
           v-model.trim="patient.email"
           :state="isEmailValid"
           required
-          pattern=".+@my.ipleiria.pt"
         />
       </b-form-group>
       <b-form-group
