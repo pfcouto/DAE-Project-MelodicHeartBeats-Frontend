@@ -12,7 +12,7 @@
       >
         <b-input
           id="username"
-          v-model.trim="username"
+          v-model.trim="doctor.username"
           :state="isUsernameValid"
           trim
         ></b-input>
@@ -26,7 +26,7 @@
         :state="isPasswordValid"
       >
         <b-input
-          v-model="password"
+          v-model="doctor.password"
           :state="isPasswordValid"
           required
           placeholder="Enter your password"
@@ -41,13 +41,22 @@
         :state="isNameValid"
       >
         <b-input
-          v-model.trim="name"
+          v-model.trim="doctor.name"
           :state="isNameValid"
           required
           placeholder="Enter your name"
         />
       </b-form-group>
-      <!-- <b-form-datepicker id="birthDate" v-model="birthDate"></b-form-datepicker> -->
+      <b-form-group
+        id="birthDate"
+        description="The birthDate is required"
+        label="Birth Date"
+        label-for="birthDate"
+      >
+        <b-form-datepicker id="birthDate" v-model="doctor.birthDate">
+        </b-form-datepicker>
+      </b-form-group>
+
       <b-form-group
         id="email"
         description="The email is required"
@@ -58,7 +67,7 @@
       >
         <b-input
           ref="email"
-          v-model.trim="email"
+          v-model.trim="doctor.email"
           :state="isEmailValid"
           required
           pattern=".+@my.ipleiria.pt"
@@ -75,7 +84,7 @@
       >
         <b-input
           ref="phoneNumber"
-          v-model.trim="phoneNumber"
+          v-model.trim="doctor.phoneNumber"
           :state="isPhoneNumberValid"
           required
           placeholder="Enter your phone number"
@@ -86,12 +95,12 @@
         description="The office is required"
         label="Office"
         label-for="office"
-        :invalid-feedback="invalidOfficeback"
+        :invalid-feedback="invalidOfficeFeedback"
         :state="isOfficeValid"
       >
         <b-input
           ref="office"
-          v-model.trim="office"
+          v-model.trim="doctor.office"
           :state="isOfficeValid"
           required
           placeholder="Enter your office"
@@ -122,6 +131,7 @@ export default {
       doctor: {
         username: null,
         password: null,
+        birthDate: null,
         name: null,
         email: null,
         phoneNumber: null,
@@ -235,6 +245,10 @@ export default {
       return this.invalidPhoneNumberFeedback === ''
     },
 
+    isBirthDateValid() {
+      return this.doctor.birthDate != null
+    },
+
     isFormValid() {
       if (!this.isUsernameValid) {
         return false
@@ -252,6 +266,9 @@ export default {
         return false
       }
       if (!this.isOfficeValid) {
+        return false
+      }
+      if (!this.isBirthDateValid) {
         return false
       }
       return true

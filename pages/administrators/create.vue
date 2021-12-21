@@ -46,7 +46,17 @@
           required
         />
       </b-form-group>
-      <!-- <b-form-datepicker id="birthDate" v-model="birthDate"></b-form-datepicker> -->
+
+      <b-form-group
+        id="birthDate"
+        description="The birthDate is required"
+        label="Birth Date"
+        label-for="birthDate"
+      >
+        <b-form-datepicker id="birthDate" v-model="administrator.birthDate">
+        </b-form-datepicker>
+      </b-form-group>
+
       <b-form-group
         id="email"
         description="The email is required"
@@ -105,6 +115,7 @@ export default {
         username: null,
         password: null,
         name: null,
+        birthDate: null,
         email: null,
         phoneNumber: null
       },
@@ -200,6 +211,10 @@ export default {
       return this.invalidPhoneNumberFeedback === ''
     },
 
+    isBirthDateValid() {
+      return this.administrator.birthDate != null
+    },
+
     isFormValid() {
       if (!this.isUsernameValid) {
         return false
@@ -214,6 +229,9 @@ export default {
         return false
       }
       if (!this.isPhoneNumberValid) {
+        return false
+      }
+      if (!this.isBirthDateValid) {
         return false
       }
       return true

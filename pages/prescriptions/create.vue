@@ -32,29 +32,27 @@
         </b-form-select>
       </b-form-group>
 
-      <b-form-group
-        id="description"
-        label="Prescription"
-      >
+      <b-form-group id="description" label="Prescription">
         <b-input
           id="description"
           v-model.trim="prescription.description"
           trim
         ></b-input>
       </b-form-group>
-      <b-form-group
-        id="startDate"
-        label="Start Date"
-      >
-        <b-form-datepicker id="startDate" v-model="prescription.startDate" :min="new Date()"
-                           :max="prescription.endDate"></b-form-datepicker>
+      <b-form-group id="startDate" label="Start Date">
+        <b-form-datepicker
+          id="startDate"
+          v-model="prescription.startDate"
+          :min="new Date()"
+          :max="prescription.endDate"
+        ></b-form-datepicker>
       </b-form-group>
-      <b-form-group
-        id="endDate"
-        label="End Date"
-      >
-        <b-form-datepicker id="endDate" v-model="prescription.endDate"
-                           :min="prescription.startDate"></b-form-datepicker>
+      <b-form-group id="endDate" label="End Date">
+        <b-form-datepicker
+          id="endDate"
+          v-model="prescription.endDate"
+          :min="prescription.startDate"
+        ></b-form-datepicker>
       </b-form-group>
 
       <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
@@ -72,8 +70,13 @@ export default {
         doctor: null,
         patient: null,
         description: null,
-        startDate: new Date().getFullYear() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate(),
-        endDate: null,
+        startDate:
+          new Date().getFullYear() +
+          '-' +
+          (new Date().getMonth() + 1) +
+          '-' +
+          new Date().getDate(),
+        endDate: null
       },
       patients: [],
       errorMsg: false
@@ -82,16 +85,16 @@ export default {
 
   computed: {
     isDoctorValid() {
-      return (this.prescription.doctor && this.prescription.doctor.length > 3);
+      return this.prescription.doctor && this.prescription.doctor.length > 3
     },
     isPatientValid() {
-      return this.prescription.patient != null;
+      return this.prescription.patient != null
     },
     isStartDateValid() {
-      return this.prescription.startDate != null;
+      return this.prescription.startDate != null
     },
     isEndDateValid() {
-      return this.prescription.endDate != null;
+      return this.prescription.endDate != null
     },
     isFormValid() {
       if (!this.isDoctorValid) {
@@ -109,11 +112,26 @@ export default {
       return true
     }
   },
+  mounted() {
+    this.$axios
+      .get('/api/patients')
+      .then((response) => {
+        this.patients = response.data
+      })
+      .catch(() => {
+        this.patients = []
+      })
+  },
   methods: {
     reset() {
       this.errorMsg = false
-      this.prescription = {};
-      this.prescription.startDate = new Date().getFullYear() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate();
+      this.prescription = {}
+      this.prescription.startDate =
+        new Date().getFullYear() +
+        '-' +
+        (new Date().getMonth() + 1) +
+        '-' +
+        new Date().getDate()
     },
     create() {
       this.$axios
@@ -125,16 +143,6 @@ export default {
           this.errorMsg = error.response.data
         })
     }
-  },
-  mounted() {
-    this.$axios
-      .get('/api/patients')
-      .then((response) => {
-        this.patients = response.data
-      })
-      .catch(() => {
-        this.patients = []
-      })
   }
 }
 </script>
