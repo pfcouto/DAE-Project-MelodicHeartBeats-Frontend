@@ -19,10 +19,10 @@
       </b-table>
       <div class="spaceBetween">
         <nuxt-link to="/">
-          <b-button variant="danger"> Back</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <nuxt-link to="prescriptions/create" style="float: right">
-          <b-button variant="success"> Create New Prescription</b-button>
+          <b-button variant="success">CREATE NEW PRESCRIPTION</b-button>
         </nuxt-link>
       </div>
     </div>

@@ -60,11 +60,11 @@
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <nuxt-link to="/prescriptions">
-          <b-button variant="info"> Return</b-button>
+          <b-button variant="info">RETURN</b-button>
         </nuxt-link>
         <div style="float: right">
-          <b-button v-if="isEditing" variant="danger" @click="del">Delete</b-button>
-          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
+          <b-button v-if="isEditing" variant="danger" @click="del">DELETE</b-button>
+          <b-button v-else variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
             v-if="!isEditing"
             variant="success"
