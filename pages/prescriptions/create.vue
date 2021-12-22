@@ -175,11 +175,11 @@ export default {
       this.$axios
         .$post('/api/prescriptions', this.prescription)
         .then(() => {
-          this.$toast.success("Transaction #" + this.$route.query.id + " created successfully")
+          this.$toast.success("Transaction #" + this.$route.query.id + " created successfully").goAway(3000)
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
-          this.$toast.danger("Transaction #" + this.$route.query.id + " was not created")
+          this.$toast.error("Transaction #" + this.$route.query.id + " was not created").goAway(3000)
           this.errorMsg = error.response.data
         })
     },
@@ -187,11 +187,11 @@ export default {
       this.$axios
         .$put('/api/prescriptions/' + this.$route.query.id, this.prescription)
         .then(() => {
-          this.$toast.success("Transaction #" + this.$route.query.id + " updated successfully")
+          this.$toast.success("Transaction #" + this.$route.query.id + " updated successfully").goAway(3000)
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
-          this.$toast.danger("Transaction #" + this.$route.query.id + " was not updated")
+          this.$toast.error("Transaction #" + this.$route.query.id + " was not updated").goAway(3000)
           this.errorMsg = error.response.data
         })
     },

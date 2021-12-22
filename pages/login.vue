@@ -1,39 +1,40 @@
 <template>
-    <b-container class="loginContainer">
-      <div class="middleCard loginCard">
-        <h1>Welcome To Your Heath Platform</h1>
-        <br/>
-        <br/>
-        <br/>
+  <b-container class="loginContainer">
+    <div class="middleCard loginCard">
+      <h1>Welcome To Your Heath Platform</h1>
+      <br/>
+      <br/>
+      <br/>
 
-        <b-form-group
+      <b-form-group
+        id="username"
+        label="Username"
+        :state="isUsernameValid"
+      >
+        <b-input
           id="username"
-          label="Username"
+          v-model.trim="username"
+          class="inputField"
           :state="isUsernameValid"
-        >
-          <b-input
-            id="username"
-            v-model.trim="username"
-            class="inputField"
-            :state="isUsernameValid"
-            trim
-          ></b-input>
-        </b-form-group>
-        <b-form-group
-          id="password"
-          label="Password"
-        >
-          <b-input
-            id="patient"
-            v-model="password"
-            class="inputField"
-          ></b-input>
-        </b-form-group>
-        <br/>
-        <br/>
-        <b-button class="login" @click="login">Login</b-button>
-      </div>
-    </b-container>
+          trim
+        ></b-input>
+      </b-form-group>
+      <b-form-group
+        id="password"
+        label="Password"
+      >
+        <b-input
+          id="patient"
+          v-model="password"
+          class="inputField"
+          type="password"
+        ></b-input>
+      </b-form-group>
+      <br/>
+      <br/>
+      <b-button class="login" @click="login">Login</b-button>
+    </div>
+  </b-container>
 </template>
 <script>
 export default {
@@ -50,21 +51,18 @@ export default {
   },
   methods: {
     login() {
-      const params = new URLSearchParams();
-      params.append('username', this.username);
-      params.append('password', this.password);
-      this.$axios.$post('/api/auth/login', params).then((response) => {
-        this.$toast.success("Welcome " + this.username)
-        this.$axios.defaults.headers.common.Authorization = "Bearer " + response.token;
-        this.$router.push('/')
-      }).catch((error) => {
-        if (error.response.status === 401) {
-          this.$toast.info("Username or password incorrect")
-        } else {
-          this.$toast.info("Some unknown error occurred")
+      this.$auth.loginWith('local', {
+        data: {
+          username: this.username,
+          password: this.password
         }
+      }).then(() => {
+        this.$toast.success('You are logged in!').goAway(3000)
+        this.$router.push('/')
+      }).catch(() => {
+        this.$toast.error('Sorry, you cant login. Ensure your credentials are correct').goAway(3000)
       })
-    }
+    },
   }
 }
 </script>
@@ -78,7 +76,7 @@ export default {
   max-width: 800px !important;
 }
 
-legend{
+legend {
   text-align: left;
 }
 

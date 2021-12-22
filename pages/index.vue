@@ -4,7 +4,7 @@
       <b-card-img style="border-radius: 0" src="~/assets/homePage.jpg">
       </b-card-img>
       <b-container class="userInfoContainer">
-        <h4>{{ username }}</h4>
+        <h4>{{ role + ": " + username }}</h4>
         <hr/>
         <div class="percentExternal">
           <div class="percentInternal" style="width:75%;">75%</div>
@@ -43,28 +43,14 @@
 export default {
   data() {
     return {
-      username: null
+      role: this.$auth.user.groups[0],
+      username: this.$auth.user.sub
     }
-  },
-  mounted() {
-    this.$axios.$get("/api/auth/user").then((response) => {
-        if (response){
-          this.username = response.sub
-        }else{
-          this.$toast.info("Please login first")
-          this.$router.push('/login')
-        }
-      }
-    ).catch(() => {
-      this.$toast.info("Please login first")
-      this.$router.push('/login')
-    })
   },
   methods: {
     logout() {
-      delete this.$axios.defaults.headers.common.Authorization;
-      this.$toast.success("User logged out successfully")
-      this.$router.push('/login')
+      this.$auth.logout()
+      this.$toast.success("Logged out successfully").goAway(3000)
     }
   }
 }
