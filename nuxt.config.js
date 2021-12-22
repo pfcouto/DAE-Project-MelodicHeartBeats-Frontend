@@ -6,12 +6,12 @@ export default {
       lang: 'en'
     },
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
+      {charset: 'utf-8'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {hid: 'description', name: 'description', content: ''},
+      {name: 'format-detection', content: 'telephone=no'}
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -34,8 +34,49 @@ export default {
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    // https://www.npmjs.com/package/@nuxtjs/toast
+    '@nuxtjs/toast',
+    // cookies
+    '@nuxtjs/auth'
   ],
+
+  ssr: false,
+  auth: {
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      home: '/'
+    },
+    watchLoggedIn: true,
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: '/api/auth/login',
+            method: 'post',
+            propertyName: 'token'
+          },
+          logout: false,
+          user: {
+            url: '/api/auth/user',
+            method: 'get',
+            propertyName: ''
+          }
+        },
+        // tokenRequired: true, -> default
+        // tokenType: 'bearer' -> default
+      }
+    }
+  },
+  router: {
+    middleware: [
+      'auth'
+    ]
+  },
+
+
+
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
@@ -50,7 +91,12 @@ export default {
       }
     }
   },
-
+  toast: {
+    position: 'top-center',
+    defaultProps: {
+      timeout: 3,
+    }
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {}
 }

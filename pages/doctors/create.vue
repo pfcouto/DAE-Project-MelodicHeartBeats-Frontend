@@ -3,7 +3,9 @@
     <div class="middleCard">
       <h1>
         {{
-          isEditing ? 'Update ' + $route.query.username : 'Create a new Doctor'
+          isEditing
+            ? 'Update Doctor ' + $route.query.username
+            : 'Create a new Doctor'
         }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
@@ -23,6 +25,7 @@
           ></b-input>
         </b-form-group>
         <b-form-group
+          v-if="!isEditing"
           id="password"
           description="The password is required"
           label="Password"
@@ -113,7 +116,7 @@
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <nuxt-link to="/doctors">
-          <b-button variant="info"> Return</b-button>
+          <b-button variant="info">RETURN</b-button>
         </nuxt-link>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
@@ -151,8 +154,7 @@ export default {
         phoneNumber: null,
         office: null
       },
-      errorMsg: false,
-      params: {}
+      errorMsg: false
     }
   },
   computed: {
@@ -214,12 +216,17 @@ export default {
       return this.invalidNameFeedback === ''
     },
     invalidEmailFeedback() {
-      if (!this.doctor.name) {
+      if (!this.doctor.email) {
         return null
       }
-      const nameLen = this.doctor.name.length
-      if (nameLen < 3 || nameLen > 50) {
-        return 'The name must be between [3, 50] characters.'
+      const emailLen = this.doctor.email.length
+      if (emailLen < 3 || emailLen > 50) {
+        return 'The email must be between [3, 50] characters.'
+      }
+      const reEmail =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      if (!String(this.doctor.email).toLowerCase().match(reEmail)) {
+        return 'Email format not correct'
       }
       return ''
     },
@@ -235,6 +242,10 @@ export default {
       }
       if (this.doctor.phoneNumber.length !== 9) {
         return 'The Phone Number must have exactly 9 characters'
+      }
+      const rePhoneNumber = /^9([1-3]|6)[0-9]{7}$/
+      if (!String(this.doctor.phoneNumber).toLowerCase().match(rePhoneNumber)) {
+        return 'Please use a Portuguese convention'
       }
       return ''
     },
@@ -272,8 +283,10 @@ export default {
       if (!this.isUsernameValid) {
         return false
       }
-      if (!this.isPasswordValid) {
-        return false
+      if (!this.isEditing) {
+        if (!this.isPasswordValid) {
+          return false
+        }
       }
       if (!this.isNameValid) {
         return false

@@ -4,10 +4,10 @@
       <b-card-img style="border-radius: 0" src="~/assets/homePage.jpg">
       </b-card-img>
       <b-container class="userInfoContainer">
-        <h4>Americo Sousa</h4>
-        <hr />
+        <h4>{{ role + ": " + username }}</h4>
+        <hr/>
         <div class="percentExternal">
-          <div class="percentInternal" style="width: 80%">80%</div>
+          <div class="percentInternal" style="width:75%;">75%</div>
         </div>
         <br />
         <br />
@@ -43,11 +43,15 @@
 <script>
 export default {
   data() {
-    return {}
+    return {
+      role: this.$auth.user.groups[0],
+      username: this.$auth.user.sub
+    }
   },
   methods: {
     logout() {
-      alert('Logout not implemented yet')
+      this.$auth.logout()
+      this.$toast.success("Logged out successfully").goAway(3000)
     }
   }
 }
@@ -78,6 +82,7 @@ export default {
   display: flex;
   flex-direction: row;
   padding: 0px;
+  flex-wrap: wrap;
 }
 
 .headerCardComponent:last-child {
@@ -93,7 +98,7 @@ hr {
   display: flex;
   flex: 1;
   justify-content: center;
-  padding: 10px;
+  padding: 12px !important;
   background-color: white;
   flex-direction: row;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
@@ -129,14 +134,17 @@ hr {
 
 .percentInternal {
   border-radius: 16px;
-  background-color: darkcyan;
+  background-color: lightcyan;
+  border-width: 1px;
+  border-style: solid;
+  border-color: darkcyan;
   text-align: center;
   justify-content: center;
   display: flex;
   align-content: center;
   align-items: center;
   font-size: 12px;
-  color: white;
+  color: darkcyan;
   height: 100%;
 }
 
@@ -157,11 +165,14 @@ h6 {
 
 .logout {
   border-radius: 4px;
-  background-color: darkcyan;
+  background-color: lightcyan;
   width: 40%;
   margin: auto;
   height: 28px;
-  color: #ff4242;
+  border-width: 1px;
+  border-style: solid;
+  border-color: darkcyan;
+  color: darkcyan;
   font-weight: bold;
   display: flex;
   align-content: center;
@@ -169,7 +180,11 @@ h6 {
   justify-content: center;
   text-align: center;
   font-size: 14px;
-  border-width: 0;
+}
+
+.logout:hover {
+  background-color: lightcoral;
+  color: cyan;
 }
 
 @media (max-width: 576px) {

@@ -20,10 +20,10 @@
         </b-table>
         <div class="spaceBetween">
           <nuxt-link to="/">
-            <b-button variant="danger"> Back</b-button>
+            <b-button variant="danger">BACK</b-button>
           </nuxt-link>
           <nuxt-link to="doctors/create" style="float: right">
-            <b-button variant="success"> Create New Doctor</b-button>
+            <b-button variant="success">CREATE NEW DOCTOR</b-button>
           </nuxt-link>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default {
         'birthDate',
         'phoneNumber',
         'office',
-        {key: 'actions', label: ''}
+        {key: 'actions', tdClass: 'text-center', label: ''}
       ],
       doctors: []
     }

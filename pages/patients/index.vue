@@ -9,14 +9,23 @@
           >
             <b-button variant="info"> Details</b-button>
           </nuxt-link>
+          <nuxt-link
+            class="btn btn-link"
+            :to="{
+              name: 'patients-create',
+              query: { username: `${row.item.username}` }
+            }"
+          >
+            <b-button variant="info"> Update</b-button>
+          </nuxt-link>
         </template>
       </b-table>
       <div class="spaceBetween">
         <nuxt-link to="/">
-          <b-button variant="danger"> Back</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <nuxt-link to="patients/create" style="float: right">
-          <b-button variant="success"> Create New Patient</b-button>
+          <b-button variant="success">CREATE NEW PATIENT</b-button>
         </nuxt-link>
       </div>
     </div>
@@ -32,7 +41,7 @@ export default {
         'birthDate',
         'email',
         'phoneNumber',
-        {key: 'actions', label: ''}
+        { key: 'actions', tdClass: 'text-center', label: '' }
       ],
       patients: []
     }

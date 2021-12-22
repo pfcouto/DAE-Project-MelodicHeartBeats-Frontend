@@ -1,7 +1,9 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <h1>Create a new Prescription</h1>
+      <h1>
+        {{ isEditing ? 'Prescription #' + $route.query.id : 'New Prescription' }}
+      </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
           id="doctor"
@@ -57,17 +59,26 @@
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <nuxt-link to="/patients">
-          <b-button variant="info"> Return</b-button>
+        <nuxt-link to="/prescriptions">
+          <b-button variant="info">RETURN</b-button>
         </nuxt-link>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
+            v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
             @click.prevent="create"
           >
             CREATE
+          </b-button>
+          <b-button
+            v-else
+            variant="success"
+            :disabled="!isFormValid"
+            @click.prevent="update"
+          >
+            UPDATE
           </b-button>
         </div>
       </form>
@@ -96,6 +107,9 @@ export default {
   },
 
   computed: {
+    isEditing() {
+      return this.$route.query.id != null
+    },
     isDoctorValid() {
       return this.prescription.doctor && this.prescription.doctor.length > 3
     },
@@ -124,7 +138,7 @@ export default {
       return true
     }
   },
-  mounted() {
+  async mounted() {
     this.$axios
       .get('/api/patients')
       .then((response) => {
@@ -133,6 +147,18 @@ export default {
       .catch(() => {
         this.patients = []
       })
+    await this.$route
+
+    if (this.isEditing) {
+      this.$axios
+        .$get('/api/prescriptions/' + this.$route.query.id)
+        .then((response) => {
+          this.prescription = response;
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
+    }
   },
   methods: {
     reset() {
@@ -149,12 +175,26 @@ export default {
       this.$axios
         .$post('/api/prescriptions', this.prescription)
         .then(() => {
+          this.$toast.success("Transaction #" + this.$route.query.id + " created successfully").goAway(3000)
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
+          this.$toast.error("Transaction #" + this.$route.query.id + " was not created").goAway(3000)
           this.errorMsg = error.response.data
         })
-    }
+    },
+    update() {
+      this.$axios
+        .$put('/api/prescriptions/' + this.$route.query.id, this.prescription)
+        .then(() => {
+          this.$toast.success("Transaction #" + this.$route.query.id + " updated successfully").goAway(3000)
+          this.$router.push('/prescriptions')
+        })
+        .catch((error) => {
+          this.$toast.error("Transaction #" + this.$route.query.id + " was not updated").goAway(3000)
+          this.errorMsg = error.response.data
+        })
+    },
   }
 }
 </script>
