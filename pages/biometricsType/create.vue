@@ -4,45 +4,65 @@
       <h1>Create a new Biometric Type</h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
-          id="type"
-          label="Type"
-          description="The type is required"
-          :state="isTypeValid"
+          id="name"
+          label="Name"
+          description="The name is required"
+          :state="isNameValid"
         >
           <b-input
-            id="type"
-            v-model.trim="biometricsType.type"
-            :state="isTypeValid"
+            id="name"
+            v-model.trim="biometricsType.name"
+            placeholder="Enter name..."
+            :state="isNameValid"
             trim
           >
           </b-input>
         </b-form-group>
         <b-form-group
-          id="max"
-          label="Max"
-          description="The Max is required"
-          :state="isMaxValid"
+          id="description"
+          label="Description"
+          description="The description is required"
+          :state="isNameValid"
+        >
+          <b-form-textarea
+            id="description"
+            v-model.trim="biometricsType.description"
+            placeholder="Enter description..."
+            rows="3"
+            max-rows="3"
+            :state="isNameValid"
+            trim
+          >
+          </b-form-textarea>
+        </b-form-group>
+        <b-form-group
+          id="valueMax"
+          label="Value Max"
+          description="The Value Max is required"
+          :state="isValueMaxValid"
         >
           <b-input
-            id="max"
-            v-model.number="biometricsType.max"
+            id="valueMax"
+            v-model.number="biometricsType.valueMax"
+            placeholder="Enter Max Value..."
             type="number"
-            :state="isMaxValid"
+            :state="isValueMaxValid"
             trim
           >
           </b-input>
         </b-form-group>
         <b-form-group
-          id="min"
-          label="Min"
-          description="The Min is required"
-          :state="isMinValid"
+          id="valueMin"
+          label="Value Min"
+          description="The Value Min is required"
+          :state="isValueMinValid"
         >
           <b-input
             id="max"
-            v-model.number="biometricsType.min"
+            v-model.number="biometricsType.valueMin"
+            placeholder="Enter Min Value..."
             type="number"
-            :state="isMinValid"
+            :state="isValueMinValid"
             trim
           >
           </b-input>
@@ -54,8 +74,9 @@
           :state="isUnityValid"
         >
           <b-input
-            id="type"
+            id="unity"
             v-model.trim="biometricsType.unity"
+            placeholder="Enter unity..."
             :state="isUnityValid"
             trim
           >
@@ -73,7 +94,7 @@
             required
             :state="isAdminValid"
           >
-            <option :key="null" :value="null">Escolha uma opção.</option>
+            <option :key="null" :value="null">Choose the admin...</option>
             <option
               v-for="admin in admins"
               :key="admin.username"
@@ -106,9 +127,10 @@ export default {
   data() {
     return {
       biometricsType: {
-        type: null,
-        max: null,
-        min: null,
+        name: null,
+        description: null,
+        valueMax: null,
+        valueMin: null,
         unity: null,
         admin: null
       },
@@ -117,14 +139,14 @@ export default {
     }
   },
   computed: {
-    isTypeValid() {
-      return this.biometricsType.type != null
+    isNameValid() {
+      return this.biometricsType.name != null
     },
-    isMaxValid() {
-      return this.biometricsType.max != null
+    isValueMaxValid() {
+      return this.biometricsType.valueMax != null
     },
-    isMinValid() {
-      return this.biometricsType.min != null
+    isValueMinValid() {
+      return this.biometricsType.valueMin != null
     },
     isUnityValid() {
       return this.biometricsType.unity != null
@@ -133,13 +155,13 @@ export default {
       return this.biometricsType.admin != null
     },
     isFormValid() {
-      if (!this.isTypeValid) {
+      if (!this.isNameValid) {
         return false
       }
-      if (!this.isMaxValid) {
+      if (!this.isValueMaxValid) {
         return false
       }
-      if (!this.isMinValid) {
+      if (!this.isValueMinValid) {
         return false
       }
       if (!this.isUnityValid) {

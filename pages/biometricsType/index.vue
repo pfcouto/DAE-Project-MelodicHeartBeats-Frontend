@@ -2,6 +2,14 @@
   <b-container>
     <div class="middleCard">
       <b-table striped over :items="biometricsTypes" :fields="fields">
+        <template #cell(admin)="row">
+          <nuxt-link
+            class="btn btn-link"
+            :to="`/administrators/${row.item.admin}`"
+          >
+            {{ row.item.admin }}
+          </nuxt-link>
+        </template>
         <template #cell(details)="row">
           <nuxt-link class="btn btn-link" :to="`/prescriptions/${row.item.id}`">
             <b-button variant="info"> Details</b-button>
@@ -33,11 +41,12 @@ export default {
     return {
       fields: [
         'code',
-        { sortable: true, key: 'type' },
-        { sortable: true, key: 'max' },
+        { sortable: true, key: 'name' },
+        'description',
+        { sortable: true, key: 'valueMax' },
         {
           sortable: true,
-          key: 'min'
+          key: 'valueMin'
         },
         'unity',
         'admin',
