@@ -52,7 +52,7 @@ export default {
   methods: {
     deletePrescription(row) {
       this.$axios.$delete('/api/prescriptions/' + row.item.id).then(() => {
-        this.$toast.success("Transaction #" + row.item.id + " deleted successfuly")
+        this.$toast.success("Transaction #" + row.item.id + " deleted successfully")
         this.prescriptions.splice(row.index, 1)
       }).catch(() => {
         this.$toast.danger("Transaction #" + row.item.id + " was not deleted")

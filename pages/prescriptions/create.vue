@@ -175,7 +175,7 @@ export default {
       this.$axios
         .$post('/api/prescriptions', this.prescription)
         .then(() => {
-          this.$toast.success("Transaction #" + this.$route.query.id + " created successfuly")
+          this.$toast.success("Transaction #" + this.$route.query.id + " created successfully")
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
@@ -187,7 +187,7 @@ export default {
       this.$axios
         .$put('/api/prescriptions/' + this.$route.query.id, this.prescription)
         .then(() => {
-          this.$toast.success("Transaction #" + this.$route.query.id + " updated successfuly")
+          this.$toast.success("Transaction #" + this.$route.query.id + " updated successfully")
           this.$router.push('/prescriptions')
         })
         .catch((error) => {

@@ -4,7 +4,7 @@
       <b-card-img style="border-radius: 0" src="~/assets/homePage.jpg">
       </b-card-img>
       <b-container class="userInfoContainer">
-        <h4>Americo Sousa</h4>
+        <h4>{{ username }}</h4>
         <hr/>
         <div class="percentExternal">
           <div class="percentInternal" style="width:75%;">75%</div>
@@ -42,11 +42,29 @@
 <script>
 export default {
   data() {
-    return {}
+    return {
+      username: null
+    }
+  },
+  mounted() {
+    this.$axios.$get("/api/auth/user").then((response) => {
+        if (response){
+          this.username = response.sub
+        }else{
+          this.$toast.info("Please login first")
+          this.$router.push('/login')
+        }
+      }
+    ).catch(() => {
+      this.$toast.info("Please login first")
+      this.$router.push('/login')
+    })
   },
   methods: {
     logout() {
-      alert("Logout not implemented yet");
+      delete this.$axios.defaults.headers.common.Authorization;
+      this.$toast.success("User logged out successfully")
+      this.$router.push('/login')
     }
   }
 }
@@ -172,7 +190,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 14px;
 }
 
-.logout:hover{
+.logout:hover {
   background-color: lightcoral;
   color: cyan;
 }
