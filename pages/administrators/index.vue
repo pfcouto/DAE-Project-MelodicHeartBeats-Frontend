@@ -13,12 +13,15 @@
             <nuxt-link
               class="btn btn-link"
               :to="{
-              name: 'administrators-create',
-              query: { username: `${row.item.username}` }
-            }"
+                name: 'administrators-create',
+                query: { username: `${row.item.username}` }
+              }"
             >
               <b-button variant="info"> Update</b-button>
             </nuxt-link>
+            <b-button variant="danger" @click="deleteAdministrator(row)"
+              >DELETE</b-button
+            >
           </template>
         </b-table>
         <div class="spaceBetween">
@@ -39,11 +42,11 @@ export default {
     return {
       fields: [
         'username',
-        'name',
-        'birthDate',
+        { sortable: true, key: 'name' },
+        { sortable: true, key: 'birthDate' },
         'email',
         'phoneNumber',
-        {key: 'actions', tdClass: 'text-center', label: ''}
+        { key: 'actions', tdClass: 'text-center', label: '' }
       ],
       administrators: []
     }
@@ -52,6 +55,25 @@ export default {
     this.$axios.$get('/api/administrators/').then((administrators) => {
       this.administrators = administrators
     })
+  },
+  methods: {
+    deleteAdministrator(row) {
+      this.$axios
+        .$delete('/api/administrators/' + row.item.username)
+        .then(() => {
+          this.$toast
+            .success(
+              'Administrator #' + row.item.username + ' deleted successfully'
+            )
+            .goAway(3000)
+          this.administrators.splice(row.index, 1)
+        })
+        .catch(() => {
+          this.$toast
+            .error('Administrator #' + row.item.username + ' was not deleted')
+            .goAway(3000)
+        })
+    }
   }
 }
 </script>

@@ -4,7 +4,7 @@
       <h1>
         {{
           isEditing
-            ? 'Update Administrator ' + $route.query.username
+            ? 'Administrator ' + $route.query.username
             : 'Create a new Administrator'
         }}
       </h1>
@@ -226,7 +226,11 @@ export default {
         return null
       }
       const rePhoneNumber = /^9([1-3]|6)[0-9]{7}$/
-      if (!String(this.doctor.phoneNumber).toLowerCase().match(rePhoneNumber)) {
+      if (
+        !String(this.administrator.phoneNumber)
+          .toLowerCase()
+          .match(rePhoneNumber)
+      ) {
         return 'Please use a Portuguese convention'
       }
       if (this.administrator.phoneNumber.length !== 9) {

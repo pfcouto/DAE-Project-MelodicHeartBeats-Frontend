@@ -3,9 +3,7 @@
     <div class="middleCard">
       <h1>
         {{
-          isEditing
-            ? 'Update Doctor ' + $route.query.username
-            : 'Create a new Doctor'
+          isEditing ? 'Doctor ' + $route.query.username : 'Create a new Doctor'
         }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">

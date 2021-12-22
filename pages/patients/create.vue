@@ -4,7 +4,7 @@
       <h1>
         {{
           isEditing
-            ? 'Update Patient ' + $route.query.username
+            ? 'Patient ' + $route.query.username
             : 'Create a new Patient'
         }}
       </h1>
@@ -220,7 +220,9 @@ export default {
         return null
       }
       const rePhoneNumber = /^9([1-3]|6)[0-9]{7}$/
-      if (!String(this.doctor.phoneNumber).toLowerCase().match(rePhoneNumber)) {
+      if (
+        !String(this.patient.phoneNumber).toLowerCase().match(rePhoneNumber)
+      ) {
         return 'Please use a Portuguese convention'
       }
       if (this.patient.phoneNumber.length !== 9) {

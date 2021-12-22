@@ -18,6 +18,9 @@
           >
             <b-button variant="info"> Update</b-button>
           </nuxt-link>
+          <b-button variant="danger" @click="deletePatient(row)"
+            >DELETE</b-button
+          >
         </template>
       </b-table>
       <div class="spaceBetween">
@@ -37,8 +40,8 @@ export default {
     return {
       fields: [
         'username',
-        'name',
-        'birthDate',
+        { sortable: true, key: 'name' },
+        { sortable: true, key: 'birthDate' },
         'email',
         'phoneNumber',
         { key: 'actions', tdClass: 'text-center', label: '' }
@@ -50,6 +53,23 @@ export default {
     this.$axios.$get('/api/patients/').then((patients) => {
       this.patients = patients
     })
+  },
+  methods: {
+    deletePatient(row) {
+      this.$axios
+        .$delete('/api/patients/' + row.item.username)
+        .then(() => {
+          this.$toast
+            .success('Patient #' + row.item.username + ' deleted successfully')
+            .goAway(3000)
+          this.patients.splice(row.index, 1)
+        })
+        .catch(() => {
+          this.$toast
+            .error('Patient #' + row.item.username + ' was not deleted')
+            .goAway(3000)
+        })
+    }
   }
 }
 </script>
