@@ -10,6 +10,15 @@
             >
               <b-button variant="info"> Details</b-button>
             </nuxt-link>
+            <nuxt-link
+              class="btn btn-link"
+              :to="{
+              name: 'administrators-create',
+              query: { username: `${row.item.username}` }
+            }"
+            >
+              <b-button variant="info"> Update</b-button>
+            </nuxt-link>
           </template>
         </b-table>
         <div class="spaceBetween">

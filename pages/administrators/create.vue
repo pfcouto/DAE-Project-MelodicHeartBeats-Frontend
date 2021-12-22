@@ -1,7 +1,13 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <h1>Create a new Administrator</h1>
+      <h1>
+        {{
+          isEditing
+            ? 'Update Administrator ' + $route.query.username
+            : 'Create a new Administrator'
+        }}
+      </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
           id="username"
@@ -19,6 +25,7 @@
           />
         </b-form-group>
         <b-form-group
+          v-if="!isEditing"
           id="password"
           description="The password is required"
           label="Password"
@@ -97,11 +104,20 @@
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
+            v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
             @click.prevent="create"
           >
             CREATE
+          </b-button>
+          <b-button
+            v-else
+            variant="success"
+            :disabled="!isFormValid"
+            @click.prevent="update"
+          >
+            UPDATE
           </b-button>
         </div>
       </form>
@@ -126,6 +142,10 @@ export default {
   },
 
   computed: {
+    isEditing() {
+      return this.$route.query.username != null
+    },
+
     invalidUsernameFeedback() {
       if (!this.administrator.username) {
         return null
@@ -155,7 +175,6 @@ export default {
       }
       return ''
     },
-
     isPasswordValid() {
       if (this.invalidPasswordFeedback === null) {
         return null
@@ -179,13 +198,19 @@ export default {
       }
       return this.invalidNameFeedback === ''
     },
+
     invalidEmailFeedback() {
-      if (!this.administrator.name) {
+      if (!this.administrator.email) {
         return null
       }
-      const nameLen = this.administrator.name.length
-      if (nameLen < 3 || nameLen > 50) {
-        return 'The name must be between [3, 50] characters.'
+      const emailLen = this.administrator.email.length
+      if (emailLen < 3 || emailLen > 50) {
+        return 'The email must be between [3, 50] characters.'
+      }
+      const re =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      if (!String(this.administrator.email).toLowerCase().match(re)) {
+        return 'Email format not correct'
       }
       return ''
     },
@@ -193,18 +218,22 @@ export default {
       if (!this.administrator.email) {
         return null
       }
-      return this.$refs.email.checkValidity()
+      return this.invalidEmailFeedback === ''
     },
+
     invalidPhoneNumberFeedback() {
       if (!this.administrator.phoneNumber) {
         return null
+      }
+      const rePhoneNumber = /^9([1-3]|6)[0-9]{7}$/
+      if (!String(this.doctor.phoneNumber).toLowerCase().match(rePhoneNumber)) {
+        return 'Please use a Portuguese convention'
       }
       if (this.administrator.phoneNumber.length !== 9) {
         return 'The Phone Number must have exactly 9 characters'
       }
       return ''
     },
-
     isPhoneNumberValid() {
       if (this.invalidPhoneNumberFeedback === null) {
         return null
@@ -238,6 +267,21 @@ export default {
       return true
     }
   },
+  async mounted() {
+    await this.$route
+
+    if (this.isEditing) {
+      this.$axios
+        .$get('/api/administrators/' + this.$route.query.username)
+        .then((response) => {
+          this.initializeAdministrator(response)
+          // console.log(response)
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
+    }
+  },
   // created() {
   //   this.$axios.$get('/api/courses').then((courses) => {
   //     this.courses = courses
@@ -256,6 +300,22 @@ export default {
         .catch((error) => {
           this.errorMsg = error.response.data
         })
+    },
+    update() {
+      this.$axios
+        .$put(
+          '/api/administrators/' + this.$route.query.username,
+          this.administrator
+        )
+        .then(() => {
+          this.$router.push('/administrators')
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
+    },
+    initializeAdministrator(editingAdministrator) {
+      this.administrator = editingAdministrator
     }
   }
 }

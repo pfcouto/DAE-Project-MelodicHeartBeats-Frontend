@@ -9,6 +9,15 @@
           >
             <b-button variant="info"> Details</b-button>
           </nuxt-link>
+          <nuxt-link
+            class="btn btn-link"
+            :to="{
+              name: 'patients-create',
+              query: { username: `${row.item.username}` }
+            }"
+          >
+            <b-button variant="info"> Update</b-button>
+          </nuxt-link>
         </template>
       </b-table>
       <div class="spaceBetween">
@@ -32,7 +41,7 @@ export default {
         'birthDate',
         'email',
         'phoneNumber',
-        {key: 'actions', tdClass: 'text-center', label: ''}
+        { key: 'actions', tdClass: 'text-center', label: '' }
       ],
       patients: []
     }

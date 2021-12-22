@@ -36,9 +36,9 @@
     <p v-else>No documents.</p> -->
     <nuxt-link to="/doctors">BACK</nuxt-link>
     &nbsp;
-    <!-- <nuxt-link :to="`/doctors/${username}/send-email`">Send e-mail</nuxt-link> -->
+    <!-- <nuxt-link :to="`/doctors/${username}/send-email`">Send e-mail</nuxt-link>
     &nbsp;
-    <nuxt-link :to="`/doctors/upload`">Upload</nuxt-link>
+    <nuxt-link :to="`/doctors/upload`">Upload</nuxt-link> -->
   </b-container>
 </template>
 <script>
