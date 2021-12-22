@@ -15,6 +15,7 @@
           >
             <b-button variant="info">Update</b-button>
           </nuxt-link>
+          <b-button variant="danger" @click="deletePrescription(row)">DELETE</b-button>
         </template>
       </b-table>
       <div class="spaceBetween">
@@ -43,21 +44,20 @@ export default {
       prescriptions: []
     }
   },
-
   created() {
     this.$axios.$get('/api/prescriptions/').then((prescriptions) => {
       this.prescriptions = prescriptions
     })
   },
   methods: {
-    delete(id) {
-      console.log("Here:" + id)
-      this.$axios.$delete('/api/prescriptions/' + id).then((response) => {
-        console.log(response)
-      }).catch(error => {
-        console.log(error)
+    deletePrescription(row) {
+      this.$axios.$delete('/api/prescriptions/' + row.item.id).then(() => {
+        this.$toast.success("Transaction #" + row.item.id + " deleted successfuly")
+        this.prescriptions.splice(row.index, 1)
+      }).catch(() => {
+        this.$toast.danger("Transaction #" + row.item.id + " was not deleted")
       })
-    }
+    },
   }
 }
 </script>

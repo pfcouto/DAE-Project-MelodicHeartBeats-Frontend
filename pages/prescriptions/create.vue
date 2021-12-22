@@ -63,8 +63,7 @@
           <b-button variant="info">RETURN</b-button>
         </nuxt-link>
         <div style="float: right">
-          <b-button v-if="isEditing" variant="danger" @click="del">DELETE</b-button>
-          <b-button v-else variant="dark" type="reset" @click="reset"> RESET</b-button>
+          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
             v-if="!isEditing"
             variant="success"
@@ -162,15 +161,6 @@ export default {
     }
   },
   methods: {
-    del() {
-      this.$axios.$delete('/api/prescriptions/' + this.$route.query.id).then((response) => {
-        this.$toast.success("Transaction #" + this.$route.query.id + " deleted successfuly")
-        this.$router.push('/prescriptions')
-      }).catch((error) => {
-        this.$toast.danger("Transaction #" + this.$route.query.id + " was not deleted")
-        this.errorMsg = error.response.data
-      })
-    },
     reset() {
       this.errorMsg = false
       this.prescription = {}
