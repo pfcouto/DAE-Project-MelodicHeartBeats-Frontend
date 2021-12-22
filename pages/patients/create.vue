@@ -86,7 +86,7 @@
         </b-form-group>
 
         <nuxt-link to="/patients">
-          <b-button variant="info"> Return</b-button>
+          <b-button variant="info">RETURN</b-button>
         </nuxt-link>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>

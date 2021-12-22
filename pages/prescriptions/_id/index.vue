@@ -9,7 +9,7 @@
       <p>End Date: {{ prescription.endDate }}</p>
 
       <nuxt-link to="/prescriptions">
-        <b-button variant="info"> Return</b-button>
+        <b-button variant="info">RETURN</b-button>
       </nuxt-link>
     </div>
   </b-container>

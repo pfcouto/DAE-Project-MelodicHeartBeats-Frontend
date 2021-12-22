@@ -33,7 +33,7 @@
       </template>
     </b-table>
     <p v-else>No documents.</p> -->
-    <nuxt-link to="/patients">Back</nuxt-link>
+    <nuxt-link to="/patients">BACK</nuxt-link>
     <!-- &nbsp;
     <nuxt-link :to="`/patients/${username}/send-email`">Send e-mail</nuxt-link>
     &nbsp;

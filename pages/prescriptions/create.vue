@@ -60,7 +60,7 @@
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <nuxt-link to="/prescriptions">
-          <b-button variant="info"> Return</b-button>
+          <b-button variant="info">RETURN</b-button>
         </nuxt-link>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
@@ -175,9 +175,11 @@ export default {
       this.$axios
         .$post('/api/prescriptions', this.prescription)
         .then(() => {
+          this.$toast.success("Transaction #" + this.$route.query.id + " created successfuly")
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
+          this.$toast.danger("Transaction #" + this.$route.query.id + " was not created")
           this.errorMsg = error.response.data
         })
     },
@@ -185,9 +187,11 @@ export default {
       this.$axios
         .$put('/api/prescriptions/' + this.$route.query.id, this.prescription)
         .then(() => {
+          this.$toast.success("Transaction #" + this.$route.query.id + " updated successfuly")
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
+          this.$toast.danger("Transaction #" + this.$route.query.id + " was not updated")
           this.errorMsg = error.response.data
         })
     },
