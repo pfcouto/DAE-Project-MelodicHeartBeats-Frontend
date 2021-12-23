@@ -24,6 +24,9 @@
         <nuxt-link to="/biometricsType" class="headerCardComponent">
           <h6>Biometric Types</h6>
         </nuxt-link>
+		<nuxt-link to="/observations" class="headerCardComponent">
+          <h6>Observations</h6>
+        </nuxt-link>
         <nuxt-link to="/doctors" class="headerCardComponent">
           <h6>Doctors</h6>
         </nuxt-link>
