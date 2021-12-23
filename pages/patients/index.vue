@@ -51,6 +51,16 @@ export default {
   },
   created() {
     this.$axios.$get('/api/patients/').then((patients) => {
+      // if (this.$auth.groups[0] === 'Doctor') {
+      //   patients.array.forEach((patient) => {
+      //     if (!patient.isDeleted) {
+      //       this.patients.push(patient)
+      //     }
+      //   })
+      // }
+      if (this.$auth.groups[0] === "Administrator") {
+        this.fields.isDeleted = { key: 'isDeleted', label: 'Is Deleted' }
+      }
       this.patients = patients
     })
   },
