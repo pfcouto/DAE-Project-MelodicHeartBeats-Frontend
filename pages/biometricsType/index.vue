@@ -11,8 +11,16 @@
           </nuxt-link>
         </template>
         <template #cell(details)="row">
-          <nuxt-link class="btn btn-link" :to="`/prescriptions/${row.item.id}`">
-            <b-button variant="info"> Details</b-button>
+          <nuxt-link
+            class="btn btn-link"
+            :to="{
+              name: 'biometricsType-create',
+              query: { code: `${row.item.code}` }
+            }"
+          >
+            <b-button v-if="`${row.item.delete}` == 'false'" variant="info">
+              Update</b-button
+            >
           </nuxt-link>
           <b-button
             :variant="`${row.item.delete}` == 'false' ? 'danger' : 'success'"

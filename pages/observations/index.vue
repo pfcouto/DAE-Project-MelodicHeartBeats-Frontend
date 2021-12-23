@@ -7,14 +7,7 @@
             {{ row.item.patient }}
           </nuxt-link>
         </template>
-        <template #cell(biometricType)="row">
-          <nuxt-link
-            class="btn btn-link"
-            :to="`/biometricsType/${row.item.biometricType}`"
-          >
-            {{ row.item.biometricType }}
-          </nuxt-link>
-        </template>
+
         <template #cell(details)="row">
           <nuxt-link
             class="btn btn-link"
@@ -63,6 +56,7 @@ export default {
   created() {
     this.fetchBiometricTypes()
   },
+
   methods: {
     deleteBioType(code) {
       this.$axios

@@ -1,7 +1,13 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <h1>Create a new Biometric Type</h1>
+      <h1>
+        {{
+          isEditing
+            ? 'Update Biometric Type ' + biometricType.name
+            : 'Create a new Biometric Type'
+        }}
+      </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
           id="name"
@@ -11,7 +17,7 @@
         >
           <b-input
             id="name"
-            v-model.trim="biometricsType.name"
+            v-model.trim="biometricType.name"
             placeholder="Enter name..."
             :state="isNameValid"
             trim
@@ -26,7 +32,7 @@
         >
           <b-form-textarea
             id="description"
-            v-model.trim="biometricsType.description"
+            v-model.trim="biometricType.description"
             placeholder="Enter description..."
             rows="3"
             max-rows="3"
@@ -43,7 +49,7 @@
         >
           <b-input
             id="valueMax"
-            v-model.number="biometricsType.valueMax"
+            v-model.number="biometricType.valueMax"
             placeholder="Enter Max Value..."
             type="number"
             :state="isValueMaxValid"
@@ -59,7 +65,7 @@
         >
           <b-input
             id="max"
-            v-model.number="biometricsType.valueMin"
+            v-model.number="biometricType.valueMin"
             placeholder="Enter Min Value..."
             type="number"
             :state="isValueMinValid"
@@ -75,7 +81,7 @@
         >
           <b-input
             id="unity"
-            v-model.trim="biometricsType.unity"
+            v-model.trim="biometricType.unity"
             placeholder="Enter unity..."
             :state="isUnityValid"
             trim
@@ -84,13 +90,14 @@
         </b-form-group>
         <b-form-group
           id="admin"
+          :disabled="isEditing"
           label="Admin"
           description="The Admin is required"
           :state="isAdminValid"
         >
           <b-form-select
             id="patient"
-            v-model="biometricsType.admin"
+            v-model="biometricType.admin"
             required
             :state="isAdminValid"
           >
@@ -111,11 +118,20 @@
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
+            v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
             @click.prevent="create"
           >
             CREATE
+          </b-button>
+          <b-button
+            v-else
+            variant="success"
+            :disabled="!isFormValid"
+            @click.prevent="update"
+          >
+            UPDATE
           </b-button>
         </div>
       </form>
@@ -126,7 +142,7 @@
 export default {
   data() {
     return {
-      biometricsType: {
+      biometricType: {
         name: null,
         description: null,
         valueMax: null,
@@ -139,20 +155,23 @@ export default {
     }
   },
   computed: {
+    isEditing() {
+      return this.$route.query.code != null
+    },
     isNameValid() {
-      return this.biometricsType.name != null
+      return this.biometricType.name != null
     },
     isValueMaxValid() {
-      return this.biometricsType.valueMax != null
+      return this.biometricType.valueMax != null
     },
     isValueMinValid() {
-      return this.biometricsType.valueMin != null
+      return this.biometricType.valueMin != null
     },
     isUnityValid() {
-      return this.biometricsType.unity != null
+      return this.biometricType.unity != null
     },
     isAdminValid() {
-      return this.biometricsType.admin != null
+      return this.biometricType.admin != null
     },
     isFormValid() {
       if (!this.isNameValid) {
@@ -173,8 +192,13 @@ export default {
       return true
     }
   },
-  mounted() {
-    this.$axios
+  async mounted() {
+    await this.$route
+
+    if (this.isEditing) {
+      await this.fetchBiometricType()
+    }
+    await this.$axios
       .get('/api/administrators')
       .then((response) => {
         this.admins = response.data
@@ -186,17 +210,47 @@ export default {
   methods: {
     reset() {
       this.errorMsg = false
-      this.biometricsType = {}
+      this.biometricType = {}
+      if (this.isEditing) {
+        this.fetchBiometricType()
+      }
     },
     create() {
       this.$axios
-        .$post('/api/biometricsType', this.biometricsType)
+        .$post('/api/biometricsType', this.biometricType)
         .then(() => {
           this.$router.push('/biometricsType')
         })
         .catch((error) => {
           this.errorMsg = error.response.data
         })
+    },
+    update() {
+      this.$axios
+        .$patch(
+          '/api/biometricsType/update/' + this.$route.query.code,
+          this.biometricType
+        )
+        .then(() => {
+          this.$router.push('/biometricsType')
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
+    },
+    fetchBiometricType() {
+      this.$axios
+        .$get('/api/biometricsType/' + this.$route.query.code)
+        .then((response) => {
+          this.initializeBiometricType(response)
+          // console.log(response)
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
+    },
+    initializeBiometricType(biometricType) {
+      this.biometricType = biometricType
     }
   }
 }

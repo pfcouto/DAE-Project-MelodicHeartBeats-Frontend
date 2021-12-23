@@ -1,17 +1,25 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <h1>Insert a new Observation</h1>
+      <h1>
+        {{
+          isEditing
+            ? 'Update ' + observation.patient + ' Observation '
+            : 'Create a new Observation'
+        }}
+      </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group id="date" label="Date" :state="isDateValid">
           <b-form-datepicker
             id="date"
             v-model="observation.date"
+            :disabled="isEditing"
             :state="isDateValid"
           ></b-form-datepicker>
         </b-form-group>
         <b-form-group
           id="patient"
+          :disabled="isEditing"
           label="Patient"
           description="The Patient is required"
           :state="isPatientValid"
@@ -34,6 +42,7 @@
         </b-form-group>
         <b-form-group
           id="BiometricType"
+          :disabled="isEditing"
           label="Biometric Type"
           description="The Biometric Type is required"
           :state="isBiometricsTypeValid"
@@ -125,11 +134,20 @@
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
+            v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
             @click.prevent="create"
           >
             CREATE
+          </b-button>
+          <b-button
+            v-else
+            variant="success"
+            :disabled="!isFormValid"
+            @click.prevent="update"
+          >
+            UPDATE
           </b-button>
         </div>
       </form>
@@ -155,6 +173,10 @@ export default {
     }
   },
   computed: {
+    isEditing() {
+      return this.$route.query.code != null
+    },
+
     isDateValid() {
       return this.observation.date != null
     },
@@ -201,28 +223,35 @@ export default {
       return true
     }
   },
-  mounted() {
-    this.$axios
-      .get('/api/patients')
-      .then((response) => {
-        this.patients = response.data
-      })
-      .catch(() => {
-        this.patients = []
-      })
-    this.$axios
-      .get('/api/biometricsType')
-      .then((response) => {
-        this.biometricsType = response.data
-      })
-      .catch(() => {
-        this.biometricsType = []
-      })
+  async mounted() {
+    await this.$route
+
+    if (this.isEditing) {
+      await this.fetchObservationData()
+    }
+    await this.fetchPatients()
+    await this.fetchBiometricsType()
   },
   methods: {
     reset() {
       this.errorMsg = false
       this.observation = {}
+      if (this.isEditing) {
+        this.fetchObservationData()
+      }
+    },
+    update() {
+      this.$axios
+        .$patch(
+          '/api/observations/update/' + this.$route.query.code,
+          this.observation
+        )
+        .then(() => {
+          this.$router.push('/observations')
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
     },
     create() {
       this.$axios
@@ -233,6 +262,40 @@ export default {
         .catch((error) => {
           this.errorMsg = error.response.data
         })
+    },
+    fetchObservationData() {
+      this.$axios
+        .$get('/api/observations/' + this.$route.query.code)
+        .then((response) => {
+          this.initializeObservation(response)
+          // console.log(response)
+        })
+        .catch((error) => {
+          this.errorMsg = error.response.data
+        })
+    },
+    fetchPatients() {
+      this.$axios
+        .get('/api/patients')
+        .then((response) => {
+          this.patients = response.data
+        })
+        .catch(() => {
+          this.patients = []
+        })
+    },
+    fetchBiometricsType() {
+      this.$axios
+        .get('/api/biometricsType/' + (this.isEditing ? '' : 'nonDeleted'))
+        .then((response) => {
+          this.biometricsType = response.data
+        })
+        .catch(() => {
+          this.biometricsType = []
+        })
+    },
+    initializeObservation(editingObservation) {
+      this.observation = editingObservation
     }
   }
 }
