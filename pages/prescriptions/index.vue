@@ -2,6 +2,11 @@
   <b-container>
     <div class="middleCard">
       <b-table striped over :items="prescriptions" :fields="fields">
+        <template #cell(patient)="row">
+          <nuxt-link :to="`/patients/${row.item.patient}`">
+            {{ row.item.patient }}
+          </nuxt-link>
+        </template>
         <template #cell(details)="row">
           <nuxt-link class="btn btn-link align-self-auto" :to="`/prescriptions/${row.item.id}`">
             <b-button variant="info">Details</b-button>
@@ -45,17 +50,27 @@ export default {
     }
   },
   created() {
-    this.$axios.$get('/api/prescriptions/').then((prescriptions) => {
-      this.prescriptions = prescriptions
-    })
+    if (this.$auth.user.groups[0] === "Doctor") {
+      this.$axios.$get('/api/doctors/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
+        this.prescriptions = prescriptions
+      })
+    } else if (this.$auth.user.groups[0] === "Patient") {
+      this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
+        this.prescriptions = prescriptions
+      })
+    } else {
+      this.$axios.$get('/api/prescriptions/').then((prescriptions) => {
+        this.prescriptions = prescriptions
+      })
+    }
   },
   methods: {
     deletePrescription(row) {
       this.$axios.$delete('/api/prescriptions/' + row.item.id).then(() => {
-        this.$toast.success("Transaction #" + row.item.id + " deleted successfully").goAway(3000)
+        this.$toast.success("Prescription #" + row.item.id + " deleted successfully").goAway(3000)
         this.prescriptions.splice(row.index, 1)
       }).catch(() => {
-        this.$toast.error("Transaction #" + row.item.id + " was not deleted").goAway(3000)
+        this.$toast.error("Prescription #" + row.item.id + " was not deleted").goAway(3000)
       })
     },
   }

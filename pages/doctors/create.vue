@@ -115,9 +115,7 @@
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <nuxt-link to="/doctors">
-          <b-button variant="info">RETURN</b-button>
-        </nuxt-link>
+          <b-button variant="info" @click="routeBack">RETURN</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
@@ -322,6 +320,9 @@ export default {
     }
   },
   methods: {
+    routeBack(){
+      this.$router.back();
+    },
     reset() {
       this.errorMsg = false
     },

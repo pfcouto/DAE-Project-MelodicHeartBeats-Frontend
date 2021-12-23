@@ -179,6 +179,7 @@ h1, h2, h3, h4, h5, h6 {
 .logout:hover {
   background-color: lightcoral;
   color: cyan;
+  border-width: 0px;
 }
 
 @media (max-width: 576px) {
