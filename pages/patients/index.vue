@@ -50,19 +50,24 @@ export default {
     }
   },
   created() {
-    this.$axios.$get('/api/patients/').then((patients) => {
-      // if (this.$auth.groups[0] === 'Doctor') {
-      //   patients.array.forEach((patient) => {
-      //     if (!patient.isDeleted) {
-      //       this.patients.push(patient)
-      //     }
-      //   })
-      // }
-      if (this.$auth.groups[0] === "Administrator") {
-        this.fields.isDeleted = { key: 'isDeleted', label: 'Is Deleted' }
-      }
-      this.patients = patients
-    })
+    if (this.$auth.user.groups[0] === 'Administrator') {
+      this.$axios.$get('/api/patients/all').then((patients) => {
+        this.fields.push({ key: 'deleted', label: 'Is Deleted' })
+
+        this.patients = patients
+      })
+    }
+
+    if (this.$auth.user.groups[0] === 'Doctor') {
+      this.$axios.$get('/api/patients/').then((patients) => {
+        this.patients = patients
+        console.log(this.patients)
+      })
+    }
+
+    // this.$axios.$get('/api/patients/all').then((patients) => {
+    //   this.patients = patients
+    // })
   },
   methods: {
     deletePatient(row) {
@@ -72,7 +77,7 @@ export default {
           this.$toast
             .success('Patient #' + row.item.username + ' deleted successfully')
             .goAway(3000)
-          this.patients.splice(row.index, 1)
+          this.patients[row.index].deleted = true
         })
         .catch(() => {
           this.$toast
