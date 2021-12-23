@@ -2,28 +2,30 @@
   <div>
     <b-container>
       <div class="middleCard">
-        <b-table striped over :items="doctors" :fields="fields">
-          <template #cell(actions)="row">
-            <nuxt-link class="btn btn-link" :to="`/doctors/${row.item.username}`">
-              <b-button variant="info"> Details</b-button>
-            </nuxt-link>
-            <nuxt-link
-              class="btn btn-link"
-              :to="{
+        <div class="xOverflow">
+          <b-table striped hover :items="doctors" :fields="fields">
+            <template #cell(actions)="row">
+              <nuxt-link class="btn btn-link" :to="`/doctors/${row.item.username}`">
+                <b-button variant="info"> Details</b-button>
+              </nuxt-link>
+              <nuxt-link
+                class="btn btn-link"
+                :to="{
               name: 'doctors-create',
               query: { username: `${row.item.username}` }
             }"
-            >
-              <b-button variant="info"> Update</b-button>
-            </nuxt-link>
-          </template>
-        </b-table>
+              >
+                <b-button variant="info"> Update</b-button>
+              </nuxt-link>
+            </template>
+          </b-table>
+        </div>
         <div class="spaceBetween">
           <nuxt-link to="/">
             <b-button variant="danger">BACK</b-button>
           </nuxt-link>
           <nuxt-link to="doctors/create" style="float: right">
-            <b-button variant="success">CREATE NEW DOCTOR</b-button>
+            <b-button variant="success">NEW</b-button>
           </nuxt-link>
         </div>
       </div>

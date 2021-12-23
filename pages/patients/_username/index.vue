@@ -7,14 +7,16 @@
     <p>Email: {{ patient.email }}</p>
     <p>PhoneNumber: {{ patient.phoneNumber }}</p>
     <h4>Prescriptions</h4>
-    <b-table
-      v-if="prescriptions.length"
-      striped
-      over
-      :items="prescriptions"
-      :fields="prescriptionsFields"
-    />
-    <p v-else>No prescriptions passed.</p>
+    <div class="xOverflow">
+      <b-table
+        v-if="prescriptions.length"
+        striped
+        hover
+        :items="prescriptions"
+        :fields="prescriptionsFields"
+      />
+      <p v-else>No prescriptions passed.</p>
+    </div>
     <b-button @click="routeBack">BACK</b-button>
   </b-container>
 </template>
@@ -23,7 +25,7 @@ export default {
   data() {
     return {
       patient: {},
-      prescriptionFields: [
+      prescriptionsFields: [
         'id',
         'doctor',
         'patient',

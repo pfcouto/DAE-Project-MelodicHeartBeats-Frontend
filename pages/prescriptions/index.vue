@@ -1,34 +1,36 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <b-table striped over :items="prescriptions" :fields="fields">
-        <template #cell(patient)="row">
-          <nuxt-link :to="`/patients/${row.item.patient}`">
-            {{ row.item.patient }}
-          </nuxt-link>
-        </template>
-        <template #cell(details)="row">
-          <nuxt-link class="btn btn-link align-self-auto" :to="`/prescriptions/${row.item.id}`">
-            <b-button variant="info">Details</b-button>
-          </nuxt-link>
-          <nuxt-link
-            class="btn btn-link"
-            :to="{
+      <div class="xOverflow">
+        <b-table hover :items="coloredPrescriptions" :fields="fields">
+          <template #cell(patient)="row">
+            <nuxt-link :to="`/patients/${row.item.patient}`">
+              {{ row.item.patient }}
+            </nuxt-link>
+          </template>
+          <template #cell(details)="row">
+            <nuxt-link class="btn btn-link align-self-auto" :to="`/prescriptions/${row.item.id}`">
+              <b-button variant="info">Details</b-button>
+            </nuxt-link>
+            <nuxt-link
+              class="btn btn-link"
+              :to="{
               name: 'prescriptions-create',
               query: { id: `${row.item.id}` }
             }"
-          >
-            <b-button variant="info">Update</b-button>
-          </nuxt-link>
-          <b-button variant="danger" @click="deletePrescription(row)">DELETE</b-button>
-        </template>
-      </b-table>
+            >
+              <b-button variant="info">Update</b-button>
+            </nuxt-link>
+            <b-button variant="danger" @click="deletePrescription(row)">DELETE</b-button>
+          </template>
+        </b-table>
+      </div>
       <div class="spaceBetween">
         <nuxt-link to="/">
           <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <nuxt-link to="prescriptions/create" style="float: right">
-          <b-button variant="success">CREATE NEW PRESCRIPTION</b-button>
+          <b-button variant="success">NEW</b-button>
         </nuxt-link>
       </div>
     </div>
@@ -49,6 +51,15 @@ export default {
       prescriptions: []
     }
   },
+  computed: {
+    coloredPrescriptions() {
+      if (!this.prescriptions || this.prescriptions.length < 1) return []
+      return this.prescriptions.map(prescription => {
+        prescription._rowVariant = this.getVariant(prescription)
+        return prescription
+      })
+    }
+  },
   created() {
     if (this.$auth.user.groups[0] === "Doctor") {
       this.$axios.$get('/api/doctors/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
@@ -65,6 +76,17 @@ export default {
     }
   },
   methods: {
+    getVariant(prescription) {
+      const now = new Date()
+      const today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
+      if (prescription.startDate > today) {
+        return 'light'
+      } else if (prescription.endDate > today) {
+        return 'success'
+      } else {
+        return 'secondary'
+      }
+    },
     deletePrescription(row) {
       this.$axios.$delete('/api/prescriptions/' + row.item.id).then(() => {
         this.$toast.success("Prescription #" + row.item.id + " deleted successfully").goAway(3000)

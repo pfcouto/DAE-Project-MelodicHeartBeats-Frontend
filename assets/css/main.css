@@ -8,10 +8,15 @@
   justify-content: center;
   background-color: white;
   color: #757575 !important;
+  width: 100%;
 }
 
 a {
   padding: 0 !important;
+}
+
+.userContainer {
+  min-width: 280px;
 }
 
 .spaceBetween {
@@ -24,6 +29,7 @@ a {
   .container, .container-sm {
     max-width: 100% !important;
   }
+
 }
 
 @media (min-width: 768px) {
@@ -36,23 +42,39 @@ a {
   .headerCard {
     flex-direction: column !important;
   }
-  .headerCard>.headerCardComponent {
+
+  .headerCard > .headerCardComponent {
     margin: 12px 0px 0px 0px;
   }
-  .headerCard>.headerCardComponent:last-child {
-     margin: 12px 0px 0px 0px;
-   }
-  .headerCardComponent:first-child {
-    margin: 0px ;
+
+  .headerCard > .headerCardComponent:last-child {
+    margin: 12px 0px 0px 0px;
   }
+
+  .headerCardComponent:first-child {
+    margin: 0px;
+  }
+}
+
+.xOverflow {
+  overflow-x: auto;
+}
+
+body {
+  min-width: 300px;
 }
 
 @media (max-width: 576px) {
   .major {
     flex-direction: column !important;
   }
+
   .headerCardComponent {
     margin: 12px 0px 0px 0px !important;
+  }
+
+  .userContainer {
+    min-width: auto;
   }
 }
 
@@ -62,7 +84,7 @@ a {
   }
 }
 
-.table td {
+table td {
   vertical-align: middle !important;
 }
 

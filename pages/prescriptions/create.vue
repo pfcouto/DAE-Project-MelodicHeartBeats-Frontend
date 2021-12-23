@@ -12,13 +12,14 @@
         <!--          :state="isDoctorValid"-->
         <!--        >-->
         <!--          <b-input-->
-        <!--            id="patient"-->
+        <!--            id="doctor"-->
         <!--            v-model.trim="prescription.doctor"-->
         <!--            :state="isDoctorValid"-->
         <!--            trim-->
         <!--          ></b-input>-->
         <!--        </b-form-group>-->
         <b-form-group
+          v-if="!isEditing"
           id="patient"
           label="Patient"
           description="The patient is required"
@@ -103,12 +104,6 @@ export default {
       errorMsg: false
     }
   },
-  beforeCreate() {
-    if (this.$auth.user.groups[0] !== "Doctor") {
-      this.$toast.error('Doctors only!').goAway(3000)
-      this.$router.back();
-    }
-  },
   computed: {
     isEditing() {
       return this.$route.query.id != null
@@ -141,15 +136,13 @@ export default {
       return true
     }
   },
+  beforeCreate() {
+    if (this.$auth.user.groups[0] !== "Doctor") {
+      this.$toast.error('Doctors only!').goAway(3000)
+      this.$router.back();
+    }
+  },
   async mounted() {
-    this.$axios
-      .get('/api/patients')
-      .then((response) => {
-        this.patients = response.data
-      })
-      .catch(() => {
-        this.patients = []
-      })
     await this.$route
 
     if (this.isEditing) {
@@ -160,6 +153,15 @@ export default {
         })
         .catch((error) => {
           this.errorMsg = error.response.data
+        })
+    } else {
+      this.$axios
+        .get('/api/patients')
+        .then((response) => {
+          this.patients = response.data
+        })
+        .catch(() => {
+          this.patients = []
         })
     }
   },
