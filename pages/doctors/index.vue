@@ -19,7 +19,7 @@
             >
               <b-button variant="info"> Update</b-button>
             </nuxt-link>
-            <b-button variant="danger" @click="deleteOrUndeleteDoctor(row)"
+            <b-button variant="danger" @click="blockOrUnblockDoctor(row)"
               >DELETE</b-button
             >
           </template>
@@ -55,31 +55,31 @@ export default {
   created() {
     this.$axios.$get('/api/doctors/').then((doctors) => {
       if (this.$auth.user.groups[0] === 'Administrator') {
-        this.fields.push({ key: 'deleted', label: 'Is Deleted' })
+        this.fields.push({ key: 'blocked', label: 'Is Blocked' })
       }
       this.doctors = doctors
     })
   },
   methods: {
-    deleteOrUndeleteDoctor(row) {
+    blockOrUnblockDoctor(row) {
       this.$axios
         .$patch('/api/doctors/' + row.item.username)
         .then(() => {
-          if (!this.doctors[row.index].deleted) {
+          if (!this.doctors[row.index].blocked) {
             this.$toast
-              .success('Doctor #' + row.item.username + ' deleted successfully')
+              .success('Doctor #' + row.item.username + ' blocked successfully')
               .goAway(3000)
-            this.doctors[row.index].deleted = true
+            this.doctors[row.index].blocked = true
           } else {
             this.$toast
-              .success('Doctor #' + row.item.username + ' brought back to life')
+              .success('Doctor #' + row.item.username + ' unblock successfully')
               .goAway(3000)
-            this.doctors[row.index].deleted = false
+            this.doctors[row.index].blocked = false
           }
         })
         .catch(() => {
           this.$toast
-            .error('Doctor #' + row.item.username + ' was not deleted')
+            .error('Doctor #' + row.item.username + ' was not blocked')
             .goAway(3000)
         })
     }

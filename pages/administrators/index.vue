@@ -19,9 +19,7 @@
             >
               <b-button variant="info"> Update</b-button>
             </nuxt-link>
-            <b-button
-              variant="danger"
-              @click="deleteOrUndeleteAdministrator(row)"
+            <b-button variant="danger" @click="blockOrUnblockAdministrator(row)"
               >DELETE</b-button
             >
           </template>
@@ -48,41 +46,44 @@ export default {
         { sortable: true, key: 'birthDate' },
         'email',
         'phoneNumber',
-        { key: 'actions', tdClass: 'text-center', label: '' },
-        { key: 'deleted', label: 'Is Deleted' }
+        { key: 'actions', tdClass: 'text-center', label: '' }
+        // { key: 'blocked', label: 'Is Blocked' }
       ],
       administrators: []
     }
   },
   created() {
     this.$axios.$get('/api/administrators/').then((administrators) => {
-      this.administrators = administrators
+      if (this.$auth.user.groups[0] === 'Administrator') {
+        this.fields.push({ key: 'blocked', label: 'Is Blocked' })
+        this.administrators = administrators
+      }
     })
   },
   methods: {
-    deleteOrUndeleteAdministrator(row) {
+    blockOrUnblockAdministrator(row) {
       this.$axios
         .$patch('/api/administrators/' + row.item.username)
         .then(() => {
-          if (!this.administrators[row.index].deleted) {
+          if (!this.administrators[row.index].blocked) {
             this.$toast
               .success(
-                'Administrator #' + row.item.username + ' deleted successfully'
+                'Administrator #' + row.item.username + ' blocked successfully'
               )
               .goAway(3000)
-            this.administrators[row.index].deleted = true
+            this.administrators[row.index].blocked = true
           } else {
             this.$toast
               .success(
-                'Administrator #' + row.item.username + ' brought back to life'
+                'Administrator #' + row.item.username + ' unblock successfully'
               )
               .goAway(3000)
-            this.administrators[row.index].deleted = false
+            this.administrators[row.index].blocked = false
           }
         })
         .catch(() => {
           this.$toast
-            .error('Administrator #' + row.item.username + ' was not deleted')
+            .error('Administrator #' + row.item.username + ' was not blocked')
             .goAway(3000)
         })
     }
