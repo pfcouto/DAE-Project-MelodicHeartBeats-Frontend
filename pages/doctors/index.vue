@@ -19,7 +19,7 @@
             >
               <b-button variant="info"> Update</b-button>
             </nuxt-link>
-            <b-button variant="danger" @click="deleteDoctor(row)"
+            <b-button variant="danger" @click="deleteOrUndeleteDoctor(row)"
               >DELETE</b-button
             >
           </template>
@@ -54,18 +54,28 @@ export default {
   },
   created() {
     this.$axios.$get('/api/doctors/').then((doctors) => {
+      if (this.$auth.user.groups[0] === 'Administrator') {
+        this.fields.push({ key: 'deleted', label: 'Is Deleted' })
+      }
       this.doctors = doctors
     })
   },
   methods: {
-    deleteDoctor(row) {
+    deleteOrUndeleteDoctor(row) {
       this.$axios
-        .$delete('/api/doctors/' + row.item.username)
+        .$patch('/api/doctors/' + row.item.username)
         .then(() => {
-          this.$toast
-            .success('Doctor #' + row.item.username + ' deleted successfully')
-            .goAway(3000)
-          this.doctors.splice(row.index, 1)
+          if (!this.doctors[row.index].deleted) {
+            this.$toast
+              .success('Doctor #' + row.item.username + ' deleted successfully')
+              .goAway(3000)
+            this.doctors[row.index].deleted = true
+          } else {
+            this.$toast
+              .success('Doctor #' + row.item.username + ' brought back to life')
+              .goAway(3000)
+            this.doctors[row.index].deleted = false
+          }
         })
         .catch(() => {
           this.$toast

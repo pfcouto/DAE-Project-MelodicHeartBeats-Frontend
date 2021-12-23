@@ -18,7 +18,7 @@
           >
             <b-button variant="info"> Update</b-button>
           </nuxt-link>
-          <b-button variant="danger" @click="deletePatient(row)"
+          <b-button variant="danger" @click="deleteOrUndeletePatient(row)"
             >DELETE</b-button
           >
         </template>
@@ -61,7 +61,7 @@ export default {
     if (this.$auth.user.groups[0] === 'Doctor') {
       this.$axios.$get('/api/patients/').then((patients) => {
         this.patients = patients
-        console.log(this.patients)
+        // console.log(this.patients)
       })
     }
 
@@ -70,14 +70,25 @@ export default {
     // })
   },
   methods: {
-    deletePatient(row) {
+    deleteOrUndeletePatient(row) {
       this.$axios
-        .$delete('/api/patients/' + row.item.username)
+        .$patch('/api/patients/' + row.item.username)
         .then(() => {
-          this.$toast
-            .success('Patient #' + row.item.username + ' deleted successfully')
-            .goAway(3000)
-          this.patients[row.index].deleted = true
+          if (!this.patients[row.index].deleted) {
+            this.$toast
+              .success(
+                'Patient #' + row.item.username + ' deleted successfully'
+              )
+              .goAway(3000)
+            this.patients[row.index].deleted = true
+          } else {
+            this.$toast
+              .success(
+                'Patient #' + row.item.username + ' brought back to life'
+              )
+              .goAway(3000)
+            this.patients[row.index].deleted = false
+          }
         })
         .catch(() => {
           this.$toast

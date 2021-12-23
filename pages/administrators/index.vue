@@ -19,7 +19,9 @@
             >
               <b-button variant="info"> Update</b-button>
             </nuxt-link>
-            <b-button variant="danger" @click="deleteAdministrator(row)"
+            <b-button
+              variant="danger"
+              @click="deleteOrUndeleteAdministrator(row)"
               >DELETE</b-button
             >
           </template>
@@ -46,7 +48,8 @@ export default {
         { sortable: true, key: 'birthDate' },
         'email',
         'phoneNumber',
-        { key: 'actions', tdClass: 'text-center', label: '' }
+        { key: 'actions', tdClass: 'text-center', label: '' },
+        { key: 'deleted', label: 'Is Deleted' }
       ],
       administrators: []
     }
@@ -57,16 +60,25 @@ export default {
     })
   },
   methods: {
-    deleteAdministrator(row) {
+    deleteOrUndeleteAdministrator(row) {
       this.$axios
-        .$delete('/api/administrators/' + row.item.username)
+        .$patch('/api/administrators/' + row.item.username)
         .then(() => {
-          this.$toast
-            .success(
-              'Administrator #' + row.item.username + ' deleted successfully'
-            )
-            .goAway(3000)
-          this.administrators.splice(row.index, 1)
+          if (!this.administrators[row.index].deleted) {
+            this.$toast
+              .success(
+                'Administrator #' + row.item.username + ' deleted successfully'
+              )
+              .goAway(3000)
+            this.administrators[row.index].deleted = true
+          } else {
+            this.$toast
+              .success(
+                'Administrator #' + row.item.username + ' brought back to life'
+              )
+              .goAway(3000)
+            this.administrators[row.index].deleted = false
+          }
         })
         .catch(() => {
           this.$toast
