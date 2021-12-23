@@ -1,10 +1,10 @@
 <template>
-  <b-container>
+  <b-container class="loginContainer">
     <div class="middleCard loginCard">
       <h1>Welcome To Your Heath Platform</h1>
-      <br />
-      <br />
-      <br />
+      <br/>
+      <br/>
+      <br/>
 
       <b-form-group
         id="username"
@@ -27,10 +27,11 @@
           id="patient"
           v-model="password"
           class="inputField"
+          type="password"
         ></b-input>
       </b-form-group>
-      <br />
-      <br />
+      <br/>
+      <br/>
       <b-button class="login" @click="login">Login</b-button>
     </div>
   </b-container>
@@ -50,15 +51,33 @@ export default {
   },
   methods: {
     login() {
-      this.$toast.success("Welcome " + this.username)
-    }
+      this.$auth.loginWith('local', {
+        data: {
+          username: this.username,
+          password: this.password
+        }
+      }).then(() => {
+        this.$toast.success('You are logged in!').goAway(3000)
+        this.$router.push('/')
+      }).catch(() => {
+        this.$toast.error('Sorry, you cant login. Ensure your credentials are correct').goAway(3000)
+      })
+    },
   }
 }
 </script>
 <style>
 
-.inputField{
+.inputField {
   width: 450px;
+}
+
+.loginContainer {
+  max-width: 800px !important;
+}
+
+legend {
+  text-align: left;
 }
 
 .loginCard {
@@ -72,12 +91,11 @@ export default {
   border-radius: 4px;
   background-color: lightcyan;
   margin: auto;
-  padding: 8px 24px 8px 24px;
+  padding: 4px 24px 4px 24px;
   border-width: 1px;
   border-style: solid;
   border-color: darkcyan;
   color: darkcyan;
-  font-weight: bold;
   display: flex;
   align-content: center;
   align-items: center;

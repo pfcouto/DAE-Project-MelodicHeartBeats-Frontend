@@ -4,7 +4,7 @@
       <b-card-img style="border-radius: 0" src="~/assets/homePage.jpg">
       </b-card-img>
       <b-container class="userInfoContainer">
-        <h4>Americo Sousa</h4>
+        <h4>{{ role + ": " + username }}</h4>
         <hr/>
         <div class="percentExternal">
           <div class="percentInternal" style="width:75%;">75%</div>
@@ -42,11 +42,15 @@
 <script>
 export default {
   data() {
-    return {}
+    return {
+      role: this.$auth.user.groups[0],
+      username: this.$auth.user.sub
+    }
   },
   methods: {
     logout() {
-      alert("Logout not implemented yet");
+      this.$auth.logout()
+      this.$toast.success("Logged out successfully").goAway(3000)
     }
   }
 }
@@ -172,7 +176,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 14px;
 }
 
-.logout:hover{
+.logout:hover {
   background-color: lightcoral;
   color: cyan;
 }

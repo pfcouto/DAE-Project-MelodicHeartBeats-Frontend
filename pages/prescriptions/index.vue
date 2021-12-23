@@ -52,10 +52,10 @@ export default {
   methods: {
     deletePrescription(row) {
       this.$axios.$delete('/api/prescriptions/' + row.item.id).then(() => {
-        this.$toast.success("Transaction #" + row.item.id + " deleted successfuly")
+        this.$toast.success("Transaction #" + row.item.id + " deleted successfully").goAway(3000)
         this.prescriptions.splice(row.index, 1)
       }).catch(() => {
-        this.$toast.danger("Transaction #" + row.item.id + " was not deleted")
+        this.$toast.error("Transaction #" + row.item.id + " was not deleted").goAway(3000)
       })
     },
   }
