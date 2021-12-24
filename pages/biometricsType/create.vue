@@ -27,15 +27,17 @@
         <b-form-group
           id="description"
           label="Description"
-          description="The description is required"
+          :description="charactersLeft(biometricType.description)"
           :state="isNameValid"
         >
           <b-form-textarea
             id="description"
             v-model.trim="biometricType.description"
             placeholder="Enter description..."
-            rows="3"
-            max-rows="3"
+            rows="2"
+            max-rows="2"
+            style="resize: none"
+            maxlength="255"
             :state="isNameValid"
             trim
           >
@@ -251,6 +253,15 @@ export default {
     },
     initializeBiometricType(biometricType) {
       this.biometricType = biometricType
+    },
+    charactersLeft(descrip) {
+      let char = 0
+      if (descrip) {
+        char = descrip.length
+      }
+      const limit = 255
+
+      return limit - char + ' / ' + limit + ' Caracteres em falta'
     }
   }
 }
