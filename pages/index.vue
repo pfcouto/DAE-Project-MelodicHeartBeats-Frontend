@@ -4,7 +4,12 @@
       <b-card-img style="border-radius: 0" src="~/assets/homePage.jpg">
       </b-card-img>
       <b-container class="userInfoContainer">
-        <h4>{{ role + ": " + username }}</h4>
+        <div class="spaceBetween">
+          <h4 style="flex: 1">{{ role + ": " + username }}</h4>
+          <a @click="updatePassword">
+            <b-icon-key variant="info" font-scale="2"></b-icon-key>
+          </a>
+        </div>
         <hr/>
         <div class="percentExternal">
           <div class="percentInternal" style="width:75%;">75%</div>
@@ -48,6 +53,9 @@ export default {
     }
   },
   methods: {
+    updatePassword() {
+      this.$router.push("/password")
+    },
     logout() {
       this.$auth.logout()
       this.$toast.success("Logged out successfully").goAway(3000)
