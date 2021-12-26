@@ -98,7 +98,7 @@
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
 
-          <b-button variant="info" @click="routeBack">RETURN</b-button>
+        <b-button variant="info" @click="routeBack">RETURN</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
@@ -251,8 +251,10 @@ export default {
       if (!this.isUsernameValid) {
         return false
       }
-      if (!this.isPasswordValid) {
-        return false
+      if (!this.isEditing) {
+        if (!this.isPasswordValid) {
+          return false
+        }
       }
       if (!this.isNameValid) {
         return false
@@ -290,9 +292,9 @@ export default {
   //   })
   // },
   methods: {
-      routeBack(){
-        this.$router.back();
-      },
+    routeBack() {
+      this.$router.back()
+    },
     reset() {
       this.errorMsg = false
     },
