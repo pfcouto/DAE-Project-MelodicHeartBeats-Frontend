@@ -11,7 +11,7 @@
     <b-table
       v-if="biometricTypes.length"
       striped
-      over
+      hover
       :items="biometricTypes"
       :fields="biometricTypeFields"
     />
@@ -21,7 +21,7 @@
     <b-table
       v-if="documents.length"
       striped
-      over
+      hover
       :items="documents"
       :fields="documentsFields"
     >

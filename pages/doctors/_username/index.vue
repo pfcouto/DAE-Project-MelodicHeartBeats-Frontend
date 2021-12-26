@@ -8,19 +8,21 @@
     <p>Phone Number: {{ doctor.phoneNumber }}</p>
     <p>Office: {{ doctor.office }}</p>
     <h4>Prescriptions</h4>
-    <b-table
-      v-if="prescriptions.length"
-      striped
-      over
-      :items="prescriptions"
-      :fields="prescriptionsFields"
-    />
-    <p v-else>No prescriptions passed.</p>
+    <div class="xOverflow">
+      <b-table
+        v-if="prescriptions.length"
+        striped
+        hover
+        :items="prescriptions"
+        :fields="prescriptionsFields"
+      />
+      <p v-else>No prescriptions passed.</p>
+    </div>
     <!-- <h4>Documents</h4>
     <b-table
       v-if="documents.length"
       striped
-      over
+      hover
       :items="documents"
       :fields="documentsFields"
     >
@@ -46,7 +48,7 @@ export default {
   data() {
     return {
       doctor: {},
-      prescriptionFields: [
+      prescriptionsFields: [
         'id',
         'doctor',
         'patient',

@@ -1,34 +1,36 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <b-table striped over :items="patients" :fields="fields">
-        <template #cell(actions)="row">
-          <nuxt-link
-            class="btn btn-link"
-            :to="`/patients/${row.item.username}`"
-          >
-            <b-button variant="info"> Details</b-button>
-          </nuxt-link>
-          <nuxt-link
-            class="btn btn-link"
-            :to="{
-              name: 'patients-create',
-              query: { username: `${row.item.username}` }
-            }"
-          >
-            <b-button variant="info"> Update</b-button>
-          </nuxt-link>
-          <b-button variant="danger" @click="blockOrUnblockPatient(row)"
-            >DELETE</b-button
-          >
-        </template>
-      </b-table>
+      <div class="xOverflow">
+        <b-table striped hover :items="patients" :fields="fields">
+          <template #cell(actions)="row">
+            <nuxt-link
+              class="btn btn-link"
+              :to="`/patients/${row.item.username}`"
+            >
+              <b-button variant="info"> Details</b-button>
+            </nuxt-link>
+            <nuxt-link
+              class="btn btn-link"
+              :to="{
+                name: 'patients-create',
+                query: { username: `${row.item.username}` }
+              }"
+            >
+              <b-button variant="info"> Update</b-button>
+            </nuxt-link>
+            <b-button variant="danger" @click="blockOrUnblockPatient(row)"
+              >DELETE</b-button
+            >
+          </template>
+        </b-table>
+      </div>
       <div class="spaceBetween">
         <nuxt-link to="/">
           <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <nuxt-link to="patients/create" style="float: right">
-          <b-button variant="success">CREATE NEW PATIENT</b-button>
+          <b-button variant="success">NEW</b-button>
         </nuxt-link>
       </div>
     </div>

@@ -8,10 +8,15 @@
   justify-content: center;
   background-color: white;
   color: #757575 !important;
+  width: 100%;
 }
 
 a {
   padding: 0 !important;
+}
+
+.userContainer {
+  min-width: 280px;
 }
 
 .spaceBetween {
@@ -21,13 +26,15 @@ a {
 }
 
 @media (min-width: 576px) {
-  .container, .container-sm {
+  .container,
+  .container-sm {
     max-width: 100% !important;
   }
 }
 
 @media (min-width: 768px) {
-  .container, .container-sm {
+  .container,
+  .container-sm {
     max-width: 100% !important;
   }
 }
@@ -36,40 +43,63 @@ a {
   .headerCard {
     flex-direction: column !important;
   }
-  .headerCard>.headerCardComponent {
+
+  .headerCard > .headerCardComponent {
     margin: 12px 0px 0px 0px;
   }
-  .headerCard>.headerCardComponent:last-child {
-     margin: 12px 0px 0px 0px;
-   }
-  .headerCardComponent:first-child {
-    margin: 0px ;
+
+  .headerCard > .headerCardComponent:last-child {
+    margin: 12px 0px 0px 0px;
   }
+
+  .headerCardComponent:first-child {
+    margin: 0px;
+  }
+}
+
+.xOverflow {
+  overflow-x: auto;
+}
+
+body {
+  min-width: 300px;
 }
 
 @media (max-width: 576px) {
   .major {
     flex-direction: column !important;
   }
+
   .headerCardComponent {
     margin: 12px 0px 0px 0px !important;
+  }
+
+  .userContainer {
+    min-width: auto;
   }
 }
 
 @media (min-width: 1600px) {
-  .container, .container-sm {
+  .container,
+  .container-sm {
     max-width: 1600px !important;
   }
 }
 
-.table td {
+table td {
   vertical-align: middle !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Roboto", sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Roboto', sans-serif;
+  margin: auto;
 }
 
 body {
-  background-color: #FAFFFF;
+  background-color: #faffff;
 }

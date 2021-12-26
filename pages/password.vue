@@ -3,7 +3,9 @@
     <div class="middleCard">
       <h1>
         {{
-          isEditing ? 'Doctor ' + $route.query.username : 'Create a new Doctor'
+          isEditing
+            ? 'Update Administrator ' + $route.query.username
+            : 'Create a new Administrator'
         }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
@@ -17,10 +19,10 @@
         >
           <b-input
             id="username"
-            v-model.trim="doctor.username"
+            v-model.trim="administrator.username"
             :state="isUsernameValid"
             trim
-          ></b-input>
+          />
         </b-form-group>
         <b-form-group
           v-if="!isEditing"
@@ -32,10 +34,10 @@
           :state="isPasswordValid"
         >
           <b-input
-            v-model="doctor.password"
+            v-model="administrator.password"
             :state="isPasswordValid"
+            type="password"
             required
-            placeholder="Enter your password"
           />
         </b-form-group>
         <b-form-group
@@ -47,19 +49,19 @@
           :state="isNameValid"
         >
           <b-input
-            v-model.trim="doctor.name"
+            v-model.trim="administrator.name"
             :state="isNameValid"
             required
-            placeholder="Enter your name"
           />
         </b-form-group>
+
         <b-form-group
           id="birthDate"
           description="The birthDate is required"
           label="Birth Date"
           label-for="birthDate"
         >
-          <b-form-datepicker id="birthDate" v-model="doctor.birthDate">
+          <b-form-datepicker id="birthDate" v-model="administrator.birthDate">
           </b-form-datepicker>
         </b-form-group>
 
@@ -73,10 +75,9 @@
         >
           <b-input
             ref="email"
-            v-model.trim="doctor.email"
+            v-model.trim="administrator.email"
             :state="isEmailValid"
             required
-            placeholder="Enter your e-mail"
           />
         </b-form-group>
         <b-form-group
@@ -89,31 +90,15 @@
         >
           <b-input
             ref="phoneNumber"
-            v-model.trim="doctor.phoneNumber"
+            v-model.trim="administrator.phoneNumber"
             :state="isPhoneNumberValid"
             required
-            placeholder="Enter your phone number"
-          />
-        </b-form-group>
-        <b-form-group
-          id="office"
-          description="The office is required"
-          label="Office"
-          label-for="office"
-          :invalid-feedback="invalidOfficeFeedback"
-          :state="isOfficeValid"
-        >
-          <b-input
-            ref="office"
-            v-model.trim="doctor.office"
-            :state="isOfficeValid"
-            required
-            placeholder="Enter your office"
           />
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-          <b-button variant="info" @click="routeBack">RETURN</b-button>
+
+        <b-button variant="info" @click="routeBack">RETURN</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
@@ -141,28 +126,29 @@
 export default {
   data() {
     return {
-      doctor: {
+      administrator: {
         username: null,
         password: null,
-        birthDate: null,
         name: null,
+        birthDate: null,
         email: null,
-        phoneNumber: null,
-        office: null
+        phoneNumber: null
       },
+
       errorMsg: false
     }
   },
+
   computed: {
     isEditing() {
       return this.$route.query.username != null
     },
 
     invalidUsernameFeedback() {
-      if (!this.doctor.username) {
+      if (!this.administrator.username) {
         return null
       }
-      const usernameLen = this.doctor.username.length
+      const usernameLen = this.administrator.username.length
       if (usernameLen < 3 || usernameLen > 15) {
         return 'The username must be between [3, 15] characters.'
       }
@@ -176,18 +162,17 @@ export default {
     },
 
     invalidPasswordFeedback() {
-      if (!this.doctor.password) {
+      if (!this.administrator.password) {
         return null
       }
 
-      const passwordLen = this.doctor.password.length
+      const passwordLen = this.administrator.password.length
 
       if (passwordLen < 3 || passwordLen > 255) {
         return 'The password must be between [3, 255] characters.'
       }
       return ''
     },
-
     isPasswordValid() {
       if (this.invalidPasswordFeedback === null) {
         return null
@@ -196,10 +181,10 @@ export default {
     },
 
     invalidNameFeedback() {
-      if (!this.doctor.name) {
+      if (!this.administrator.name) {
         return null
       }
-      const nameLen = this.doctor.name.length
+      const nameLen = this.administrator.name.length
       if (nameLen < 3 || nameLen > 50) {
         return 'The name must be between [3, 50] characters.'
       }
@@ -211,41 +196,42 @@ export default {
       }
       return this.invalidNameFeedback === ''
     },
+
     invalidEmailFeedback() {
-      if (!this.doctor.email) {
+      if (!this.administrator.email) {
         return null
       }
-      const emailLen = this.doctor.email.length
+      const emailLen = this.administrator.email.length
       if (emailLen < 3 || emailLen > 50) {
         return 'The email must be between [3, 50] characters.'
       }
-      const reEmail =
+      const re =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      if (!String(this.doctor.email).toLowerCase().match(reEmail)) {
+      if (!String(this.administrator.email).toLowerCase().match(re)) {
         return 'Email format not correct'
       }
       return ''
     },
     isEmailValid() {
-      if (!this.doctor.email) {
+      if (!this.administrator.email) {
         return null
       }
       return this.invalidEmailFeedback === ''
     },
+
     invalidPhoneNumberFeedback() {
-      if (!this.doctor.phoneNumber) {
+      if (!this.administrator.phoneNumber) {
         return null
-      }
-      if (this.doctor.phoneNumber.length !== 9) {
-        return 'The Phone Number must have exactly 9 characters'
       }
       const rePhoneNumber = /^9([1-3]|6)[0-9]{7}$/
       if (!String(this.doctor.phoneNumber).toLowerCase().match(rePhoneNumber)) {
         return 'Please use a Portuguese convention'
       }
+      if (this.administrator.phoneNumber.length !== 9) {
+        return 'The Phone Number must have exactly 9 characters'
+      }
       return ''
     },
-
     isPhoneNumberValid() {
       if (this.invalidPhoneNumberFeedback === null) {
         return null
@@ -253,36 +239,16 @@ export default {
       return this.invalidPhoneNumberFeedback === ''
     },
 
-    invalidOfficeFeedback() {
-      if (!this.doctor.office) {
-        return null
-      }
-      const officeLen = this.doctor.office.length
-      if (officeLen < 3 || officeLen > 5) {
-        return 'The Phone Number must be between 3 and 5 characters'
-      }
-      return ''
-    },
-
-    isOfficeValid() {
-      if (this.invalidPhoneNumberFeedback === null) {
-        return null
-      }
-      return this.invalidPhoneNumberFeedback === ''
-    },
-
     isBirthDateValid() {
-      return this.doctor.birthDate != null
+      return this.administrator.birthDate != null
     },
 
     isFormValid() {
       if (!this.isUsernameValid) {
         return false
       }
-      if (!this.isEditing) {
-        if (!this.isPasswordValid) {
-          return false
-        }
+      if (!this.isPasswordValid) {
+        return false
       }
       if (!this.isNameValid) {
         return false
@@ -291,9 +257,6 @@ export default {
         return false
       }
       if (!this.isPhoneNumberValid) {
-        return false
-      }
-      if (!this.isOfficeValid) {
         return false
       }
       if (!this.isBirthDateValid) {
@@ -307,9 +270,9 @@ export default {
 
     if (this.isEditing) {
       this.$axios
-        .$get('/api/doctors/' + this.$route.query.username)
+        .$get('/api/administrators/' + this.$route.query.username)
         .then((response) => {
-          this.initializeDoctor(response)
+          this.initializeAdministrator(response)
           // console.log(response)
         })
         .catch((error) => {
@@ -317,6 +280,11 @@ export default {
         })
     }
   },
+  // created() {
+  //   this.$axios.$get('/api/courses').then((courses) => {
+  //     this.courses = courses
+  //   })
+  // },
   methods: {
     routeBack(){
       this.$router.back();
@@ -326,9 +294,9 @@ export default {
     },
     create() {
       this.$axios
-        .$post('/api/doctors', this.doctor)
+        .$post('/api/administrators', this.administrator)
         .then(() => {
-          this.$router.push('/doctors')
+          this.$router.push('/administrators')
         })
         .catch((error) => {
           this.errorMsg = error.response.data
@@ -336,16 +304,19 @@ export default {
     },
     update() {
       this.$axios
-        .$put('/api/doctors/' + this.$route.query.username, this.doctor)
+        .$put(
+          '/api/administrators/' + this.$route.query.username,
+          this.administrator
+        )
         .then(() => {
-          this.$router.push('/doctors')
+          this.$router.push('/administrators')
         })
         .catch((error) => {
           this.errorMsg = error.response.data
         })
     },
-    initializeDoctor(editingDoctor) {
-      this.doctor = editingDoctor
+    initializeAdministrator(editingAdministrator) {
+      this.administrator = editingAdministrator
     }
   }
 }

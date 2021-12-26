@@ -5,20 +5,21 @@
         {{ isEditing ? 'Prescription #' + $route.query.id : 'New Prescription' }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
+        <!--        <b-form-group-->
+        <!--          id="doctor"-->
+        <!--          label="Doctor"-->
+        <!--          description="The doctor is required"-->
+        <!--          :state="isDoctorValid"-->
+        <!--        >-->
+        <!--          <b-input-->
+        <!--            id="doctor"-->
+        <!--            v-model.trim="prescription.doctor"-->
+        <!--            :state="isDoctorValid"-->
+        <!--            trim-->
+        <!--          ></b-input>-->
+        <!--        </b-form-group>-->
         <b-form-group
-          id="doctor"
-          label="Doctor"
-          description="The doctor is required"
-          :state="isDoctorValid"
-        >
-          <b-input
-            id="patient"
-            v-model.trim="prescription.doctor"
-            :state="isDoctorValid"
-            trim
-          ></b-input>
-        </b-form-group>
-        <b-form-group
+          v-if="!isEditing"
           id="patient"
           label="Patient"
           description="The patient is required"
@@ -59,9 +60,7 @@
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <nuxt-link to="/prescriptions">
-          <b-button variant="info">RETURN</b-button>
-        </nuxt-link>
+        <b-button variant="info" @click="routeBack">RETURN</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
@@ -90,7 +89,7 @@ export default {
   data() {
     return {
       prescription: {
-        doctor: null,
+        doctor: this.$auth.user.sub,
         patient: null,
         description: null,
         startDate:
@@ -105,14 +104,13 @@ export default {
       errorMsg: false
     }
   },
-
   computed: {
     isEditing() {
       return this.$route.query.id != null
     },
-    isDoctorValid() {
-      return this.prescription.doctor && this.prescription.doctor.length > 3
-    },
+    // isDoctorValid() {
+    //   return this.prescription.doctor && this.prescription.doctor.length > 3
+    // },
     isPatientValid() {
       return this.prescription.patient != null
     },
@@ -123,9 +121,9 @@ export default {
       return this.prescription.endDate != null
     },
     isFormValid() {
-      if (!this.isDoctorValid) {
-        return false
-      }
+      // if (!this.isDoctorValid) {
+      //   return false
+      // }
       if (!this.isPatientValid) {
         return false
       }
@@ -138,15 +136,13 @@ export default {
       return true
     }
   },
+  beforeCreate() {
+    if (this.$auth.user.groups[0] !== "Doctor") {
+      this.$toast.error('Doctors only!').goAway(3000)
+      this.$router.back();
+    }
+  },
   async mounted() {
-    this.$axios
-      .get('/api/patients')
-      .then((response) => {
-        this.patients = response.data
-      })
-      .catch(() => {
-        this.patients = []
-      })
     await this.$route
 
     if (this.isEditing) {
@@ -158,9 +154,21 @@ export default {
         .catch((error) => {
           this.errorMsg = error.response.data
         })
+    } else {
+      this.$axios
+        .get('/api/patients')
+        .then((response) => {
+          this.patients = response.data
+        })
+        .catch(() => {
+          this.patients = []
+        })
     }
   },
   methods: {
+    routeBack() {
+      this.$router.back();
+    },
     reset() {
       this.errorMsg = false
       this.prescription = {}
@@ -175,11 +183,11 @@ export default {
       this.$axios
         .$post('/api/prescriptions', this.prescription)
         .then(() => {
-          this.$toast.success("Transaction #" + this.$route.query.id + " created successfully").goAway(3000)
+          this.$toast.success("Prescription #" + this.$route.query.id + " created successfully").goAway(3000)
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
-          this.$toast.error("Transaction #" + this.$route.query.id + " was not created").goAway(3000)
+          this.$toast.error("Prescription #" + this.$route.query.id + " was not created").goAway(3000)
           this.errorMsg = error.response.data
         })
     },
@@ -187,11 +195,11 @@ export default {
       this.$axios
         .$put('/api/prescriptions/' + this.$route.query.id, this.prescription)
         .then(() => {
-          this.$toast.success("Transaction #" + this.$route.query.id + " updated successfully").goAway(3000)
+          this.$toast.success("Prescription #" + this.$route.query.id + " updated successfully").goAway(3000)
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
-          this.$toast.error("Transaction #" + this.$route.query.id + " was not updated").goAway(3000)
+          this.$toast.error("Prescription #" + this.$route.query.id + " was not updated").goAway(3000)
           this.errorMsg = error.response.data
         })
     },
