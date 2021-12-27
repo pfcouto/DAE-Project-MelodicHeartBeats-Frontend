@@ -44,19 +44,28 @@
       </b-container>
       <div class="gridCustom">
         <b-container v-if="isAdmin" class="customCard">
-          <h2>Welcome to Academics Management</h2>
-        </b-container>
-        <b-container v-if="isAdmin" class="customCard">
-          <h2>Welcome to Academics Management</h2>
-        </b-container>
-        <b-container v-if="isAdmin" class="customCard">
-          <h2>Welcome to Academics Management</h2>
+          <nuxt-link to="prescriptions">
+            <h2>Total Prescriptions: {{ prescriptions.length }}</h2>
+          </nuxt-link>
+          <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
         <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="prescriptions">
             <h2>Total Prescriptions: {{ prescriptions.length }}</h2>
           </nuxt-link>
-          <pie-chart id="pChart" :data="chartdata" :options="options"></pie-chart>
+          <pie-chart :data="chartdata" :options="options"></pie-chart>
+        </b-container>
+        <b-container v-if="isAdmin" class="customCard">
+          <nuxt-link to="prescriptions">
+            <h2>Total Prescriptions: {{ prescriptions.length }}</h2>
+          </nuxt-link>
+          <pie-chart :data="chartdata" :options="options"></pie-chart>
+        </b-container>
+        <b-container v-if="isAdmin" class="customCard">
+          <nuxt-link to="prescriptions">
+            <h2>Total Prescriptions: {{ prescriptions.length }}</h2>
+          </nuxt-link>
+          <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
       </div>
     </b-container>
@@ -73,7 +82,7 @@ export default {
       username: this.$auth.user.sub,
       prescriptions: [],
       chartdata: {
-        labels: ["DONE", "DOING", "TODO"],
+        labels: ["EXPIRED", "ACTIVE", "WAITING"],
         datasets: [
           {
             data: [0, 0, 0],
@@ -87,7 +96,7 @@ export default {
           }]
       },
       options: {
-        responsive: false,
+        responsive: true,
         legend: {
           display: false
         },
@@ -111,9 +120,9 @@ export default {
       await this.$axios.get("api/prescriptions").then((response) => {
         this.prescriptions = response.data
         const clone = {...this.chartdata}
-        clone.datasets[0].data[0] = this.prescriptionsNumByStatus("DONE");
-        clone.datasets[0].data[1] = this.prescriptionsNumByStatus("DOING");
-        clone.datasets[0].data[2] = this.prescriptionsNumByStatus("TODO");
+        clone.datasets[0].data[0] = this.prescriptionsNumByStatus("EXPIRED");
+        clone.datasets[0].data[1] = this.prescriptionsNumByStatus("ACTIVE");
+        clone.datasets[0].data[2] = this.prescriptionsNumByStatus("WAITING");
         this.chartdata = clone;
       }).catch(() => {
         // console.log(error)
@@ -135,11 +144,11 @@ export default {
       const now = new Date()
       const today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
       if (prescription.startDate > today) {
-        return 'TODO'
+        return 'WAITING'
       } else if (prescription.endDate > today) {
-        return 'DOING'
+        return 'ACTIVE'
       } else {
-        return 'DONE'
+        return 'EXPIRED'
       }
     },
     updatePassword() {
