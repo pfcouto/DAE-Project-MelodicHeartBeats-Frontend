@@ -115,7 +115,7 @@
         </b-form-group>
         <div v-for="item in biometricType.qualitatives" :key="item.value">
           {{ item.value + ': ' + item.meaning }}
-          <button @click="removeQualitative(item)">Remove</button>
+          <button @click.prevent="removeQualitative(item)">Remove</button>
         </div>
 
         <div class="flex-row">
