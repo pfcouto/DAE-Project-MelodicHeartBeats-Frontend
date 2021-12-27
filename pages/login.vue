@@ -28,6 +28,7 @@
           v-model="password"
           class="inputField"
           type="password"
+          @keypress.enter="login"
         ></b-input>
       </b-form-group>
       <br/>
