@@ -5,7 +5,7 @@
       </b-card-img>
       <b-container class="userInfoContainer">
         <div class="spaceBetween">
-          <h4 style="flex: 1">{{ role + ": " + username }}</h4>
+          <h4 style="flex: 1; color: darkcyan; font-weight: bold">{{ role + ": " + username }}</h4>
           <a @click="updatePassword">
             <b-icon-key variant="info" font-scale="2"></b-icon-key>
           </a>
@@ -44,26 +44,26 @@
       </b-container>
       <div class="gridCustom">
         <b-container v-if="isAdmin" class="customCard">
-          <nuxt-link to="prescriptions">
-            <h2>Total Prescriptions: {{ prescriptions.length }}</h2>
+          <nuxt-link to="administrators">
+            <h2>{{ administrators.length }} Administrator{{ administrators.length > 1 ? "s" : "" }} </h2>
+          </nuxt-link>
+          <pie-chart :data="chartdata" :options="options"></pie-chart>
+        </b-container>
+        <b-container v-if="isAdmin" class="customCard">
+          <nuxt-link to="doctors">
+            <h2>{{ doctors.length }} Doctor{{ doctors.length > 1 ? "s" : "" }} </h2>
+          </nuxt-link>
+          <pie-chart :data="chartdata" :options="options"></pie-chart>
+        </b-container>
+        <b-container v-if="isAdmin" class="customCard">
+          <nuxt-link to="patients">
+            <h2>{{ patients.length }} Patient{{ patients.length > 1 ? "s" : "" }} </h2>
           </nuxt-link>
           <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
         <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="prescriptions">
-            <h2>Total Prescriptions: {{ prescriptions.length }}</h2>
-          </nuxt-link>
-          <pie-chart :data="chartdata" :options="options"></pie-chart>
-        </b-container>
-        <b-container v-if="isAdmin" class="customCard">
-          <nuxt-link to="prescriptions">
-            <h2>Total Prescriptions: {{ prescriptions.length }}</h2>
-          </nuxt-link>
-          <pie-chart :data="chartdata" :options="options"></pie-chart>
-        </b-container>
-        <b-container v-if="isAdmin" class="customCard">
-          <nuxt-link to="prescriptions">
-            <h2>Total Prescriptions: {{ prescriptions.length }}</h2>
+            <h2>{{ prescriptions.length }} Prescription{{ prescriptions.length > 1 ? "s" : "" }} </h2>
           </nuxt-link>
           <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
@@ -81,6 +81,9 @@ export default {
       role: this.$auth.user.groups[0],
       username: this.$auth.user.sub,
       prescriptions: [],
+      patients: [],
+      doctors: [],
+      administrators: [],
       chartdata: {
         labels: ["EXPIRED", "ACTIVE", "WAITING"],
         datasets: [
@@ -97,6 +100,7 @@ export default {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         legend: {
           display: false
         },
@@ -115,9 +119,23 @@ export default {
       return this.$auth.user.groups[0] === 'Administrator';
     },
   },
-  async beforeMount() {
+  beforeMount() {
     if (this.role === 'Administrator') {
-      await this.$axios.get("api/prescriptions").then((response) => {
+      // Admins
+      this.$axios.get("api/administrators").then((response) => {
+        this.administrators = response.data
+      })
+      // Doctors
+      this.$axios.get("api/doctors").then((response) => {
+        this.doctors = response.data
+      })
+      // Patients
+      this.$axios.get("api/patients").then((response) => {
+        this.patients = response.data
+      })
+
+
+      this.$axios.get("api/prescriptions").then((response) => {
         this.prescriptions = response.data
         const clone = {...this.chartdata}
         clone.datasets[0].data[0] = this.prescriptionsNumByStatus("EXPIRED");

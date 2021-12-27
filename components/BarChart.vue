@@ -6,8 +6,6 @@ export default {
   props: {data: {type: Object, default: null}, options: {type: Object, default: null}},
   watch: {
     data (to, from) {
-      console.log(from)
-      console.log(to)
       this.renderChart(this.data, this.options)
     }
   },
