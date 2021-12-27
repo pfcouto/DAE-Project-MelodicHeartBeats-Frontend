@@ -4,7 +4,6 @@
       <b-table striped over :items="biometricsTypes" :fields="fields">
         <template #cell(admin)="row">
           <nuxt-link
-            class="btn btn-link"
             :to="`/administrators/${row.item.admin}`"
           >
             {{ row.item.admin }}

@@ -108,9 +108,6 @@ export default {
     isEditing() {
       return this.$route.query.id != null
     },
-    // isDoctorValid() {
-    //   return this.prescription.doctor && this.prescription.doctor.length > 3
-    // },
     isPatientValid() {
       return this.prescription.patient != null
     },
@@ -121,9 +118,6 @@ export default {
       return this.prescription.endDate != null
     },
     isFormValid() {
-      // if (!this.isDoctorValid) {
-      //   return false
-      // }
       if (!this.isPatientValid) {
         return false
       }
