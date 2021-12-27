@@ -115,7 +115,7 @@
         </b-form-group>
         <div v-for="item in biometricType.qualitatives" :key="item.value">
           {{ item.value + ': ' + item.meaning }}
-          <a @click="removeQualitative(item)">Remove</a>
+          <button @click="removeQualitative(item)">Remove</button>
         </div>
 
         <div class="flex-row">
@@ -186,7 +186,10 @@ export default {
       return this.biometricType.name !== ''
     },
     isDescriptionValid() {
-      return this.biometricType.description.length <= 255
+      return (
+        this.biometricType.description &&
+        this.biometricType.description.length <= 255
+      )
     },
     isValueMaxValid() {
       return (
@@ -267,6 +270,7 @@ export default {
     reset() {
       this.errorMsg = false
       this.biometricType = {}
+      this.biometricType.qualitatives = []
       if (this.isEditing) {
         this.fetchBiometricType()
       }
