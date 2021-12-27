@@ -1,17 +1,17 @@
 <template>
   <b-container>
     <h4>Administrator Details</h4>
-    <p>Username: {{ patient.username }}</p>
-    <p>Name: {{ patient.name }}</p>
-    <p>BirthDate: {{ patient.birthDate }}</p>
-    <p>Email: {{ patient.email }}</p>
-    <p>PhoneNumber: {{ patient.phoneNumber }}</p>
+    <p>Username: {{ administrator.username }}</p>
+    <p>Name: {{ administrator.name }}</p>
+    <p>BirthDate: {{ administrator.birthDate }}</p>
+    <p>Email: {{ administrator.email }}</p>
+    <p>PhoneNumber: {{ administrator.phoneNumber }}</p>
 
     <!-- <h4>BiometricTypes</h4>
     <b-table
       v-if="biometricTypes.length"
       striped
-      over
+      hover
       :items="biometricTypes"
       :fields="biometricTypeFields"
     />
@@ -21,7 +21,7 @@
     <b-table
       v-if="documents.length"
       striped
-      over
+      hover
       :items="documents"
       :fields="documentsFields"
     >

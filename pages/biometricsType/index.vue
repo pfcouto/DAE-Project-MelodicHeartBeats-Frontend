@@ -4,7 +4,6 @@
       <b-table striped over :items="biometricsTypes" :fields="fields">
         <template #cell(admin)="row">
           <nuxt-link
-            class="btn btn-link"
             :to="`/administrators/${row.item.admin}`"
           >
             {{ row.item.admin }}
@@ -37,7 +36,7 @@
           <b-button variant="danger"> Back</b-button>
         </nuxt-link>
         <nuxt-link to="biometricsType/create" style="float: right">
-          <b-button variant="success"> Create New Prescription</b-button>
+          <b-button variant="success">NEW</b-button>
         </nuxt-link>
       </div>
     </div>

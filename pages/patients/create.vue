@@ -4,7 +4,7 @@
       <h1>
         {{
           isEditing
-            ? 'Update Patient ' + $route.query.username
+            ? 'Patient ' + $route.query.username
             : 'Create a new Patient'
         }}
       </h1>
@@ -93,9 +93,7 @@
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <nuxt-link to="/patients">
-          <b-button variant="info">RETURN</b-button>
-        </nuxt-link>
+          <b-button variant="info" @click="routeBack">RETURN</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
@@ -220,7 +218,9 @@ export default {
         return null
       }
       const rePhoneNumber = /^9([1-3]|6)[0-9]{7}$/
-      if (!String(this.doctor.phoneNumber).toLowerCase().match(rePhoneNumber)) {
+      if (
+        !String(this.patient.phoneNumber).toLowerCase().match(rePhoneNumber)
+      ) {
         return 'Please use a Portuguese convention'
       }
       if (this.patient.phoneNumber.length !== 9) {
@@ -284,6 +284,9 @@ export default {
   //   })
   // },
   methods: {
+    routeBack(){
+      this.$router.back();
+    },
     reset() {
       this.errorMsg = false
     },

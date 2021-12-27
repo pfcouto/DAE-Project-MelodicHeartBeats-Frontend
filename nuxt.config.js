@@ -41,6 +41,10 @@ export default {
     '@nuxtjs/auth'
   ],
 
+  bootstrapVue: {
+    icons: true
+  },
+
   ssr: false,
   auth: {
     redirect: {
@@ -74,8 +78,6 @@ export default {
       'auth'
     ]
   },
-
-
 
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
