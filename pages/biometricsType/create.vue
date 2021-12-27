@@ -114,37 +114,24 @@
           </b-form-select>
         </b-form-group>
         <div v-for="item in biometricType.qualitatives" :key="item.value">
-          {{ item.value + ": " + item.meaning }}
+          {{ item.value + ': ' + item.meaning }}
           <a @click="removeQualitative(item)">Remove</a>
         </div>
 
-
         <div class="flex-row">
           <div style="margin-right: 0; width: 25%">
-            <b-form-group
-              label="Quantitative Value"
-            >
-              <b-input
-                v-model.number="newQualitative.value"
-                type="number"
-              >
+            <b-form-group label="Quantitative Value">
+              <b-input v-model.number="newQualitative.value" type="number">
               </b-input>
             </b-form-group>
           </div>
           <div style="margin-right: 0; width: 50%">
-            <b-form-group
-              label="Qualitative Value"
-            >
-              <b-input
-                v-model="newQualitative.meaning"
-                type="text"
-              >
-              </b-input>
+            <b-form-group label="Qualitative Value">
+              <b-input v-model="newQualitative.meaning" type="text"> </b-input>
             </b-form-group>
           </div>
           <b-button @click="addNewQualitative">ADD</b-button>
         </div>
-
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <nuxt-link to="/biometricsType">
@@ -183,10 +170,10 @@ export default {
         valueMax: '',
         valueMin: '',
         unity: '',
-        admin: null
+        admin: null,
         qualitatives: []
       },
-      newQualitative: {value: null, meaning: null},
+      newQualitative: { value: null, meaning: null },
       admins: [],
       errorMsg: false
     }
@@ -264,7 +251,9 @@ export default {
       if (!this.newQualitative.value) {
         return
       }
-      const obj = this.biometricType.qualitatives.filter(o => o.value === this.newQualitative.value)
+      const obj = this.biometricType.qualitatives.filter(
+        (o) => o.value === this.newQualitative.value
+      )
       if (obj.length > 0) {
         return
       }
