@@ -12,7 +12,7 @@
         <b-form-group
           id="name"
           label="Name"
-          description="The name is required"
+          :description="!isNameValid ? 'The name is required' : ''"
           :state="isNameValid"
         >
           <b-input
@@ -28,7 +28,7 @@
           id="description"
           label="Description"
           :description="charactersLeft(biometricType.description)"
-          :state="isNameValid"
+          :state="isDescriptionValid"
         >
           <b-form-textarea
             id="description"
@@ -38,7 +38,7 @@
             max-rows="2"
             style="resize: none"
             maxlength="255"
-            :state="isNameValid"
+            :state="isDescriptionValid"
             trim
           >
           </b-form-textarea>
@@ -145,11 +145,11 @@ export default {
   data() {
     return {
       biometricType: {
-        name: null,
-        description: null,
-        valueMax: null,
-        valueMin: null,
-        unity: null,
+        name: '',
+        description: '',
+        valueMax: '',
+        valueMin: '',
+        unity: '',
         admin: null
       },
       admins: [],
@@ -161,22 +161,32 @@ export default {
       return this.$route.query.code != null
     },
     isNameValid() {
-      return this.biometricType.name != null
+      return this.biometricType.name !== ''
+    },
+    isDescriptionValid() {
+      return this.biometricType.description.length <= 255
     },
     isValueMaxValid() {
-      return this.biometricType.valueMax != null
+      return (
+        this.biometricType.valueMax !== '' && this.biometricType.valueMax >= 0
+      )
     },
     isValueMinValid() {
-      return this.biometricType.valueMin != null
+      return (
+        this.biometricType.valueMin !== '' && this.biometricType.valueMin >= 0
+      )
     },
     isUnityValid() {
-      return this.biometricType.unity != null
+      return this.biometricType.unity !== ''
     },
     isAdminValid() {
       return this.biometricType.admin != null
     },
     isFormValid() {
       if (!this.isNameValid) {
+        return false
+      }
+      if (!this.isDescriptionValid) {
         return false
       }
       if (!this.isValueMaxValid) {
@@ -209,6 +219,11 @@ export default {
         this.administrators = []
       })
   },
+  /* watch: {
+    'biometricType.name': function (val, val2) {
+      console.log(val + ' ' + val2)
+    }
+  }, */
   methods: {
     reset() {
       this.errorMsg = false
