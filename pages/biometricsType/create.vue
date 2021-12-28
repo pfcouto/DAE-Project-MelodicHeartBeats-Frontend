@@ -13,23 +13,20 @@
           id="name"
           label="Name"
           :description="!isNameValid ? 'The name is required' : ''"
-          :state="isNameValid"
-        >
+          :state="isNameValid">
           <b-input
             id="name"
             v-model.trim="biometricType.name"
             placeholder="Enter name..."
             :state="isNameValid"
-            trim
-          >
+            trim>
           </b-input>
         </b-form-group>
         <b-form-group
           id="description"
           label="Description"
           :description="charactersLeft(biometricType.description)"
-          :state="isDescriptionValid"
-        >
+          :state="isDescriptionValid">
           <b-form-textarea
             id="description"
             v-model.trim="biometricType.description"
@@ -39,55 +36,48 @@
             style="resize: none"
             maxlength="255"
             :state="isDescriptionValid"
-            trim
-          >
+            trim>
           </b-form-textarea>
         </b-form-group>
         <b-form-group
           id="valueMax"
           label="Value Max"
           description="The Value Max is required"
-          :state="isValueMaxValid"
-        >
+          :state="isValueMaxValid">
           <b-input
             id="valueMax"
             v-model.number="biometricType.valueMax"
             placeholder="Enter Max Value..."
             type="number"
             :state="isValueMaxValid"
-            trim
-          >
+            trim>
           </b-input>
         </b-form-group>
         <b-form-group
           id="valueMin"
           label="Value Min"
           description="The Value Min is required"
-          :state="isValueMinValid"
-        >
+          :state="isValueMinValid">
           <b-input
             id="max"
             v-model.number="biometricType.valueMin"
             placeholder="Enter Min Value..."
             type="number"
             :state="isValueMinValid"
-            trim
-          >
+            trim>
           </b-input>
         </b-form-group>
         <b-form-group
           id="unity"
           label="Unity"
           description="The Unity is required"
-          :state="isUnityValid"
-        >
+          :state="isUnityValid">
           <b-input
             id="unity"
             v-model.trim="biometricType.unity"
             placeholder="Enter unity..."
             :state="isUnityValid"
-            trim
-          >
+            trim>
           </b-input>
         </b-form-group>
         <b-form-group
@@ -95,20 +85,17 @@
           :disabled="isEditing"
           label="Admin"
           description="The Admin is required"
-          :state="isAdminValid"
-        >
+          :state="isAdminValid">
           <b-form-select
             id="patient"
             v-model="biometricType.admin"
             required
-            :state="isAdminValid"
-          >
+            :state="isAdminValid">
             <option :key="null" :value="null">Choose the admin...</option>
             <option
               v-for="admin in admins"
               :key="admin.username"
-              :value="admin.username"
-            >
+              :value="admin.username">
               {{ admin.name }}
             </option>
           </b-form-select>
@@ -143,16 +130,14 @@
             v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="create"
-          >
+            @click.prevent="create">
             CREATE
           </b-button>
           <b-button
             v-else
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="update"
-          >
+            @click.prevent="update">
             UPDATE
           </b-button>
         </div>
