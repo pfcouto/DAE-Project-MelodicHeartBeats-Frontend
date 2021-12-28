@@ -1,11 +1,9 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <b-table striped over :items="biometricsTypes" :fields="fields">
+      <b-table striped over :items="coloredBiometricType" :fields="fields">
         <template #cell(admin)="row">
-          <nuxt-link
-            :to="`/administrators/${row.item.admin}`"
-          >
+          <nuxt-link :to="`/administrators/${row.item.admin}`">
             {{ row.item.admin }}
           </nuxt-link>
         </template>
@@ -65,6 +63,16 @@ export default {
         }
       ],
       biometricsTypes: []
+    }
+  },
+  computed: {
+    coloredBiometricType() {
+      if (!this.biometricsTypes || this.biometricsTypes.length < 1) return []
+      return this.biometricsTypes.map((biometrictype) => {
+        biometrictype._rowVariant =
+          biometrictype.delete === true ? 'danger' : ''
+        return biometrictype
+      })
     }
   },
   created() {
