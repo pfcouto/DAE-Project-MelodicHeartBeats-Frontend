@@ -10,7 +10,7 @@
           </template>
           <template #cell(details)="row">
             <nuxt-link class="btn btn-link align-self-auto" :to="`/prescriptions/${row.item.id}`">
-              <b-button variant="info">Details</b-button>
+              <b-icon-file-earmark-text style="color: darkcyan;" font-scale="2"></b-icon-file-earmark-text>
             </nuxt-link>
             <nuxt-link
               class="btn btn-link"
@@ -19,9 +19,9 @@
               query: { id: `${row.item.id}` }
             }"
             >
-              <b-button variant="info">Update</b-button>
-            </nuxt-link>
-            <b-button variant="danger" @click="deletePrescription(row)">DELETE</b-button>
+              <b-icon-pencil-square style="color: orange;" font-scale="2"></b-icon-pencil-square>
+            </nuxt-link >
+            <b-icon-trash style="color: red;" font-scale="2" @click="deletePrescription(row)"></b-icon-trash>
           </template>
         </b-table>
       </div>

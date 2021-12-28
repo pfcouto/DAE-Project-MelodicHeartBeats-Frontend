@@ -75,6 +75,13 @@ body {
   min-width: 330px;
 }
 
+svg:not(:disabled):not(.disabled) {
+  cursor: pointer;
+}
+
+td * {
+  vertical-align: middle !important;
+}
 
 @media (max-width: 645px) {
   .major {

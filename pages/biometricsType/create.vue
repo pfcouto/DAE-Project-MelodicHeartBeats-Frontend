@@ -66,7 +66,7 @@
           :state="isValueMinValid"
         >
           <b-input
-            id="max"
+            id="valueMin"
             v-model.number="biometricType.valueMin"
             placeholder="Enter Min Value..."
             type="number"
@@ -113,24 +113,30 @@
             </option>
           </b-form-select>
         </b-form-group>
-        <div v-for="item in biometricType.qualitatives" :key="item.value">
-          {{ item.value + ': ' + item.meaning }}
-          <button @click.prevent="removeQualitative(item)">Remove</button>
-        </div>
+        <div v-if="biometricType.qualitatives && biometricType.qualitatives.length > 0"
+             class="middleCard mb-3 xOverflow">
+          <b-table hover :items="biometricType.qualitatives" :fields="fields">
+            <template #cell(remove)="row">
+              <b-button variant="danger" @click.prevent="removeQualitative(row.item)">Remove</b-button>
+            </template>
+          </b-table>
 
-        <div class="flex-row">
-          <div style="margin-right: 0; width: 25%">
-            <b-form-group label="Quantitative Value">
-              <b-input v-model.number="newQualitative.value" type="number">
-              </b-input>
-            </b-form-group>
+        </div>
+        <div class="pDoubleInputs flex-row d-flex spaceBetween mb-3">
+          <div class="doubleInputs w-100 flex-grow-1 d-flex spaceBetween">
+            <div class="w-25">
+              <b-form-group label="Quantitative Value">
+                <b-input v-model.number="newQualitative.value" type="number">
+                </b-input>
+              </b-form-group>
+            </div>
+            <div class="w-50">
+              <b-form-group label="Qualitative Value">
+                <b-input v-model="newQualitative.meaning" type="text"></b-input>
+              </b-form-group>
+            </div>
           </div>
-          <div style="margin-right: 0; width: 50%">
-            <b-form-group label="Qualitative Value">
-              <b-input v-model="newQualitative.meaning" type="text"> </b-input>
-            </b-form-group>
-          </div>
-          <b-button @click="addNewQualitative">ADD</b-button>
+          <b-button class="mb-3 ml-5" @click="addNewQualitative">ADD</b-button>
         </div>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
@@ -173,9 +179,15 @@ export default {
         admin: null,
         qualitatives: []
       },
-      newQualitative: { value: null, meaning: null },
+      newQualitative: {value: null, meaning: null},
       admins: [],
-      errorMsg: false
+      errorMsg: false,
+      fields: ['value', "meaning",
+        {
+          key: 'remove',
+          tdClass: 'text-right',
+          label: ''
+        }],
     }
   },
   computed: {
@@ -193,12 +205,12 @@ export default {
     },
     isValueMaxValid() {
       return (
-        this.biometricType.valueMax !== '' && this.biometricType.valueMax >= 0
+        this.biometricType.valueMax !== '' && this.biometricType.valueMax >= 0 && this.biometricType.valueMax >= this.biometricType.valueMin
       )
     },
     isValueMinValid() {
       return (
-        this.biometricType.valueMin !== '' && this.biometricType.valueMin >= 0
+        this.biometricType.valueMin !== '' && this.biometricType.valueMin >= 0 && this.biometricType.valueMin <= this.biometricType.valueMax
       )
     },
     isUnityValid() {
@@ -243,21 +255,30 @@ export default {
       .catch(() => {
         this.administrators = []
       })
+    console.log(this.biometricType)
   },
-  /* watch: {
-    'biometricType.name': function (val, val2) {
-      console.log(val + ' ' + val2)
-    }
-  }, */
   methods: {
     addNewQualitative() {
       if (!this.newQualitative.value) {
+        this.$toast.error('The "Quantitative Value" is a mandatory field').goAway(3000)
         return
+      }
+      if (!this.biometricType.valueMax || !this.biometricType.valueMin) {
+        this.$toast.error('Value Min and Value Max fields must be already filled').goAway(3000)
+        return;
+      }
+      if (this.biometricType.valueMax < this.newQualitative.value || this.biometricType.valueMin > this.newQualitative.value) {
+        this.$toast.error('The "Quantitative Value" must be between ' + this.biometricType.valueMin + ' and ' + this.biometricType.valueMax).goAway(3000)
+        return;
+      }
+      if (!this.biometricType.qualitatives) {
+        this.biometricType.qualitatives = []
       }
       const obj = this.biometricType.qualitatives.filter(
         (o) => o.value === this.newQualitative.value
       )
       if (obj.length > 0) {
+        this.$toast.error('The quantitative value inserted already has a qualitative label assigned').goAway(3000)
         return
       }
       this.biometricType.qualitatives.push(this.newQualitative)
@@ -323,3 +344,22 @@ export default {
   }
 }
 </script>
+<style>
+.doubleInputs {
+  flex-direction: row;
+}
+
+.pDoubleInputs {
+  align-items: flex-end;
+}
+
+@media (max-width: 700px) {
+  .doubleInputs {
+    flex-direction: column;
+  }
+
+  .doubleInputs * {
+    width: 100% !important;
+  }
+}
+</style>
