@@ -2,115 +2,47 @@
   <b-container>
     <div class="middleCard">
       <h1>
-        {{
-          isEditing
-            ? 'Update Administrator ' + $route.query.username
-            : 'Create a new Administrator'
-        }}
+        CHANGE PASSWORD
       </h1>
-      <form :disabled="!isFormValid" @submit.prevent="create">
+      <br/>
+      <br/>
+      <form :disabled="!isFormValid" @submit.prevent="update">
         <b-form-group
-          id="username"
-          description="The username is required"
-          label="Username"
-          label-for="username"
-          :invalid-feedback="invalidUsernameFeedback"
-          :state="isUsernameValid"
+          id="newPassword"
+          label="New Password"
+          :invalid-feedback="invalidNewPasswordFeedback"
+          :state="isNewPasswordValid"
         >
           <b-input
-            id="username"
-            v-model.trim="administrator.username"
-            :state="isUsernameValid"
-            trim
-          />
-        </b-form-group>
-        <b-form-group
-          v-if="!isEditing"
-          id="password"
-          description="The password is required"
-          label="Password"
-          label-for="password"
-          :invalid-feedback="invalidPasswordFeedback"
-          :state="isPasswordValid"
-        >
-          <b-input
-            v-model="administrator.password"
-            :state="isPasswordValid"
+            id="newPassword"
+            v-model="passwords.passwordNew"
+            placeholder="Insert a new password here"
+            :state="isNewPasswordValid"
             type="password"
-            required
           />
         </b-form-group>
         <b-form-group
-          id="name"
-          description="The name is required"
-          label="Name"
-          label-for="name"
-          :invalid-feedback="invalidNameFeedback"
-          :state="isNameValid"
+          id="oldPassword"
+          label="Current Password"
+          :invalid-feedback="invalidOldPasswordFeedback"
+          :state="isOldPasswordValid"
         >
           <b-input
-            v-model.trim="administrator.name"
-            :state="isNameValid"
-            required
-          />
-        </b-form-group>
-
-        <b-form-group
-          id="birthDate"
-          description="The birthDate is required"
-          label="Birth Date"
-          label-for="birthDate"
-        >
-          <b-form-datepicker id="birthDate" v-model="administrator.birthDate">
-          </b-form-datepicker>
-        </b-form-group>
-
-        <b-form-group
-          id="email"
-          description="The email is required"
-          label="Email"
-          label-for="email"
-          :invalid-feedback="invalidEmailFeedback"
-          :state="isEmailValid"
-        >
-          <b-input
-            ref="email"
-            v-model.trim="administrator.email"
-            :state="isEmailValid"
-            required
-          />
-        </b-form-group>
-        <b-form-group
-          id="phoneNumber"
-          description="The Phone Number is required"
-          label="Phone Number"
-          label-for="phoneNumber"
-          :invalid-feedback="invalidPhoneNumberFeedback"
-          :state="isPhoneNumberValid"
-        >
-          <b-input
-            ref="phoneNumber"
-            v-model.trim="administrator.phoneNumber"
-            :state="isPhoneNumberValid"
-            required
+            id="oldPassword"
+            v-model="passwords.passwordOld"
+            placeholder="Insert the current password here"
+            :state="isOldPasswordValid"
+            type="password"
           />
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
 
+        <br/>
         <b-button variant="info" @click="routeBack">RETURN</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
-            v-if="!isEditing"
-            variant="success"
-            :disabled="!isFormValid"
-            @click.prevent="create"
-          >
-            CREATE
-          </b-button>
-          <b-button
-            v-else
             variant="success"
             :disabled="!isFormValid"
             @click.prevent="update"
@@ -126,198 +58,79 @@
 export default {
   data() {
     return {
-      administrator: {
-        username: null,
-        password: null,
-        name: null,
-        birthDate: null,
-        email: null,
-        phoneNumber: null
+      passwords: {
+        passwordNew: null,
+        passwordOld: null,
       },
-
       errorMsg: false
     }
   },
 
   computed: {
-    isEditing() {
-      return this.$route.query.username != null
-    },
-
-    invalidUsernameFeedback() {
-      if (!this.administrator.username) {
+    invalidNewPasswordFeedback() {
+      if (!this.passwords.passwordNew) {
         return null
       }
-      const usernameLen = this.administrator.username.length
-      if (usernameLen < 3 || usernameLen > 15) {
-        return 'The username must be between [3, 15] characters.'
+      const len = this.passwords.passwordNew.length
+      if (len < 3 || len > 255) {
+        return 'The new password must be between [3, 255] characters.'
       }
       return ''
     },
-    isUsernameValid() {
-      if (this.invalidUsernameFeedback === null) {
+    invalidOldPasswordFeedback() {
+      if (!this.passwords.passwordOld) {
         return null
       }
-      return this.invalidUsernameFeedback === ''
-    },
-
-    invalidPasswordFeedback() {
-      if (!this.administrator.password) {
-        return null
-      }
-
-      const passwordLen = this.administrator.password.length
-
-      if (passwordLen < 3 || passwordLen > 255) {
-        return 'The password must be between [3, 255] characters.'
+      const len = this.passwords.passwordOld.length
+      if (len < 3 || len > 255) {
+        return 'The current password must be between [3, 255] characters.'
       }
       return ''
     },
-    isPasswordValid() {
-      if (this.invalidPasswordFeedback === null) {
+    isNewPasswordValid() {
+      if (this.invalidNewPasswordFeedback === null) {
         return null
       }
-      return this.invalidPasswordFeedback === ''
+      return this.invalidNewPasswordFeedback === ''
     },
-
-    invalidNameFeedback() {
-      if (!this.administrator.name) {
+    isOldPasswordValid() {
+      if (this.invalidOldPasswordFeedback === null) {
         return null
       }
-      const nameLen = this.administrator.name.length
-      if (nameLen < 3 || nameLen > 50) {
-        return 'The name must be between [3, 50] characters.'
-      }
-      return ''
+      return this.invalidOldPasswordFeedback === ''
     },
-    isNameValid() {
-      if (this.invalidNameFeedback === null) {
-        return null
-      }
-      return this.invalidNameFeedback === ''
-    },
-
-    invalidEmailFeedback() {
-      if (!this.administrator.email) {
-        return null
-      }
-      const emailLen = this.administrator.email.length
-      if (emailLen < 3 || emailLen > 50) {
-        return 'The email must be between [3, 50] characters.'
-      }
-      const re =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      if (!String(this.administrator.email).toLowerCase().match(re)) {
-        return 'Email format not correct'
-      }
-      return ''
-    },
-    isEmailValid() {
-      if (!this.administrator.email) {
-        return null
-      }
-      return this.invalidEmailFeedback === ''
-    },
-
-    invalidPhoneNumberFeedback() {
-      if (!this.administrator.phoneNumber) {
-        return null
-      }
-      const rePhoneNumber = /^9([1-3]|6)[0-9]{7}$/
-      if (!String(this.doctor.phoneNumber).toLowerCase().match(rePhoneNumber)) {
-        return 'Please use a Portuguese convention'
-      }
-      if (this.administrator.phoneNumber.length !== 9) {
-        return 'The Phone Number must have exactly 9 characters'
-      }
-      return ''
-    },
-    isPhoneNumberValid() {
-      if (this.invalidPhoneNumberFeedback === null) {
-        return null
-      }
-      return this.invalidPhoneNumberFeedback === ''
-    },
-
-    isBirthDateValid() {
-      return this.administrator.birthDate != null
-    },
-
     isFormValid() {
-      if (!this.isUsernameValid) {
+      if (!this.isNewPasswordValid) {
         return false
       }
-      if (!this.isPasswordValid) {
-        return false
-      }
-      if (!this.isNameValid) {
-        return false
-      }
-      if (!this.isEmailValid) {
-        return false
-      }
-      if (!this.isPhoneNumberValid) {
-        return false
-      }
-      if (!this.isBirthDateValid) {
+      if (!this.isOldPasswordValid) {
         return false
       }
       return true
     }
   },
-  async mounted() {
-    await this.$route
-
-    if (this.isEditing) {
-      this.$axios
-        .$get('/api/administrators/' + this.$route.query.username)
-        .then((response) => {
-          this.initializeAdministrator(response)
-          // console.log(response)
-        })
-        .catch((error) => {
-          this.errorMsg = error.response.data
-        })
-    }
-  },
-  // created() {
-  //   this.$axios.$get('/api/courses').then((courses) => {
-  //     this.courses = courses
-  //   })
-  // },
   methods: {
-    routeBack(){
+    routeBack() {
       this.$router.back();
     },
     reset() {
       this.errorMsg = false
     },
-    create() {
-      this.$axios
-        .$post('/api/administrators', this.administrator)
-        .then(() => {
-          this.$router.push('/administrators')
-        })
-        .catch((error) => {
-          this.errorMsg = error.response.data
-        })
-    },
     update() {
       this.$axios
-        .$put(
-          '/api/administrators/' + this.$route.query.username,
-          this.administrator
+        .$patch(
+          '/api/' + this.$auth.user.groups[0].toLowerCase() + 's/' + this.$auth.user.sub + '/changePassword',
+          this.passwords
         )
         .then(() => {
-          this.$router.push('/administrators')
+          this.$toast.success('Password altered successfully').goAway(3000)
+          this.$router.push('/')
         })
         .catch((error) => {
+          this.$toast.error('Something went wrong! Password not updated').goAway(3000)
           this.errorMsg = error.response.data
         })
     },
-    initializeAdministrator(editingAdministrator) {
-      this.administrator = editingAdministrator
-    }
   }
 }
 </script>

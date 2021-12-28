@@ -1,12 +1,9 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <b-table striped over :items="biometricsTypes" :fields="fields">
+      <b-table striped over :items="coloredBiometricType" :fields="fields">
         <template #cell(admin)="row">
-          <nuxt-link
-            class="btn btn-link"
-            :to="`/administrators/${row.item.admin}`"
-          >
+          <nuxt-link :to="`/administrators/${row.item.admin}`">
             {{ row.item.admin }}
           </nuxt-link>
         </template>
@@ -37,7 +34,7 @@
           <b-button variant="danger"> Back</b-button>
         </nuxt-link>
         <nuxt-link to="biometricsType/create" style="float: right">
-          <b-button variant="success"> Create New Prescription</b-button>
+          <b-button variant="success">NEW</b-button>
         </nuxt-link>
       </div>
     </div>
@@ -66,6 +63,16 @@ export default {
         }
       ],
       biometricsTypes: []
+    }
+  },
+  computed: {
+    coloredBiometricType() {
+      if (!this.biometricsTypes || this.biometricsTypes.length < 1) return []
+      return this.biometricsTypes.map((biometrictype) => {
+        biometrictype._rowVariant =
+          biometrictype.delete === true ? 'danger' : ''
+        return biometrictype
+      })
     }
   },
   created() {

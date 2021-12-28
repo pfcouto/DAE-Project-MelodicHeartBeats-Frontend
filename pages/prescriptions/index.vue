@@ -80,11 +80,11 @@ export default {
       const now = new Date()
       const today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
       if (prescription.startDate > today) {
-        return 'light'
+        return 'secondary'
       } else if (prescription.endDate > today) {
         return 'success'
       } else {
-        return 'secondary'
+        return 'danger'
       }
     },
     deletePrescription(row) {

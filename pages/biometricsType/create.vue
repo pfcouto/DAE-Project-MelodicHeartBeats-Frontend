@@ -12,7 +12,7 @@
         <b-form-group
           id="name"
           label="Name"
-          description="The name is required"
+          :description="!isNameValid ? 'The name is required' : ''"
           :state="isNameValid"
         >
           <b-input
@@ -28,7 +28,7 @@
           id="description"
           label="Description"
           :description="charactersLeft(biometricType.description)"
-          :state="isNameValid"
+          :state="isDescriptionValid"
         >
           <b-form-textarea
             id="description"
@@ -38,7 +38,7 @@
             max-rows="2"
             style="resize: none"
             maxlength="255"
-            :state="isNameValid"
+            :state="isDescriptionValid"
             trim
           >
           </b-form-textarea>
@@ -113,6 +113,26 @@
             </option>
           </b-form-select>
         </b-form-group>
+        <div v-for="item in biometricType.qualitatives" :key="item.value">
+          {{ item.value + ': ' + item.meaning }}
+          <button @click.prevent="removeQualitative(item)">Remove</button>
+        </div>
+
+        <div class="flex-row">
+          <div style="margin-right: 0; width: 25%">
+            <b-form-group label="Quantitative Value">
+              <b-input v-model.number="newQualitative.value" type="number">
+              </b-input>
+            </b-form-group>
+          </div>
+          <div style="margin-right: 0; width: 50%">
+            <b-form-group label="Qualitative Value">
+              <b-input v-model="newQualitative.meaning" type="text"> </b-input>
+            </b-form-group>
+          </div>
+          <b-button @click="addNewQualitative">ADD</b-button>
+        </div>
+
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <nuxt-link to="/biometricsType">
           <b-button variant="info"> Return</b-button>
@@ -145,13 +165,15 @@ export default {
   data() {
     return {
       biometricType: {
-        name: null,
-        description: null,
-        valueMax: null,
-        valueMin: null,
-        unity: null,
-        admin: null
+        name: '',
+        description: '',
+        valueMax: '',
+        valueMin: '',
+        unity: '',
+        admin: null,
+        qualitatives: []
       },
+      newQualitative: { value: null, meaning: null },
       admins: [],
       errorMsg: false
     }
@@ -161,22 +183,35 @@ export default {
       return this.$route.query.code != null
     },
     isNameValid() {
-      return this.biometricType.name != null
+      return this.biometricType.name !== ''
+    },
+    isDescriptionValid() {
+      return (
+        this.biometricType.description &&
+        this.biometricType.description.length <= 255
+      )
     },
     isValueMaxValid() {
-      return this.biometricType.valueMax != null
+      return (
+        this.biometricType.valueMax !== '' && this.biometricType.valueMax >= 0
+      )
     },
     isValueMinValid() {
-      return this.biometricType.valueMin != null
+      return (
+        this.biometricType.valueMin !== '' && this.biometricType.valueMin >= 0
+      )
     },
     isUnityValid() {
-      return this.biometricType.unity != null
+      return this.biometricType.unity !== ''
     },
     isAdminValid() {
       return this.biometricType.admin != null
     },
     isFormValid() {
       if (!this.isNameValid) {
+        return false
+      }
+      if (!this.isDescriptionValid) {
         return false
       }
       if (!this.isValueMaxValid) {
@@ -209,10 +244,33 @@ export default {
         this.administrators = []
       })
   },
+  /* watch: {
+    'biometricType.name': function (val, val2) {
+      console.log(val + ' ' + val2)
+    }
+  }, */
   methods: {
+    addNewQualitative() {
+      if (!this.newQualitative.value) {
+        return
+      }
+      const obj = this.biometricType.qualitatives.filter(
+        (o) => o.value === this.newQualitative.value
+      )
+      if (obj.length > 0) {
+        return
+      }
+      this.biometricType.qualitatives.push(this.newQualitative)
+      this.newQualitative = {}
+    },
+    removeQualitative(item) {
+      const idx = this.biometricType.qualitatives.indexOf(item)
+      this.biometricType.qualitatives.splice(idx, 1)
+    },
     reset() {
       this.errorMsg = false
       this.biometricType = {}
+      this.biometricType.qualitatives = []
       if (this.isEditing) {
         this.fetchBiometricType()
       }
@@ -245,7 +303,6 @@ export default {
         .$get('/api/biometricsType/' + this.$route.query.code)
         .then((response) => {
           this.initializeBiometricType(response)
-          // console.log(response)
         })
         .catch((error) => {
           this.errorMsg = error.response.data
