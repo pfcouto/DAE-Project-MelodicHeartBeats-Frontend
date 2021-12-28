@@ -22,11 +22,11 @@
       </b-container>
     </b-container>
     <b-container class="cardGroup">
-      <b-container class="headerCard">
-        <nuxt-link to="/administrators" class="headerCardComponent">
+      <b-container v-if="!isPatient" class="headerCard">
+        <nuxt-link v-if="isAdmin" to="/administrators" class="headerCardComponent">
           <h6>Administrators</h6>
         </nuxt-link>
-        <nuxt-link to="/biometricsType" class="headerCardComponent">
+        <nuxt-link v-if="isAdmin" to="/biometricsType" class="headerCardComponent">
           <h6>Biometric Types</h6>
         </nuxt-link>
         <nuxt-link to="/observations" class="headerCardComponent">
@@ -45,25 +45,31 @@
       <div class="gridCustom">
         <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="administrators">
-            <h2>{{ administrators.length }} Administrator{{ administrators.length > 1 ? "s" : "" }} </h2>
+            <h2>{{ administrators.length }} Administrator{{ administrators.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
           <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
         <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="doctors">
-            <h2>{{ doctors.length }} Doctor{{ doctors.length > 1 ? "s" : "" }} </h2>
+            <h2>{{ doctors.length }} Doctor{{ doctors.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
           <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
         <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="patients">
-            <h2>{{ patients.length }} Patient{{ patients.length > 1 ? "s" : "" }} </h2>
+            <h2>{{ patients.length }} Patient{{ patients.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
           <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
-        <b-container v-if="isAdmin" class="customCard">
+        <b-container class="customCard">
           <nuxt-link to="prescriptions">
-            <h2>{{ prescriptions.length }} Prescription{{ prescriptions.length > 1 ? "s" : "" }} </h2>
+            <h2>{{ prescriptions.length }} Prescription{{ prescriptions.length === 1 ? "" : "s" }} </h2>
+          </nuxt-link>
+          <pie-chart :data="chartdata" :options="options"></pie-chart>
+        </b-container>
+        <b-container class="customCard">
+          <nuxt-link to="biometricsType">
+            <h2>{{ observations.length }} Observation{{ observations.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
           <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
@@ -84,6 +90,7 @@ export default {
       patients: [],
       doctors: [],
       administrators: [],
+      observations: [],
       chartdata: {
         labels: ["EXPIRED", "ACTIVE", "WAITING"],
         datasets: [
@@ -116,7 +123,13 @@ export default {
   },
   computed: {
     isAdmin() {
-      return this.$auth.user.groups[0] === 'Administrator';
+      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Administrator';
+    },
+    isDoctor() {
+      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Doctor';
+    },
+    isPatient() {
+      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient';
     },
   },
   beforeMount() {
@@ -133,21 +146,40 @@ export default {
       this.$axios.get("api/patients").then((response) => {
         this.patients = response.data
       })
+    }
 
+    // Observations
+    this.$axios.get("api/observations").then((response) => {
+      this.observations = response.data
+    })
 
-      this.$axios.get("api/prescriptions").then((response) => {
-        this.prescriptions = response.data
-        const clone = {...this.chartdata}
-        clone.datasets[0].data[0] = this.prescriptionsNumByStatus("EXPIRED");
-        clone.datasets[0].data[1] = this.prescriptionsNumByStatus("ACTIVE");
-        clone.datasets[0].data[2] = this.prescriptionsNumByStatus("WAITING");
-        this.chartdata = clone;
-      }).catch(() => {
-        // console.log(error)
+    // prescriptions chart
+    if (this.$auth.user.groups[0] === "Doctor") {
+      this.$axios.$get('/api/doctors/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
+        this.prescriptions = prescriptions
+        this.refreshPrescriptionsGraph()
+      })
+    } else if (this.$auth.user.groups[0] === "Patient") {
+      this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
+        this.prescriptions = prescriptions
+        this.refreshPrescriptionsGraph()
+      })
+    } else {
+      this.$axios.$get('/api/prescriptions/').then((prescriptions) => {
+        this.prescriptions = prescriptions
+        this.refreshPrescriptionsGraph()
+
       })
     }
   },
   methods: {
+    refreshPrescriptionsGraph() {
+      const clone = {...this.chartdata}
+      clone.datasets[0].data[0] = this.prescriptionsNumByStatus("EXPIRED");
+      clone.datasets[0].data[1] = this.prescriptionsNumByStatus("ACTIVE");
+      clone.datasets[0].data[2] = this.prescriptionsNumByStatus("WAITING");
+      this.chartdata = clone;
+    },
     prescriptionsNumByStatus(status) {
       if (!this.prescriptions || this.prescriptions.length < 1) return []
       let counter = 0
@@ -157,7 +189,8 @@ export default {
         }
       })
       return counter
-    },
+    }
+    ,
     getStatus(prescription) {
       const now = new Date()
       const today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
@@ -168,10 +201,12 @@ export default {
       } else {
         return 'EXPIRED'
       }
-    },
+    }
+    ,
     updatePassword() {
       this.$router.push("/password")
-    },
+    }
+    ,
     logout() {
       this.$auth.logout()
       this.$toast.success("Logged out successfully").goAway(3000)
@@ -194,6 +229,14 @@ export default {
   row-gap: 12px;
   grid-auto-rows: 1fr;
 }
+
+.gridCustom:first-child {
+  margin-top: 0;
+}
+
+/*.cardGroup > div:last-child {*/
+/*  margin-top: 12px;*/
+/*}*/
 
 .userContainer {
   padding: 0 !important;
