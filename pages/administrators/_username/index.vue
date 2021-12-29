@@ -7,7 +7,7 @@
     <p>Email: {{ administrator.email }}</p>
     <p>PhoneNumber: {{ administrator.phoneNumber }}</p>
 
-    <!-- <h4>BiometricTypes</h4>
+    <h4>BiometricTypes</h4>
     <b-table
       v-if="biometricTypes.length"
       striped
@@ -15,7 +15,7 @@
       :items="biometricTypes"
       :fields="biometricTypeFields"
     />
-    <p v-else>No Biometric Types passed.</p> -->
+    <p v-else>No Biometric Types Created.</p>
 
     <!-- <h4>Documents</h4>
     <b-table
@@ -46,20 +46,27 @@
 export default {
   data() {
     return {
-      administrator: {}
-      //   biometricTypeFields: [
-      //     //
-      //   ]
+      administrator: {},
+      biometricTypeFields: [
+        'code',
+        'name',
+        'description',
+        'valueMax',
+        'valueMin',
+        'unity',
+        'admin',
+        'delete'
+      ]
       //   documentsFields: ['filename', 'actions']
     }
   },
   computed: {
     username() {
       return this.$route.params.username
+    },
+    biometricTypes() {
+      return this.administrator.biometricsTypeDTOS || []
     }
-    // biometricTypes() {
-    //   return this.patient.biometricTypeDTOS || []
-    // }
     // documents() {
     //   return this.student.documents || []
     // }

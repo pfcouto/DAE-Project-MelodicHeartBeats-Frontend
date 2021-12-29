@@ -2,11 +2,7 @@
   <b-container>
     <div class="middleCard">
       <h1>
-        {{
-          isEditing
-            ? 'Update ' + observation.patient + ' Observation '
-            : 'Create a new Observation'
-        }}
+        {{ isEditing ? 'Update ' + observation.patient + ' Observation ' : 'Create a new Observation' }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group id="date" label="Date" :state="isDateValid">
@@ -52,6 +48,7 @@
             v-model="observation.biometricType"
             required
             :state="isBiometricsTypeValid"
+            @change="loadMinMax"
           >
             <option :key="null" :value="null">
               Choose the Biometric Type...
@@ -169,7 +166,9 @@ export default {
       },
       patients: [],
       biometricsType: [],
-      errorMsg: false
+      errorMsg: false,
+      biometricTypeMin: null,
+      biometricTypeMax: null
     }
   },
   computed: {
@@ -187,7 +186,7 @@ export default {
       return this.observation.biometricType != null
     },
     isQuantitativeValueValid() {
-      return this.observation.quantitativeValue != null
+      return this.observation.quantitativeValue != null && this.observation.quantitativeValue <= this.biometricTypeMax && this.observation.quantitativeValue >= this.biometricTypeMin
     },
     isQualitativeValueValid() {
       return this.observation.qualitativeValue != null
@@ -228,11 +227,24 @@ export default {
 
     if (this.isEditing) {
       await this.fetchObservationData()
+      this.loadMinMax()
     }
     await this.fetchPatients()
     await this.fetchBiometricsType()
   },
   methods: {
+    loadMinMax() {
+      if (!this.observation.biometricType) {
+        return
+      }
+      this.$axios.$get('/api/biometricsType/' + this.observation.biometricType).then((bio) => {
+        this.biometricTypeMin = bio.valueMin
+        this.biometricTypeMax = bio.valueMax
+      }).catch(() => {
+        this.biometricTypeMin = null
+        this.biometricTypeMax = null
+      })
+    },
     reset() {
       this.errorMsg = false
       this.observation = {}
@@ -263,8 +275,8 @@ export default {
           this.errorMsg = error.response.data
         })
     },
-    fetchObservationData() {
-      this.$axios
+    async fetchObservationData() {
+      await this.$axios
         .$get('/api/observations/' + this.$route.query.code)
         .then((response) => {
           this.initializeObservation(response)

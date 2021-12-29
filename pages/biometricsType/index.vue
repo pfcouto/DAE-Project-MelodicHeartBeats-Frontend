@@ -1,42 +1,61 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <b-table striped over :items="coloredBiometricType" :fields="fields">
-        <template #cell(admin)="row">
-          <nuxt-link :to="`/administrators/${row.item.admin}`">
-            {{ row.item.admin }}
-          </nuxt-link>
-        </template>
-        <template #cell(details)="row">
-          <nuxt-link
-            class="btn btn-link"
-            :to="{
-              name: 'biometricsType-create',
-              query: { code: `${row.item.code}` }
-            }"
-          >
-            <b-button v-if="`${row.item.deleted_at}` == 'null'" variant="info">
-              Update</b-button
-            >
-          </nuxt-link>
-          <b-button
-            :variant="`${row.item.deleted_at}` == 'null' ? 'danger' : 'success'"
-            @click="deleteBioType(`${row.item.code}`)"
-          >
-            {{
-              `${row.item.deleted_at}` == 'null' ? 'Delete' : 'Restore'
-            }}</b-button
-          >
-        </template>
-      </b-table>
+      <div class="xOverflow">
+        <b-table striped hover :items="coloredBiometricType" :fields="fields">
+          <template #cell(admin)="row">
+            <nuxt-link :to="`/administrators/${row.item.admin}`">
+              {{ row.item.admin }}
+            </nuxt-link>
+          </template>
+          <template #cell(details)="row">
+            <nuxt-link
+              class="btn btn-link"
+              :to="{
+                name: 'biometricsType-create',
+                query: { code: `${row.item.code}` }
+              }">
+              <b-icon-pencil-square
+                v-if="row.item.deleted_at === 'null'"
+                style="color: orange"
+                font-scale="2"></b-icon-pencil-square>
+            </nuxt-link>
+            <b-icon-trash
+              v-if="row.item.deleted_at === 'null'"
+              style="color: red"
+              font-scale="2"
+              @click="deleteBioType(row.item.code)"></b-icon-trash>
+            <b-icon-arrow-clockwise
+              v-else
+              style="color: green"
+              font-scale="2"
+              @click="deleteBioType(row.item.code)"></b-icon-arrow-clockwise>
+          </template>
+        </b-table>
+      </div>
       <div class="spaceBetween">
         <nuxt-link to="/">
-          <b-button variant="danger"> Back</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
-        <nuxt-link to="biometricsType/create" style="float: right">
-          <b-button variant="success">NEW</b-button>
-        </nuxt-link>
+        <div class="float-right">
+          <nuxt-link to="biometricsType/create">
+            <b-button variant="success">NEW</b-button>
+          </nuxt-link>
+        </div>
       </div>
+    </div>
+    <div class="middleCard">
+      <form @submit.prevent="importCSV">
+        <b-form-file
+          v-model="file"
+          placeholder="Choose a file or drop it here..."
+          drop-placeholder="Drop file here..."
+          accept=".csv"
+        ></b-form-file>
+        <div class="flex-row d-flex flex-row-reverse mt-3">
+          <b-button variant="info" class="float-right" type="submit" :disabled="!hasFile">IMPORT CSV</b-button>
+        </div>
+      </form>
     </div>
   </b-container>
 </template>
@@ -46,26 +65,37 @@ export default {
     return {
       fields: [
         'code',
-        { sortable: true, key: 'name' },
+        {sortable: true, key: 'name'},
         'description',
-        { sortable: true, key: 'valueMax' },
         {
           sortable: true,
           key: 'valueMin'
         },
+        {sortable: true, key: 'valueMax'},
         'unity',
         'admin',
-        'deleted_at',
         {
           key: 'details',
           label: '',
           tdClass: 'text-center'
         }
       ],
-      biometricsTypes: []
+      biometricsTypes: [],
+      file: null,
     }
   },
   computed: {
+    hasFile() {
+      return this.file != null
+    },
+    formData() {
+      const formData = new FormData()
+      formData.append('username', this.$auth.user.sub)
+      if (this.file) {
+        formData.append('file', this.file)
+      }
+      return formData
+    },
     coloredBiometricType() {
       if (!this.biometricsTypes || this.biometricsTypes.length < 1) return []
       return this.biometricsTypes.map((biometrictype) => {
@@ -79,6 +109,22 @@ export default {
     this.fetchBiometricTypes()
   },
   methods: {
+    importCSV() {
+      if (!this.hasFile) {
+        return
+      }
+      this.$axios.$post('/api/biometricsType/upload', this.formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then((response) => {
+        this.file = null
+        this.$toast.success(response).goAway(3000);
+        this.fetchBiometricTypes()
+      }).catch(() => {
+        this.$toast.error("Some error occurred while loading csv").goAway(3000);
+      })
+    },
     deleteBioType(code) {
       this.$axios
         .$delete('/api/biometricsType/' + code)
