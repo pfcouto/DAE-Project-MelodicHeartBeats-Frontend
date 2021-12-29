@@ -47,19 +47,16 @@
           <nuxt-link to="administrators">
             <h2>{{ administrators.length }} Administrator{{ administrators.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
-          <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
         <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="doctors">
             <h2>{{ doctors.length }} Doctor{{ doctors.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
-          <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
         <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="patients">
             <h2>{{ patients.length }} Patient{{ patients.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
-          <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
         <b-container class="customCard">
           <nuxt-link to="prescriptions">
@@ -71,7 +68,6 @@
           <nuxt-link to="biometricsType">
             <h2>{{ observations.length }} Observation{{ observations.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
-          <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
       </div>
     </b-container>

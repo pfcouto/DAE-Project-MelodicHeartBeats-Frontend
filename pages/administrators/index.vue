@@ -3,13 +3,13 @@
     <b-container>
       <div class="middleCard">
         <div class="xOverflow">
-          <b-table striped over :items="administrators" :fields="fields">
+          <b-table striped hover :items="coloredAdministrators" :fields="fields">
             <template #cell(actions)="row">
               <nuxt-link
                 class="btn btn-link"
                 :to="`/administrators/${row.item.username}`"
               >
-                <b-button variant="info"> Details</b-button>
+                <b-icon-file-earmark-text style="color: darkcyan;" font-scale="2"></b-icon-file-earmark-text>
               </nuxt-link>
               <nuxt-link
                 class="btn btn-link"
@@ -18,13 +18,12 @@
                   query: { username: `${row.item.username}` }
                 }"
               >
-                <b-button variant="info"> Update</b-button>
+                <b-icon-pencil-square style="color: orange;" font-scale="2"></b-icon-pencil-square>
               </nuxt-link>
-              <b-button
-                variant="danger"
-                @click="blockOrUnblockAdministrator(row)"
-                >DELETE</b-button
-              >
+              <b-icon-trash v-if="!row.item.blocked" style="color: red;" font-scale="2"
+                            @click="blockOrUnblockAdministrator(row)"></b-icon-trash>
+              <b-icon-arrow-clockwise v-else style="color: green;" font-scale="2"
+                                      @click="blockOrUnblockAdministrator(row)"></b-icon-arrow-clockwise>
             </template>
           </b-table>
         </div>
@@ -46,22 +45,31 @@ export default {
     return {
       fields: [
         'username',
-        { sortable: true, key: 'name' },
-        { sortable: true, key: 'birthDate' },
+        {sortable: true, key: 'name'},
+        {sortable: true, key: 'birthDate'},
         'email',
         'phoneNumber',
-        { key: 'actions', tdClass: 'text-center', label: '' }
+        {key: 'actions', tdClass: 'text-center', label: ''}
         // { key: 'blocked', label: 'Is Blocked' }
       ],
       administrators: []
     }
   },
+  computed: {
+    coloredAdministrators() {
+      return this.administrators.map((item) => {
+        if (item.blocked) {
+          item._rowVariant = "danger"
+        } else {
+          item._rowVariant = null
+        }
+        return item
+      })
+    }
+  },
   created() {
     this.$axios.$get('/api/administrators/').then((administrators) => {
-      if (this.$auth.user.groups[0] === 'Administrator') {
-        this.fields.push({ key: 'blocked', label: 'Is Blocked' })
-        this.administrators = administrators
-      }
+      this.administrators = administrators
     })
   },
   methods: {
@@ -72,14 +80,14 @@ export default {
           if (!this.administrators[row.index].blocked) {
             this.$toast
               .success(
-                'Administrator #' + row.item.username + ' blocked successfully'
+                'Administrator ' + row.item.username + ' blocked successfully'
               )
               .goAway(3000)
             this.administrators[row.index].blocked = true
           } else {
             this.$toast
               .success(
-                'Administrator #' + row.item.username + ' unblock successfully'
+                'Administrator ' + row.item.username + ' unblock successfully'
               )
               .goAway(3000)
             this.administrators[row.index].blocked = false

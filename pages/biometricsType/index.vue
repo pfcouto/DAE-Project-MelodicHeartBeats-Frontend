@@ -1,34 +1,32 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <b-table striped over :items="coloredBiometricType" :fields="fields">
-        <template #cell(admin)="row">
-          <nuxt-link :to="`/administrators/${row.item.admin}`">
-            {{ row.item.admin }}
-          </nuxt-link>
-        </template>
-        <template #cell(details)="row">
-          <nuxt-link
-            class="btn btn-link"
-            :to="{
+      <div class="xOverflow">
+        <b-table striped hover :items="coloredBiometricType" :fields="fields">
+          <template #cell(admin)="row">
+            <nuxt-link :to="`/administrators/${row.item.admin}`">
+              {{ row.item.admin }}
+            </nuxt-link>
+          </template>
+          <template #cell(details)="row">
+            <nuxt-link
+              class="btn btn-link"
+              :to="{
               name: 'biometricsType-create',
               query: { code: `${row.item.code}` }
             }"
-          >
-            <b-button v-if="`${row.item.delete}` == 'false'" variant="info">
-              Update</b-button
             >
-          </nuxt-link>
-          <b-button
-            :variant="`${row.item.delete}` == 'false' ? 'danger' : 'success'"
-            @click="deleteBioType(`${row.item.code}`)"
-          >
-            {{
-              `${row.item.delete}` == 'false' ? 'Delete' : 'Restore'
-            }}</b-button
-          >
-        </template>
-      </b-table>
+              <b-icon-pencil-square v-if="row.item.delete === false" style="color: orange;"
+                                    font-scale="2"></b-icon-pencil-square>
+
+            </nuxt-link>
+            <b-icon-trash v-if="row.item.delete === false" style="color: red;" font-scale="2"
+                          @click="deleteBioType(row.item.code)"></b-icon-trash>
+            <b-icon-arrow-clockwise v-else style="color: red;" font-scale="2"
+                                    @click="deleteBioType(row.item.code)"></b-icon-arrow-clockwise>
+          </template>
+        </b-table>
+      </div>
       <div class="spaceBetween">
         <nuxt-link to="/">
           <b-button variant="danger"> Back</b-button>
@@ -46,13 +44,13 @@ export default {
     return {
       fields: [
         'code',
-        { sortable: true, key: 'name' },
+        {sortable: true, key: 'name'},
         'description',
-        { sortable: true, key: 'valueMax' },
         {
           sortable: true,
           key: 'valueMin'
         },
+        {sortable: true, key: 'valueMax'},
         'unity',
         'admin',
         'delete',
