@@ -40,7 +40,10 @@
 export default {
   data() {
     return {
-      fields: ['id', {sortable: true, key: 'doctor'}, {sortable: true, key: 'patient'}, 'description', {
+      fields: ['id', {sortable: true, key: 'doctor'}, {sortable: true, key: 'patient'}, {
+        key: 'description',
+        tdClass: 'customDesc',
+      }, {
         sortable: true,
         key: 'startDate'
       }, {sortable: true, key: 'endDate'}, {
