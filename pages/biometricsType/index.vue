@@ -38,13 +38,24 @@
           <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <div class="float-right">
-          <input id="file-input" type="file" accept=".csv"/>
-          <b-button variant="info" @click="importCSV">IMPORT CSV</b-button>
           <nuxt-link to="biometricsType/create">
             <b-button variant="success">NEW</b-button>
           </nuxt-link>
         </div>
       </div>
+    </div>
+    <div class="middleCard">
+      <form @submit.prevent="importCSV">
+        <b-form-file
+          v-model="file"
+          placeholder="Choose a file or drop it here..."
+          drop-placeholder="Drop file here..."
+          accept=".csv"
+        ></b-form-file>
+        <div class="flex-row d-flex flex-row-reverse mt-3">
+          <b-button variant="info" class="float-right" type="submit" :disabled="!hasFile">IMPORT CSV</b-button>
+        </div>
+      </form>
     </div>
   </b-container>
 </template>
@@ -54,13 +65,13 @@ export default {
     return {
       fields: [
         'code',
-        { sortable: true, key: 'name' },
+        {sortable: true, key: 'name'},
         'description',
         {
           sortable: true,
           key: 'valueMin'
         },
-        { sortable: true, key: 'valueMax' },
+        {sortable: true, key: 'valueMax'},
         'unity',
         'admin',
         {
@@ -70,12 +81,20 @@ export default {
         }
       ],
       biometricsTypes: [],
-      csv: null,
+      file: null,
     }
   },
   computed: {
-    isCSVSelected() {
-      return document.getElementById("file-input") ? document.getElementById("file-input").value : false
+    hasFile() {
+      return this.file != null
+    },
+    formData() {
+      const formData = new FormData()
+      formData.append('username', this.$auth.user.sub)
+      if (this.file) {
+        formData.append('file', this.file)
+      }
+      return formData
     },
     coloredBiometricType() {
       if (!this.biometricsTypes || this.biometricsTypes.length < 1) return []
@@ -91,19 +110,15 @@ export default {
   },
   methods: {
     importCSV() {
-      if (!this.isCSVSelected) {
-        this.$toast.error("Select a csv file first").goAway(3000);
-        return;
+      if (!this.hasFile) {
+        return
       }
-      const formData = new FormData();
-      const file = document.querySelector('#file-input');
-      formData.append("file", file.files[0]);
-      this.$axios.post('/api/biometricsType/upload', formData, {
+      this.$axios.$post('/api/biometricsType/upload', this.formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }).then((response) => {
-        document.getElementById("file-input").value = null
+        this.file = null
         this.$toast.success(response).goAway(3000);
         this.fetchBiometricTypes()
       }).catch(() => {
