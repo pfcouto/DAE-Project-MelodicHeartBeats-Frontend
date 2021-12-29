@@ -12,18 +12,24 @@
             <nuxt-link
               class="btn btn-link"
               :to="{
-              name: 'biometricsType-create',
-              query: { code: `${row.item.code}` }
-            }"
-            >
-              <b-icon-pencil-square v-if="row.item.delete === false" style="color: orange;"
-                                    font-scale="2"></b-icon-pencil-square>
-
+                name: 'biometricsType-create',
+                query: { code: `${row.item.code}` }
+              }">
+              <b-icon-pencil-square
+                v-if="row.item.deleted_at === null"
+                style="color: orange"
+                font-scale="2"></b-icon-pencil-square>
             </nuxt-link>
-            <b-icon-trash v-if="row.item.delete === false" style="color: red;" font-scale="2"
-                          @click="deleteBioType(row.item.code)"></b-icon-trash>
-            <b-icon-arrow-clockwise v-else style="color: red;" font-scale="2"
-                                    @click="deleteBioType(row.item.code)"></b-icon-arrow-clockwise>
+            <b-icon-trash
+              v-if="row.item.deleted_at === null"
+              style="color: red"
+              font-scale="2"
+              @click="deleteBioType(row.item.code)"></b-icon-trash>
+            <b-icon-arrow-clockwise
+              v-else
+              style="color: red"
+              font-scale="2"
+              @click="deleteBioType(row.item.code)"></b-icon-arrow-clockwise>
           </template>
         </b-table>
       </div>
@@ -48,16 +54,16 @@ export default {
     return {
       fields: [
         'code',
-        {sortable: true, key: 'name'},
+        { sortable: true, key: 'name' },
         'description',
         {
           sortable: true,
           key: 'valueMin'
         },
-        {sortable: true, key: 'valueMax'},
+        { sortable: true, key: 'valueMax' },
         'unity',
         'admin',
-        'delete',
+        'deleted_at',
         {
           key: 'details',
           label: '',
@@ -76,7 +82,7 @@ export default {
       if (!this.biometricsTypes || this.biometricsTypes.length < 1) return []
       return this.biometricsTypes.map((biometrictype) => {
         biometrictype._rowVariant =
-          biometrictype.delete === true ? 'danger' : ''
+          biometrictype.deleted_at !== 'null' ? 'danger' : ''
         return biometrictype
       })
     }
