@@ -15,16 +15,16 @@
               query: { code: `${row.item.code}` }
             }"
           >
-            <b-button v-if="`${row.item.delete}` == 'false'" variant="info">
+            <b-button v-if="`${row.item.deleted_at}` == 'null'" variant="info">
               Update</b-button
             >
           </nuxt-link>
           <b-button
-            :variant="`${row.item.delete}` == 'false' ? 'danger' : 'success'"
+            :variant="`${row.item.deleted_at}` == 'null' ? 'danger' : 'success'"
             @click="deleteBioType(`${row.item.code}`)"
           >
             {{
-              `${row.item.delete}` == 'false' ? 'Delete' : 'Restore'
+              `${row.item.deleted_at}` == 'null' ? 'Delete' : 'Restore'
             }}</b-button
           >
         </template>
@@ -55,7 +55,7 @@ export default {
         },
         'unity',
         'admin',
-        'delete',
+        'deleted_at',
         {
           key: 'details',
           label: '',
@@ -70,7 +70,7 @@ export default {
       if (!this.biometricsTypes || this.biometricsTypes.length < 1) return []
       return this.biometricsTypes.map((biometrictype) => {
         biometrictype._rowVariant =
-          biometrictype.delete === true ? 'danger' : ''
+          biometrictype.deleted_at !== 'null' ? 'danger' : ''
         return biometrictype
       })
     }
