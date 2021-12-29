@@ -1,34 +1,38 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <b-table striped over :items="coloredBiometricType" :fields="fields">
-        <template #cell(admin)="row">
-          <nuxt-link :to="`/administrators/${row.item.admin}`">
-            {{ row.item.admin }}
-          </nuxt-link>
-        </template>
-        <template #cell(details)="row">
-          <nuxt-link
-            class="btn btn-link"
-            :to="{
-              name: 'biometricsType-create',
-              query: { code: `${row.item.code}` }
-            }"
-          >
-            <b-button v-if="`${row.item.deleted_at}` == 'null'" variant="info">
-              Update</b-button
-            >
-          </nuxt-link>
-          <b-button
-            :variant="`${row.item.deleted_at}` == 'null' ? 'danger' : 'success'"
-            @click="deleteBioType(`${row.item.code}`)"
-          >
-            {{
-              `${row.item.deleted_at}` == 'null' ? 'Delete' : 'Restore'
-            }}</b-button
-          >
-        </template>
-      </b-table>
+      <div class="xOverflow">
+        <b-table striped hover :items="coloredBiometricType" :fields="fields">
+          <template #cell(admin)="row">
+            <nuxt-link :to="`/administrators/${row.item.admin}`">
+              {{ row.item.admin }}
+            </nuxt-link>
+          </template>
+          <template #cell(details)="row">
+            <nuxt-link
+              class="btn btn-link"
+              :to="{
+                name: 'biometricsType-create',
+                query: { code: `${row.item.code}` }
+              }">
+              <b-icon-pencil-square
+                v-if="row.item.deleted_at === null"
+                style="color: orange"
+                font-scale="2"></b-icon-pencil-square>
+            </nuxt-link>
+            <b-icon-trash
+              v-if="row.item.deleted_at === null"
+              style="color: red"
+              font-scale="2"
+              @click="deleteBioType(row.item.code)"></b-icon-trash>
+            <b-icon-arrow-clockwise
+              v-else
+              style="color: red"
+              font-scale="2"
+              @click="deleteBioType(row.item.code)"></b-icon-arrow-clockwise>
+          </template>
+        </b-table>
+      </div>
       <div class="spaceBetween">
         <nuxt-link to="/">
           <b-button variant="danger"> Back</b-button>
@@ -48,11 +52,11 @@ export default {
         'code',
         { sortable: true, key: 'name' },
         'description',
-        { sortable: true, key: 'valueMax' },
         {
           sortable: true,
           key: 'valueMin'
         },
+        { sortable: true, key: 'valueMax' },
         'unity',
         'admin',
         'deleted_at',

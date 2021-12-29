@@ -27,7 +27,7 @@ a:hover {
 }
 
 .userContainer {
-  min-width: 280px;
+  min-width: 300px;
 }
 
 .spaceBetween {
@@ -43,7 +43,7 @@ a:hover {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 790px) {
   .container,
   .container-sm {
     max-width: 100% !important;
@@ -61,7 +61,7 @@ a:hover {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 790px) {
   .headerCard {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
@@ -75,8 +75,22 @@ body {
   min-width: 330px;
 }
 
+svg:not(:disabled):not(.disabled) {
+  cursor: pointer;
+}
 
-@media (max-width: 630px) {
+.customDesc {
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td * {
+  vertical-align: middle !important;
+}
+
+@media (max-width: 645px) {
   .major {
     flex-direction: column !important;
   }

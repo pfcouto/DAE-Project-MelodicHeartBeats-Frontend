@@ -37,11 +37,11 @@
         </b-form-group>
 
         <b-form-group id="description" label="Prescription">
-          <b-input
+          <b-form-textarea
             id="description"
             v-model.trim="prescription.description"
             trim
-          ></b-input>
+          ></b-form-textarea>
         </b-form-group>
         <b-form-group id="startDate" label="Start Date">
           <b-form-datepicker
@@ -177,11 +177,11 @@ export default {
       this.$axios
         .$post('/api/prescriptions', this.prescription)
         .then(() => {
-          this.$toast.success("Prescription #" + this.$route.query.id + " created successfully").goAway(3000)
+          this.$toast.success("Prescription created successfully").goAway(3000)
           this.$router.push('/prescriptions')
         })
         .catch((error) => {
-          this.$toast.error("Prescription #" + this.$route.query.id + " was not created").goAway(3000)
+          this.$toast.error("Prescription not created").goAway(3000)
           this.errorMsg = error.response.data
         })
     },
