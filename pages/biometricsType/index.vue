@@ -29,11 +29,15 @@
       </div>
       <div class="spaceBetween">
         <nuxt-link to="/">
-          <b-button variant="danger"> Back</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
-        <nuxt-link to="biometricsType/create" style="float: right">
-          <b-button variant="success">NEW</b-button>
-        </nuxt-link>
+        <div class="float-right">
+          <input id="file-input" type="file" accept=".csv"/>
+          <b-button variant="info" @click="importCSV">IMPORT CSV</b-button>
+          <nuxt-link to="biometricsType/create">
+            <b-button variant="success">NEW</b-button>
+          </nuxt-link>
+        </div>
       </div>
     </div>
   </b-container>
@@ -60,10 +64,14 @@ export default {
           tdClass: 'text-center'
         }
       ],
-      biometricsTypes: []
+      biometricsTypes: [],
+      csv: null,
     }
   },
   computed: {
+    isCSVSelected() {
+      return document.getElementById("file-input") ? document.getElementById("file-input").value : false
+    },
     coloredBiometricType() {
       if (!this.biometricsTypes || this.biometricsTypes.length < 1) return []
       return this.biometricsTypes.map((biometrictype) => {
@@ -77,6 +85,26 @@ export default {
     this.fetchBiometricTypes()
   },
   methods: {
+    importCSV() {
+      if (!this.isCSVSelected) {
+        this.$toast.error("Select a csv file first").goAway(3000);
+        return;
+      }
+      const formData = new FormData();
+      const file = document.querySelector('#file-input');
+      formData.append("file", file.files[0]);
+      this.$axios.post('/api/biometricsType/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then((response) => {
+        document.getElementById("file-input").value = null
+        this.$toast.success(response).goAway(3000);
+        this.fetchBiometricTypes()
+      }).catch(() => {
+        this.$toast.error("Some error occurred while loading csv").goAway(3000);
+      })
+    },
     deleteBioType(code) {
       this.$axios
         .$delete('/api/biometricsType/' + code)
