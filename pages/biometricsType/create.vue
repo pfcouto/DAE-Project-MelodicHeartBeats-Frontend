@@ -240,7 +240,6 @@ export default {
       .catch(() => {
         this.administrators = []
       })
-    console.log(this.biometricType)
   },
   methods: {
     addNewQualitative() {

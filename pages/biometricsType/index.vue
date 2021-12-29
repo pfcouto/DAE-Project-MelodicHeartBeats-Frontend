@@ -16,18 +16,18 @@
                 query: { code: `${row.item.code}` }
               }">
               <b-icon-pencil-square
-                v-if="row.item.deleted_at === null"
+                v-if="row.item.deleted_at === 'null'"
                 style="color: orange"
                 font-scale="2"></b-icon-pencil-square>
             </nuxt-link>
             <b-icon-trash
-              v-if="row.item.deleted_at === null"
+              v-if="row.item.deleted_at === 'null'"
               style="color: red"
               font-scale="2"
               @click="deleteBioType(row.item.code)"></b-icon-trash>
             <b-icon-arrow-clockwise
               v-else
-              style="color: red"
+              style="color: green"
               font-scale="2"
               @click="deleteBioType(row.item.code)"></b-icon-arrow-clockwise>
           </template>
@@ -63,7 +63,6 @@ export default {
         { sortable: true, key: 'valueMax' },
         'unity',
         'admin',
-        'deleted_at',
         {
           key: 'details',
           label: '',

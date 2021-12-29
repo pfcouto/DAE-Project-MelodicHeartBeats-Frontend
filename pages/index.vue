@@ -147,21 +147,21 @@ export default {
   beforeMount() {
     if (this.role === 'Administrator') {
       // Admins
-      this.$axios.get("api/administrators").then((response) => {
+      this.$axios.get("/api/administrators").then((response) => {
         this.administrators = response.data
       })
       // Doctors
-      this.$axios.get("api/doctors").then((response) => {
+      this.$axios.get("/api/doctors").then((response) => {
         this.doctors = response.data
       })
       // Patients
-      this.$axios.get("api/patients").then((response) => {
+      this.$axios.get("/api/patients").then((response) => {
         this.patients = response.data
       })
     }
 
     // Observations
-    this.$axios.get("api/observations").then((response) => {
+    this.$axios.get("/api/observations/").then((response) => {
       this.observations = response.data
     })
 

@@ -76,7 +76,6 @@ export default {
       .$get(`/api/administrators/${this.username}`)
       .then((administrator) => {
         this.administrator = administrator || {}
-        console.log(administrator)
       })
   },
   methods: {
