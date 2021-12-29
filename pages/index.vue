@@ -11,9 +11,25 @@
           </a>
         </div>
         <hr/>
-        <div class="percentExternal">
+        <div v-if="isPatient" class="percentExternal">
           <div class="percentInternal" style="width:75%;">75%</div>
         </div>
+
+        <b-container v-if="!isAdmin" class="headerCardUser">
+          <nuxt-link to="/observations" class="headerCardComponent">
+            <h6>Observations</h6>
+          </nuxt-link>
+          <nuxt-link v-if="isDoctor" to="/doctors" class="headerCardComponent">
+            <h6>Doctors</h6>
+          </nuxt-link>
+          <nuxt-link v-if="isDoctor" to="/patients" class="headerCardComponent">
+            <h6>Patients</h6>
+          </nuxt-link>
+          <nuxt-link to="/prescriptions" class="headerCardComponent">
+            <h6>Prescriptions</h6>
+          </nuxt-link>
+        </b-container>
+
         <br/>
         <br/>
         <br/>
@@ -22,7 +38,7 @@
       </b-container>
     </b-container>
     <b-container class="cardGroup">
-      <b-container v-if="!isPatient" class="headerCard">
+      <b-container v-if="isAdmin" class="headerCard">
         <nuxt-link v-if="isAdmin" to="/administrators" class="headerCardComponent">
           <h6>Administrators</h6>
         </nuxt-link>
@@ -253,6 +269,16 @@ export default {
   display: grid;
   padding: 0px;
   grid-template-columns: repeat(6, minmax(0, 1fr));
+  column-gap: 12px;
+  row-gap: 12px;
+  grid-auto-rows: 1fr;
+}
+
+.headerCardUser{
+  display: grid;
+  padding: 0px;
+  margin-top: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 12px;
   row-gap: 12px;
   grid-auto-rows: 1fr;
