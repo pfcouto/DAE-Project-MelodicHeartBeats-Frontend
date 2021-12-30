@@ -17,7 +17,7 @@
               query: { code: `${row.item.code}` }
             }"
             >
-              <b-icon-file-earmark-text style="color: darkcyan;" font-scale="2"></b-icon-file-earmark-text>
+              <b-icon-pencil-square style="color: orange;" font-scale="2"></b-icon-pencil-square>
             </nuxt-link>
           </template>
         </b-table>

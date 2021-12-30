@@ -69,8 +69,14 @@ export default {
 </script>
 <style>
 
-.inputField {
-  width: 450px;
+fieldset {
+  width: 80%;
+}
+
+@media (max-width: 550px) {
+  fieldset {
+    width: 100%;
+  }
 }
 
 .loginContainer {

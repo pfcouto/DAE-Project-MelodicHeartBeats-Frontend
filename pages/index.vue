@@ -14,6 +14,7 @@
         <div v-if="isPatient" class="percentExternal">
           <div class="percentInternal" style="width:75%;">75%</div>
         </div>
+        <div v-if="isPatient" >Active PRC: {{ activePRC ? activePRC.id : "No PRC" }}</div>
 
         <b-container v-if="!isAdmin" class="headerCardUser">
           <nuxt-link to="/observations" class="headerCardComponent">
@@ -57,6 +58,9 @@
         <nuxt-link to="/prescriptions" class="headerCardComponent">
           <h6>Prescriptions</h6>
         </nuxt-link>
+        <nuxt-link to="/prcs" class="headerCardComponent">
+          <h6>PRCs</h6>
+        </nuxt-link>
       </b-container>
       <div class="gridCustom">
         <b-container v-if="isAdmin" class="customCard">
@@ -84,6 +88,7 @@
           <nuxt-link to="biometricsType">
             <h2>{{ observations.length }} Observation{{ observations.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
+          <line-chart :data="chartdata" :options="options"></line-chart>
         </b-container>
       </div>
     </b-container>
@@ -91,14 +96,16 @@
 </template>
 <script>
 import PieChart from "~/components/BarChart"
+import LineChart from "~/components/LineChart"
 
 export default {
-  components: {PieChart},
+  components: {PieChart, LineChart},
   data() {
     return {
       role: this.$auth.user.groups[0],
       username: this.$auth.user.sub,
       prescriptions: [],
+      activePRC: null,
       patients: [],
       doctors: [],
       administrators: [],
@@ -176,6 +183,10 @@ export default {
         this.prescriptions = prescriptions
         this.refreshPrescriptionsGraph()
       })
+      this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prc").then((prc) => {
+        console.log(prc)
+        this.activePRC = prc
+      })
     } else {
       this.$axios.$get('/api/prescriptions/').then((prescriptions) => {
         this.prescriptions = prescriptions
@@ -201,8 +212,7 @@ export default {
         }
       })
       return counter
-    }
-    ,
+    },
     getStatus(prescription) {
       const now = new Date()
       const today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
@@ -274,7 +284,7 @@ export default {
   grid-auto-rows: 1fr;
 }
 
-.headerCardUser{
+.headerCardUser {
   display: grid;
   padding: 0px;
   margin-top: 16px;
