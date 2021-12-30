@@ -6,12 +6,12 @@ export default {
       lang: 'en'
     },
     meta: [
-      {charset: 'utf-8'},
-      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
-      {hid: 'description', name: 'description', content: ''},
-      {name: 'format-detection', content: 'telephone=no'}
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { hid: 'description', name: 'description', content: '' },
+      { name: 'format-detection', content: 'telephone=no' }
     ],
-    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -45,6 +45,12 @@ export default {
     icons: true
   },
 
+  axios: {
+    // proxy: true,
+    // credentials: true
+    baseURL: 'http://18.170.87.123:8080/projetoDAE'
+  },
+
   ssr: false,
   auth: {
     redirect: {
@@ -57,37 +63,31 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: '/api/auth/login',
+            url: 'http://18.170.87.123:8080/projetoDAE/api/auth/login',
             method: 'post',
             propertyName: 'token'
           },
           logout: false,
           user: {
-            url: '/api/auth/user',
+            url: 'http://18.170.87.123:8080/projetoDAE/api/auth/user',
             method: 'get',
             propertyName: ''
           }
-        },
+        }
         // tokenRequired: true, -> default
         // tokenType: 'bearer' -> default
       }
     }
   },
   router: {
-    middleware: [
-      'auth'
-    ]
+    middleware: ['auth']
   },
-
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {
-    proxy: true,
-    credentials: true,
-  },
+
   proxy: {
     '/api/': {
-      target: 'http://localhost:8080/projetoDAE/api/',
+      target: 'http://18.170.87.123:8080/projetoDAE/api/',
       pathRewrite: {
         '^/api/': ''
       }
@@ -96,7 +96,7 @@ export default {
   toast: {
     position: 'top-center',
     defaultProps: {
-      timeout: 3,
+      timeout: 3
     }
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
