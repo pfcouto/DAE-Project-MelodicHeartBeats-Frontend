@@ -40,7 +40,10 @@
 export default {
   data() {
     return {
-      fields: ['id', 'patient', 'startDate', 'endDate', 'active'],
+      fields: ['id', {sortable: true, key: 'patient'}, {sortable: true, key: 'startDate'}, {
+        sortable: true,
+        key: 'endDate'
+      }],
       PRCs: []
     }
   },
@@ -48,7 +51,7 @@ export default {
     coloredPRCs() {
       if (!this.PRCs || this.PRCs.length < 1) return []
       return this.PRCs.map(prc => {
-        prc._rowVariant = this.getVariant(prc)
+        prc._rowVariant = prc.active ? "success" : null
         return prc
       })
     }
@@ -57,7 +60,6 @@ export default {
     if (this.$auth.user.groups[0] !== "Patient") {
       this.$axios.$get('/api/prcs/').then((PRCs) => {
         this.PRCs = PRCs
-        console.log(PRCs)
       })
     } else {
       this.$axios.$get('/api/patients/' + this.$auth.user.sub + '/prcs').then((PRCs) => {
@@ -66,17 +68,6 @@ export default {
     }
   },
   methods: {
-    getVariant(prc) {
-      const now = new Date()
-      const today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
-      if (prc.startDate > today) {
-        return 'secondary'
-      } else if (prc.endDate > today) {
-        return 'success'
-      } else {
-        return 'danger'
-      }
-    },
     deletePRC(row) {
       this.$axios.$delete('/api/PRCs/' + row.item.id).then(() => {
         this.$toast.success("PRC #" + row.item.id + " deleted successfully").goAway(3000)

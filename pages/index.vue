@@ -184,7 +184,6 @@ export default {
         this.refreshPrescriptionsGraph()
       })
       this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prc").then((prc) => {
-        console.log(prc)
         this.activePRC = prc
       })
     } else {

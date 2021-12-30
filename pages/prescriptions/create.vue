@@ -5,19 +5,6 @@
         {{ isEditing ? 'Prescription #' + $route.query.id : 'New Prescription' }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
-        <!--        <b-form-group-->
-        <!--          id="doctor"-->
-        <!--          label="Doctor"-->
-        <!--          description="The doctor is required"-->
-        <!--          :state="isDoctorValid"-->
-        <!--        >-->
-        <!--          <b-input-->
-        <!--            id="doctor"-->
-        <!--            v-model.trim="prescription.doctor"-->
-        <!--            :state="isDoctorValid"-->
-        <!--            trim-->
-        <!--          ></b-input>-->
-        <!--        </b-form-group>-->
         <b-form-group
           v-if="!isEditing"
           id="patient"
@@ -149,7 +136,7 @@ export default {
           this.errorMsg = error.response.data
         })
     } else {
-      this.$axios
+      await this.$axios
         .get('/api/patients')
         .then((response) => {
           this.patients = response.data
