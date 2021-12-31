@@ -2,7 +2,11 @@
   <b-container>
     <div class="middleCard">
       <h1>
-        {{ isEditing ? 'Update ' + observation.patient + ' Observation ' : 'Create a new Observation' }}
+        {{
+          isEditing
+            ? 'Update ' + observation.patient + ' Observation '
+            : 'Create a new Observation'
+        }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group id="date" label="Date" :state="isDateValid">
@@ -10,28 +14,24 @@
             id="date"
             v-model="observation.date"
             :disabled="isEditing"
-            :state="isDateValid"
-          ></b-form-datepicker>
+            :state="isDateValid"></b-form-datepicker>
         </b-form-group>
         <b-form-group
           id="patient"
           :disabled="isEditing"
           label="Patient"
           description="The Patient is required"
-          :state="isPatientValid"
-        >
+          :state="isPatientValid">
           <b-form-select
             id="patient"
             v-model="observation.patient"
             required
-            :state="isPatientValid"
-          >
+            :state="isPatientValid">
             <option :key="null" :value="null">Choose the patient...</option>
             <option
               v-for="patient in patients"
               :key="patient.username"
-              :value="patient.username"
-            >
+              :value="patient.username">
               {{ patient.name }}
             </option>
           </b-form-select>
@@ -41,23 +41,20 @@
           :disabled="isEditing"
           label="Biometric Type"
           description="The Biometric Type is required"
-          :state="isBiometricsTypeValid"
-        >
+          :state="isBiometricsTypeValid">
           <b-form-select
             id="BiometricType"
             v-model="observation.biometricType"
             required
             :state="isBiometricsTypeValid"
-            @change="loadMinMax"
-          >
+            @change="loadMinMax">
             <option :key="null" :value="null">
               Choose the Biometric Type...
             </option>
             <option
               v-for="biometricType in biometricsType"
               :key="biometricType.code"
-              :value="biometricType.code"
-            >
+              :value="biometricType.code">
               {{ biometricType.name }}
             </option>
           </b-form-select>
@@ -66,61 +63,53 @@
           id="quantitativeValue"
           label="Quantitative Value"
           description="The Quantitative Value is required"
-          :state="isQuantitativeValueValid"
-        >
+          :state="isQuantitativeValueValid">
           <b-input
             id="quantitativeValue"
             v-model.number="observation.quantitativeValue"
             placeholder="Enter Quantitative Value..."
             type="number"
             :state="isQuantitativeValueValid"
-            trim
-          >
+            trim>
           </b-input>
         </b-form-group>
         <b-form-group
           id="qualitativeValue"
           label="Qualitative Value"
           description="The Qualitative Value is required"
-          :state="isQualitativeValueValid"
-        >
+          :state="isQualitativeValueValid">
           <b-input
             id="qualitativeValue"
             v-model.trim="observation.qualitativeValue"
             placeholder="Enter Qualitative Value..."
             :state="isQualitativeValueValid"
-            trim
-          >
+            trim>
           </b-input>
         </b-form-group>
         <b-form-group
           id="what"
           label="What"
           description="The what is required"
-          :state="isWhatValid"
-        >
+          :state="isWhatValid">
           <b-input
             id="what"
             v-model.trim="observation.what"
             placeholder="Enter what Value..."
             :state="isWhatValid"
-            trim
-          >
+            trim>
           </b-input>
         </b-form-group>
         <b-form-group
           id="local"
           label="Local"
           description="The Local is required"
-          :state="isLocalValid"
-        >
+          :state="isLocalValid">
           <b-input
             id="local"
             v-model.trim="observation.local"
             placeholder="Enter local Value..."
             :state="isLocalValid"
-            trim
-          >
+            trim>
           </b-input>
         </b-form-group>
 
@@ -134,16 +123,14 @@
             v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="create"
-          >
+            @click.prevent="create">
             CREATE
           </b-button>
           <b-button
             v-else
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="update"
-          >
+            @click.prevent="update">
             UPDATE
           </b-button>
         </div>
@@ -186,7 +173,11 @@ export default {
       return this.observation.biometricType != null
     },
     isQuantitativeValueValid() {
-      return this.observation.quantitativeValue != null && this.observation.quantitativeValue <= this.biometricTypeMax && this.observation.quantitativeValue >= this.biometricTypeMin
+      return (
+        this.observation.quantitativeValue != null &&
+        this.observation.quantitativeValue <= this.biometricTypeMax &&
+        this.observation.quantitativeValue >= this.biometricTypeMin
+      )
     },
     isQualitativeValueValid() {
       return this.observation.qualitativeValue != null
@@ -234,22 +225,31 @@ export default {
   },
   methods: {
     loadMinMax() {
-      if (!this.observation.biometricType) {
+      if (!this.observation.biometricType && !this.isEditing) {
         return
       }
-      this.$axios.$get('/api/biometricsType/' + this.observation.biometricType).then((bio) => {
-        this.biometricTypeMin = bio.valueMin
-        this.biometricTypeMax = bio.valueMax
-      }).catch(() => {
-        this.biometricTypeMin = null
-        this.biometricTypeMax = null
-      })
+      this.$axios
+        .$get(
+          '/api/biometricsType/' +
+            (this.isEditing ? 'byName/' : '') +
+            this.observation.biometricType
+        )
+        .then((bio) => {
+          this.observation.biometricType = bio.code
+          this.biometricTypeMin = bio.valueMin
+          this.biometricTypeMax = bio.valueMax
+        })
+        .catch(() => {
+          this.biometricTypeMin = null
+          this.biometricTypeMax = null
+        })
     },
-    reset() {
+    async reset() {
       this.errorMsg = false
       this.observation = {}
       if (this.isEditing) {
-        this.fetchObservationData()
+        await this.fetchObservationData()
+        this.loadMinMax()
       }
     },
     update() {
@@ -296,6 +296,7 @@ export default {
           this.patients = []
         })
     },
+    fetchBiometricTypeByName() {},
     fetchBiometricsType() {
       this.$axios
         .get('/api/biometricsType/' + (this.isEditing ? '' : 'nonDeleted'))
