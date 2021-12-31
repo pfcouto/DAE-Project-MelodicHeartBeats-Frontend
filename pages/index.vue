@@ -241,17 +241,20 @@ export default {
       this.$axios.get("/api/patients").then((response) => {
         this.patients = response.data
       })
+
+      // Observations
+      this.$axios.get("/api/observations/").then((response) => {
+        this.observations = response.data
+      })
     }
 
-    // Observations
-    this.$axios.get("/api/observations/").then((response) => {
-      this.observations = response.data
-
-      // observations chart
-      if (this.isPatient) {
+    if (this.isPatient) {
+      // Observations
+      this.$axios.get("/api/patients/" + this.$auth.user.sub + "/observations").then((response) => {
+        this.observations = response.data
         this.refreshLineChartUserObs(this.$auth.user.sub)
-      }
-    })
+      })
+    }
 
     // prescriptions chart
     if (this.$auth.user.groups[0] === "Doctor") {
@@ -267,6 +270,8 @@ export default {
       this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prc").then((prc) => {
         this.activePRC = prc
       }).then(() => {
+        if(!this.activePRC)
+          return
         document.getElementById("pInternal").style.width = this.percentDaysRemaining + "%";
       })
     } else {

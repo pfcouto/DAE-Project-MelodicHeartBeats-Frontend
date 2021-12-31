@@ -231,7 +231,6 @@ export default {
       this.$axios
         .$get(
           '/api/biometricsType/' +
-            (this.isEditing ? 'byName/' : '') +
             this.observation.biometricType
         )
         .then((bio) => {
