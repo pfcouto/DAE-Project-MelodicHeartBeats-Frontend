@@ -59,7 +59,6 @@ export default {
         }
       }).then(() => {
         this.$toast.success('You are logged in!').goAway(3000)
-        this.$router.push('/')
       }).catch(() => {
         this.$toast.error('Sorry, you cant login. Ensure your credentials are correct').goAway(3000)
       })
