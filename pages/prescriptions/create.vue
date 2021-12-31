@@ -8,8 +8,8 @@
         <b-form-group
           v-if="!isEditing"
           id="patient"
+          :invalid-feedback="invalidPatientFeedback"
           label="Patient"
-          description="The patient is required"
           :state="isPatientValid"
         >
           <b-form-select id="patient" v-model="prescription.patient" required>
@@ -88,15 +88,22 @@ export default {
         endDate: null
       },
       patients: [],
-      errorMsg: false
+      errorMsg: false,
+      patientValid: false
     }
   },
   computed: {
     isEditing() {
       return this.$route.query.id != null
     },
+    invalidPatientFeedback() {
+      if (this.prescription.patient == null) {
+        return "";
+      }
+      return this.patientValid ? "" : "Patient has no active PRC"
+    },
     isPatientValid() {
-      return this.prescription.patient != null
+      return this.prescription.patient != null && this.patientValid
     },
     isStartDateValid() {
       return this.prescription.startDate != null
@@ -114,7 +121,22 @@ export default {
       if (!this.isEndDateValid) {
         return false
       }
-      return true
+      return this.patientValid
+    }
+  },
+  watch: {
+    'prescription.patient'() {
+      this.$axios.$get("/api/patients/" + this.prescription.patient +
+        "/prc"
+      ).then((response) => {
+        if (response === "") {
+          this.patientValid = false
+        } else {
+          this.patientValid = true
+        }
+      }).catch(() => {
+        this.patientValid = false
+      })
     }
   },
   beforeCreate() {

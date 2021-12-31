@@ -29,6 +29,9 @@
           <nuxt-link to="/prescriptions" class="headerCardComponent">
             <h6>Prescriptions</h6>
           </nuxt-link>
+          <nuxt-link v-if="isDoctor" to="/prcs" class="headerCardComponent">
+            <h6>PRCs</h6>
+          </nuxt-link>
         </b-container>
 
         <br/>
@@ -85,7 +88,7 @@
           <pie-chart :data="chartdata" :options="options"></pie-chart>
         </b-container>
         <b-container class="customCard">
-          <nuxt-link to="biometricsType">
+          <nuxt-link to="observations">
             <h2>{{ observations.length }} Observation{{ observations.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
           <line-chart :data="chartdata" :options="options"></line-chart>

@@ -84,7 +84,7 @@ export default {
       const today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
       if (prescription.startDate > today) {
         return 'secondary'
-      } else if (prescription.endDate > today) {
+      } else if (prescription.endDate >= today) {
         return 'success'
       } else {
         return 'danger'
