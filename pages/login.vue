@@ -59,7 +59,6 @@ export default {
         }
       }).then(() => {
         this.$toast.success('You are logged in!').goAway(3000)
-        this.$router.push('/')
       }).catch(() => {
         this.$toast.error('Sorry, you cant login. Ensure your credentials are correct').goAway(3000)
       })
@@ -69,8 +68,14 @@ export default {
 </script>
 <style>
 
-.inputField {
-  width: 450px;
+fieldset {
+  width: 80%;
+}
+
+@media (max-width: 550px) {
+  fieldset {
+    width: 100%;
+  }
 }
 
 .loginContainer {

@@ -11,10 +11,14 @@
           </a>
         </div>
         <hr/>
-        <div v-if="isPatient" class="percentExternal">
-          <div class="percentInternal" style="width:75%;">75%</div>
+        <div v-if="isPatient" class="text-center">
+          {{ activePRC ? ("PRC #" + activePRC.id + "  -  " + daysRemaining + " days left!") : "No active PRC" }}
         </div>
 
+        <div v-if="isPatient && activePRC" class="progress percentExternal">
+          <div id="pInternal" class="progress-bar percentInternal" role="progressbar" style="width: 100%"
+               aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
         <b-container v-if="!isAdmin" class="headerCardUser">
           <nuxt-link to="/observations" class="headerCardComponent">
             <h6>Observations</h6>
@@ -27,6 +31,9 @@
           </nuxt-link>
           <nuxt-link to="/prescriptions" class="headerCardComponent">
             <h6>Prescriptions</h6>
+          </nuxt-link>
+          <nuxt-link v-if="isDoctor" to="/prcs" class="headerCardComponent">
+            <h6>PRCs</h6>
           </nuxt-link>
         </b-container>
 
@@ -57,7 +64,33 @@
         <nuxt-link to="/prescriptions" class="headerCardComponent">
           <h6>Prescriptions</h6>
         </nuxt-link>
+        <nuxt-link to="/prcs" class="headerCardComponent">
+          <h6>PRCs</h6>
+        </nuxt-link>
       </b-container>
+      <div class="gridCustom gridMiddle">
+        <b-container class="customCard">
+          <nuxt-link to="observations">
+            <h2>{{ observations.length }} Observation{{ observations.length === 1 ? "" : "s" }} </h2>
+          </nuxt-link>
+          <b-form-group v-if="!isPatient"
+                        id="patientLine"
+                        class="align-self-center w-50"
+                        label="Choose a Patient"
+          >
+            <b-form-select id="patientLine" v-model="lineChartUserObs">
+              <option
+                v-for="patient in patients"
+                :key="patient.username"
+                :value="patient.username"
+              >
+                {{ patient.name }}
+              </option>
+            </b-form-select>
+          </b-form-group>
+          <line-chart :data="lineChartData" :options="optionsLineChart"></line-chart>
+        </b-container>
+      </div>
       <div class="gridCustom">
         <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="administrators">
@@ -78,12 +111,7 @@
           <nuxt-link to="prescriptions">
             <h2>{{ prescriptions.length }} Prescription{{ prescriptions.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
-          <pie-chart :data="chartdata" :options="options"></pie-chart>
-        </b-container>
-        <b-container class="customCard">
-          <nuxt-link to="biometricsType">
-            <h2>{{ observations.length }} Observation{{ observations.length === 1 ? "" : "s" }} </h2>
-          </nuxt-link>
+          <pie-chart :data="barChartData" :options="options"></pie-chart>
         </b-container>
       </div>
     </b-container>
@@ -91,19 +119,22 @@
 </template>
 <script>
 import PieChart from "~/components/BarChart"
+import LineChart from "~/components/LineChart"
 
 export default {
-  components: {PieChart},
+  components: {PieChart, LineChart},
   data() {
     return {
       role: this.$auth.user.groups[0],
       username: this.$auth.user.sub,
       prescriptions: [],
+      activePRC: null,
       patients: [],
       doctors: [],
+      lineChartUserObs: null,
       administrators: [],
       observations: [],
-      chartdata: {
+      barChartData: {
         labels: ["EXPIRED", "ACTIVE", "WAITING"],
         datasets: [
           {
@@ -116,6 +147,9 @@ export default {
             ],
             borderWidth: 1
           }]
+      },
+      lineChartData: {
+        labels: [],
       },
       options: {
         responsive: true,
@@ -130,10 +164,50 @@ export default {
             }
           }],
         }
+      },
+      optionsLineChart: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+            }
+          }],
+        }
       }
     }
   },
   computed: {
+    daysRemainingToPRC() {
+      return this.daysRemaining + " from " + this.totalDays
+    },
+    percentDaysRemaining() {
+      if (this.totalDays === 0)
+        return 0
+      const percent = this.daysRemaining * 100 / this.totalDays
+      return Math.floor(100 - percent)
+    },
+    daysRemaining() {
+      if (!this.activePRC) {
+        return 0
+      }
+      const today = new Date()
+      const dateEnd = new Date(this.activePRC.endDate)
+      const timeDiff = dateEnd.getTime() - today.getTime();
+      const daysLeftNow = timeDiff / (1000 * 3600 * 24);
+      return Math.ceil(daysLeftNow)
+    },
+    totalDays() {
+      if (!this.activePRC) {
+        return 0
+      }
+      const dateEnd = new Date(this.activePRC.endDate)
+      const dateStart = new Date(this.activePRC.startDate)
+      const timeDiff = dateEnd.getTime() - dateStart.getTime();
+      const daysLeftStart = timeDiff / (1000 * 3600 * 24);
+      return Math.ceil(daysLeftStart + 1)
+    },
     isAdmin() {
       return this.$auth.user.groups && this.$auth.user.groups[0] === 'Administrator';
     },
@@ -144,26 +218,43 @@ export default {
       return this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient';
     },
   },
+  watch: {
+    lineChartUserObs() {
+      this.refreshLineChartUserObs(this.lineChartUserObs)
+    }
+  },
   beforeMount() {
-    if (this.role === 'Administrator') {
+    if (this.isAdmin) {
       // Admins
       this.$axios.get("/api/administrators").then((response) => {
         this.administrators = response.data
       })
+    }
+
+    if (!this.isPatient) {
       // Doctors
       this.$axios.get("/api/doctors").then((response) => {
         this.doctors = response.data
       })
+
       // Patients
       this.$axios.get("/api/patients").then((response) => {
         this.patients = response.data
       })
+
+      // Observations
+      this.$axios.get("/api/observations/").then((response) => {
+        this.observations = response.data
+      })
     }
 
-    // Observations
-    this.$axios.get("/api/observations/").then((response) => {
-      this.observations = response.data
-    })
+    if (this.isPatient) {
+      // Observations
+      this.$axios.get("/api/patients/" + this.$auth.user.sub + "/observations").then((response) => {
+        this.observations = response.data
+        this.refreshLineChartUserObs(this.$auth.user.sub)
+      })
+    }
 
     // prescriptions chart
     if (this.$auth.user.groups[0] === "Doctor") {
@@ -176,21 +267,69 @@ export default {
         this.prescriptions = prescriptions
         this.refreshPrescriptionsGraph()
       })
+      this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prc").then((prc) => {
+        this.activePRC = prc
+      }).then(() => {
+        if(!this.activePRC)
+          return
+        document.getElementById("pInternal").style.width = this.percentDaysRemaining + "%";
+      })
     } else {
       this.$axios.$get('/api/prescriptions/').then((prescriptions) => {
         this.prescriptions = prescriptions
         this.refreshPrescriptionsGraph()
-
       })
     }
   },
   methods: {
+    refreshLineChartUserObs(username) {
+      // refresh graph for selected user (this.lineChartUserObs)
+      const formatedObs = new Map()
+      const bTypes = []
+      this.observations.forEach((obs) => {
+        if (obs.patient === username) {
+          if (formatedObs.has(obs.date)) {
+            const o = formatedObs.get(obs.date)
+            o.set(obs.biometricTypeName, obs.quantitativeValue)
+            if (!bTypes.includes(obs.biometricTypeName)) {
+              bTypes.push(obs.biometricTypeName)
+            }
+            formatedObs.set(obs.date, o)
+          } else {
+            const newMap = new Map()
+            newMap.set(obs.biometricTypeName, obs.quantitativeValue)
+            if (!bTypes.includes(obs.biometricTypeName)) {
+              bTypes.push(obs.biometricTypeName)
+            }
+            formatedObs.set(obs.date, newMap)
+          }
+        }
+      })
+      this.lineChartData.labels = Array.from(formatedObs.keys())
+      this.lineChartData.datasets = []
+
+      bTypes.forEach((bType) => {
+        const dataForBType = []
+        this.lineChartData.labels.forEach((dateAsLabel) => {
+          if (formatedObs.has(dateAsLabel) && formatedObs.get(dateAsLabel).has(bType)) {
+            dataForBType.push({x: dateAsLabel, y: formatedObs.get(dateAsLabel).get(bType)})
+          }
+        })
+        this.lineChartData.datasets.push({
+          label: bType,
+          data: dataForBType,
+          borderColor: 'rgb(75, 192, 192)',
+          borderWidth: 1
+        })
+      })
+      this.lineChartData = {...this.lineChartData}
+    },
     refreshPrescriptionsGraph() {
-      const clone = {...this.chartdata}
+      const clone = {...this.barChartData}
       clone.datasets[0].data[0] = this.prescriptionsNumByStatus("EXPIRED");
       clone.datasets[0].data[1] = this.prescriptionsNumByStatus("ACTIVE");
       clone.datasets[0].data[2] = this.prescriptionsNumByStatus("WAITING");
-      this.chartdata = clone;
+      this.barChartData = clone;
     },
     prescriptionsNumByStatus(status) {
       if (!this.prescriptions || this.prescriptions.length < 1) return []
@@ -201,8 +340,7 @@ export default {
         }
       })
       return counter
-    }
-    ,
+    },
     getStatus(prescription) {
       const now = new Date()
       const today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
@@ -213,12 +351,10 @@ export default {
       } else {
         return 'EXPIRED'
       }
-    }
-    ,
+    },
     updatePassword() {
       this.$router.push("/password")
-    }
-    ,
+    },
     logout() {
       this.$auth.logout()
       this.$toast.success("Logged out successfully").goAway(3000)
@@ -242,13 +378,13 @@ export default {
   grid-auto-rows: 1fr;
 }
 
+.gridMiddle {
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+}
+
 .gridCustom:first-child {
   margin-top: 0;
 }
-
-/*.cardGroup > div:last-child {*/
-/*  margin-top: 12px;*/
-/*}*/
 
 .userContainer {
   padding: 0 !important;
@@ -268,13 +404,13 @@ export default {
 .headerCard {
   display: grid;
   padding: 0px;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   column-gap: 12px;
   row-gap: 12px;
   grid-auto-rows: 1fr;
 }
 
-.headerCardUser{
+.headerCardUser {
   display: grid;
   padding: 0px;
   margin-top: 16px;
@@ -322,27 +458,18 @@ hr {
   color: #757575 !important;
 }
 
+div {
+  color: #656565;
+}
+
 .percentExternal {
-  border-radius: 16px;
+  border-radius: 12px;
   background-color: lightgrey;
-  width: 100%;
-  height: 18px;
 }
 
 .percentInternal {
-  border-radius: 16px;
-  background-color: lightcyan;
-  border-width: 1px;
-  border-style: solid;
-  border-color: darkcyan;
-  text-align: center;
-  justify-content: center;
-  display: flex;
-  align-content: center;
-  align-items: center;
-  font-size: 12px;
-  color: darkcyan;
-  height: 100%;
+  border-radius: 12px;
+  background-color: darkcyan;
 }
 
 .cardGroup {

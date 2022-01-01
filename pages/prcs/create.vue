@@ -2,17 +2,17 @@
   <b-container>
     <div class="middleCard">
       <h1>
-        {{ isEditing ? 'Prescription #' + $route.query.id : 'New Prescription' }}
+        {{ isEditing ? 'PRC #' + $route.query.id : 'New PRC' }}
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
           v-if="!isEditing"
           id="patient"
-          :invalid-feedback="invalidPatientFeedback"
           label="Patient"
+          description="The patient is required"
           :state="isPatientValid"
         >
-          <b-form-select id="patient" v-model="prescription.patient" required>
+          <b-form-select id="patient" v-model="prc.patient" required>
             <option
               v-for="patient in patients"
               :key="patient.username"
@@ -22,27 +22,19 @@
             </option>
           </b-form-select>
         </b-form-group>
-
-        <b-form-group id="description" label="Prescription">
-          <b-form-textarea
-            id="description"
-            v-model.trim="prescription.description"
-            trim
-          ></b-form-textarea>
-        </b-form-group>
         <b-form-group id="startDate" label="Start Date">
           <b-form-datepicker
             id="startDate"
-            v-model="prescription.startDate"
+            v-model="prc.startDate"
             :min="new Date()"
-            :max="prescription.endDate"
+            :max="prc.endDate"
           ></b-form-datepicker>
         </b-form-group>
         <b-form-group id="endDate" label="End Date">
           <b-form-datepicker
             id="endDate"
-            v-model="prescription.endDate"
-            :min="prescription.startDate"
+            v-model="prc.endDate"
+            :min="prc.startDate"
           ></b-form-datepicker>
         </b-form-group>
 
@@ -75,10 +67,9 @@
 export default {
   data() {
     return {
-      prescription: {
+      prc: {
         doctor: this.$auth.user.sub,
         patient: null,
-        description: null,
         startDate:
           new Date().getFullYear() +
           '-' +
@@ -88,28 +79,21 @@ export default {
         endDate: null
       },
       patients: [],
-      errorMsg: false,
-      patientValid: false
+      errorMsg: false
     }
   },
   computed: {
     isEditing() {
       return this.$route.query.id != null
     },
-    invalidPatientFeedback() {
-      if (this.prescription.patient == null) {
-        return "";
-      }
-      return this.patientValid ? "" : "Patient has no active PRC"
-    },
     isPatientValid() {
-      return this.prescription.patient != null && this.patientValid
+      return this.prc.patient != null
     },
     isStartDateValid() {
-      return this.prescription.startDate != null
+      return this.prc.startDate != null
     },
     isEndDateValid() {
-      return this.prescription.endDate != null
+      return this.prc.endDate != null
     },
     isFormValid() {
       if (!this.isPatientValid) {
@@ -121,22 +105,7 @@ export default {
       if (!this.isEndDateValid) {
         return false
       }
-      return this.patientValid
-    }
-  },
-  watch: {
-    'prescription.patient'() {
-      this.$axios.$get("/api/patients/" + this.prescription.patient +
-        "/prc"
-      ).then((response) => {
-        if (response === "") {
-          this.patientValid = false
-        } else {
-          this.patientValid = true
-        }
-      }).catch(() => {
-        this.patientValid = false
-      })
+      return true
     }
   },
   beforeCreate() {
@@ -150,15 +119,15 @@ export default {
 
     if (this.isEditing) {
       this.$axios
-        .$get('/api/prescriptions/' + this.$route.query.id)
+        .$get('/api/prcs/' + this.$route.query.id)
         .then((response) => {
-          this.prescription = response;
+          this.prc = response;
         })
         .catch((error) => {
           this.errorMsg = error.response.data
         })
     } else {
-      await this.$axios
+      this.$axios
         .get('/api/patients')
         .then((response) => {
           this.patients = response.data
@@ -174,8 +143,8 @@ export default {
     },
     reset() {
       this.errorMsg = false
-      this.prescription = {}
-      this.prescription.startDate =
+      this.prc = {}
+      this.prc.startDate =
         new Date().getFullYear() +
         '-' +
         (new Date().getMonth() + 1) +
@@ -184,25 +153,25 @@ export default {
     },
     create() {
       this.$axios
-        .$post('/api/prescriptions', this.prescription)
+        .$post('/api/prcs', this.prc)
         .then(() => {
-          this.$toast.success("Prescription created successfully").goAway(3000)
-          this.$router.push('/prescriptions')
+          this.$toast.success("PRC created successfully").goAway(3000)
+          this.$router.push('/prcs')
         })
         .catch((error) => {
-          this.$toast.error("Prescription not created").goAway(3000)
+          this.$toast.error("PRC not created").goAway(3000)
           this.errorMsg = error.response.data
         })
     },
     update() {
       this.$axios
-        .$put('/api/prescriptions/' + this.$route.query.id, this.prescription)
+        .$put('/api/prcs/' + this.$route.query.id, this.prc)
         .then(() => {
-          this.$toast.success("Prescription #" + this.$route.query.id + " updated successfully").goAway(3000)
-          this.$router.push('/prescriptions')
+          this.$toast.success("PRC #" + this.$route.query.id + " updated successfully").goAway(3000)
+          this.$router.push('/prcs')
         })
         .catch((error) => {
-          this.$toast.error("Prescription #" + this.$route.query.id + " was not updated").goAway(3000)
+          this.$toast.error("PRC #" + this.$route.query.id + " was not updated").goAway(3000)
           this.errorMsg = error.response.data
         })
     },

@@ -11,6 +11,13 @@
           <template #cell(details)="row">
             <nuxt-link
               class="btn btn-link"
+              :to="`/biometricsType/${row.item.code}`">
+              <b-icon-file-earmark-text
+                style="color: darkcyan"
+                font-scale="2"></b-icon-file-earmark-text>
+            </nuxt-link>
+            <nuxt-link
+              class="btn btn-link"
               :to="{
                 name: 'biometricsType-create',
                 query: { code: `${row.item.code}` }
@@ -50,10 +57,15 @@
           v-model="file"
           placeholder="Choose a file or drop it here..."
           drop-placeholder="Drop file here..."
-          accept=".csv"
-        ></b-form-file>
+          accept=".csv"></b-form-file>
         <div class="flex-row d-flex flex-row-reverse mt-3">
-          <b-button variant="info" class="float-right" type="submit" :disabled="!hasFile">IMPORT CSV</b-button>
+          <b-button
+            variant="info"
+            class="float-right"
+            type="submit"
+            :disabled="!hasFile"
+            >IMPORT CSV</b-button
+          >
         </div>
       </form>
     </div>
@@ -65,13 +77,13 @@ export default {
     return {
       fields: [
         'code',
-        {sortable: true, key: 'name'},
+        { sortable: true, key: 'name' },
         'description',
         {
           sortable: true,
           key: 'valueMin'
         },
-        {sortable: true, key: 'valueMax'},
+        { sortable: true, key: 'valueMax' },
         'unity',
         'admin',
         {
@@ -81,7 +93,7 @@ export default {
         }
       ],
       biometricsTypes: [],
-      file: null,
+      file: null
     }
   },
   computed: {
@@ -113,17 +125,22 @@ export default {
       if (!this.hasFile) {
         return
       }
-      this.$axios.$post('/api/biometricsType/upload', this.formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then((response) => {
-        this.file = null
-        this.$toast.success(response).goAway(3000);
-        this.fetchBiometricTypes()
-      }).catch(() => {
-        this.$toast.error("Some error occurred while loading csv").goAway(3000);
-      })
+      this.$axios
+        .$post('/api/biometricsType/upload', this.formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then((response) => {
+          this.file = null
+          this.$toast.success(response).goAway(3000)
+          this.fetchBiometricTypes()
+        })
+        .catch(() => {
+          this.$toast
+            .error('Some error occurred while loading csv')
+            .goAway(3000)
+        })
     },
     deleteBioType(code) {
       this.$axios

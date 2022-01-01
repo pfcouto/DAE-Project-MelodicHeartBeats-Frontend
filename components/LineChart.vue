@@ -1,8 +1,8 @@
 <script>
-import {Pie} from 'vue-chartjs'
+import {Line} from 'vue-chartjs'
 
 export default {
-  extends: Pie,
+  extends: Line,
   props: {data: {type: Object, default: null}, options: {type: Object, default: null}}, watch: {
     data(to, from) {
       this.renderChart(this.data, this.options)

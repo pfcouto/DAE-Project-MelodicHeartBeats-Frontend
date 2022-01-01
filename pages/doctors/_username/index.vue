@@ -7,7 +7,7 @@
     <p>Email: {{ doctor.email }}</p>
     <p>Phone Number: {{ doctor.phoneNumber }}</p>
     <p>Office: {{ doctor.office }}</p>
-    <h4>Prescriptions</h4>
+    <h4>PRCs</h4>
     <div class="xOverflow">
       <b-table
         v-if="prescriptions.length"
