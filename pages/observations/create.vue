@@ -144,7 +144,7 @@ export default {
     return {
       observation: {
         date: null,
-        patient: null,
+        patient: this.$route.query.patientUsername ?? null,
         biometricType: null,
         quantitativeValue: null,
         qualitativeValue: null,
@@ -229,10 +229,7 @@ export default {
         return
       }
       this.$axios
-        .$get(
-          '/api/biometricsType/' +
-            this.observation.biometricType
-        )
+        .$get('/api/biometricsType/' + this.observation.biometricType)
         .then((bio) => {
           this.observation.biometricType = bio.code
           this.biometricTypeMin = bio.valueMin

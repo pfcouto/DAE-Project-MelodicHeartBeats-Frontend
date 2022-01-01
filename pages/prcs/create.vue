@@ -10,14 +10,12 @@
           id="patient"
           label="Patient"
           description="The patient is required"
-          :state="isPatientValid"
-        >
+          :state="isPatientValid">
           <b-form-select id="patient" v-model="prc.patient" required>
             <option
               v-for="patient in patients"
               :key="patient.username"
-              :value="patient.username"
-            >
+              :value="patient.username">
               {{ patient.name }}
             </option>
           </b-form-select>
@@ -27,15 +25,13 @@
             id="startDate"
             v-model="prc.startDate"
             :min="new Date()"
-            :max="prc.endDate"
-          ></b-form-datepicker>
+            :max="prc.endDate"></b-form-datepicker>
         </b-form-group>
         <b-form-group id="endDate" label="End Date">
           <b-form-datepicker
             id="endDate"
             v-model="prc.endDate"
-            :min="prc.startDate"
-          ></b-form-datepicker>
+            :min="prc.startDate"></b-form-datepicker>
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
@@ -46,16 +42,14 @@
             v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="create"
-          >
+            @click.prevent="create">
             CREATE
           </b-button>
           <b-button
             v-else
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="update"
-          >
+            @click.prevent="update">
             UPDATE
           </b-button>
         </div>
@@ -69,7 +63,7 @@ export default {
     return {
       prc: {
         doctor: this.$auth.user.sub,
-        patient: null,
+        patient: this.$route.query.patientUsername ?? null,
         startDate:
           new Date().getFullYear() +
           '-' +
@@ -109,9 +103,9 @@ export default {
     }
   },
   beforeCreate() {
-    if (this.$auth.user.groups[0] !== "Doctor") {
+    if (this.$auth.user.groups[0] !== 'Doctor') {
       this.$toast.error('Doctors only!').goAway(3000)
-      this.$router.back();
+      this.$router.back()
     }
   },
   async mounted() {
@@ -121,7 +115,7 @@ export default {
       this.$axios
         .$get('/api/prcs/' + this.$route.query.id)
         .then((response) => {
-          this.prc = response;
+          this.prc = response
         })
         .catch((error) => {
           this.errorMsg = error.response.data
@@ -139,7 +133,7 @@ export default {
   },
   methods: {
     routeBack() {
-      this.$router.back();
+      this.$router.back()
     },
     reset() {
       this.errorMsg = false
@@ -155,11 +149,11 @@ export default {
       this.$axios
         .$post('/api/prcs', this.prc)
         .then(() => {
-          this.$toast.success("PRC created successfully").goAway(3000)
+          this.$toast.success('PRC created successfully').goAway(3000)
           this.$router.push('/prcs')
         })
         .catch((error) => {
-          this.$toast.error("PRC not created").goAway(3000)
+          this.$toast.error('PRC not created').goAway(3000)
           this.errorMsg = error.response.data
         })
     },
@@ -167,14 +161,18 @@ export default {
       this.$axios
         .$put('/api/prcs/' + this.$route.query.id, this.prc)
         .then(() => {
-          this.$toast.success("PRC #" + this.$route.query.id + " updated successfully").goAway(3000)
+          this.$toast
+            .success('PRC #' + this.$route.query.id + ' updated successfully')
+            .goAway(3000)
           this.$router.push('/prcs')
         })
         .catch((error) => {
-          this.$toast.error("PRC #" + this.$route.query.id + " was not updated").goAway(3000)
+          this.$toast
+            .error('PRC #' + this.$route.query.id + ' was not updated')
+            .goAway(3000)
           this.errorMsg = error.response.data
         })
-    },
+    }
   }
 }
 </script>
