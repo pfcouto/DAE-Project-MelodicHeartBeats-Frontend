@@ -140,6 +140,14 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store }) {
+    if (
+      store.state.auth.user.groups &&
+      store.state.auth.user.groups[0] === 'Patient'
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       observation: {
@@ -229,12 +237,8 @@ export default {
         return
       }
       this.$axios
-        .$get(
-          '/api/biometricsType/' +
-            this.observation.biometricType
-        )
+        .$get('/api/biometricsType/' + this.observation.biometricType)
         .then((bio) => {
-        
           this.biometricTypeMin = bio.valueMin
           this.biometricTypeMax = bio.valueMax
         })

@@ -73,6 +73,15 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store }) {
+    if (
+      store.state.auth.user.groups &&
+      (store.state.auth.user.groups[0] === 'Patient' ||
+        store.state.auth.user.groups[0] === 'Doctor')
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       fields: [

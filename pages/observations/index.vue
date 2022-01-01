@@ -16,6 +16,7 @@
 
           <template #cell(details)="row">
             <nuxt-link
+              v-if="!isPatient"
               class="btn btn-link"
               :to="{
                 name: 'observations-create',
@@ -32,7 +33,10 @@
         <nuxt-link to="/">
           <b-button variant="danger">Back</b-button>
         </nuxt-link>
-        <nuxt-link to="observations/create" style="float: right">
+        <nuxt-link
+          v-if="!isPatient"
+          to="observations/create"
+          style="float: right">
           <b-button variant="success">NEW</b-button>
         </nuxt-link>
       </div>
@@ -61,10 +65,14 @@ export default {
       observations: []
     }
   },
+  computed: {
+    isPatient() {
+      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient'
+    }
+  },
   created() {
     this.fetchBiometricTypes()
   },
-
   methods: {
     deleteBioType(code) {
       this.$axios
