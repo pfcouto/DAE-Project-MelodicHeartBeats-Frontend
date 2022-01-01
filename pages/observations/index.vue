@@ -3,6 +3,11 @@
     <div class="middleCard">
       <div class="xOverflow">
         <b-table striped hover :items="observations" :fields="fields">
+          <template #cell(biometricTypeName)="row">
+            <nuxt-link :to="`/biometricsType/${row.item.biometricType}`">
+              {{ row.item.biometricTypeName }}
+            </nuxt-link>
+          </template>
           <template #cell(patient)="row">
             <nuxt-link :to="`/patients/${row.item.patient}`">
               {{ row.item.patient }}
@@ -13,11 +18,12 @@
             <nuxt-link
               class="btn btn-link"
               :to="{
-              name: 'observations-create',
-              query: { code: `${row.item.code}` }
-            }"
-            >
-              <b-icon-pencil-square style="color: orange;" font-scale="2"></b-icon-pencil-square>
+                name: 'observations-create',
+                query: { code: `${row.item.code}` }
+              }">
+              <b-icon-pencil-square
+                style="color: orange"
+                font-scale="2"></b-icon-pencil-square>
             </nuxt-link>
           </template>
         </b-table>
@@ -39,10 +45,10 @@ export default {
     return {
       fields: [
         'code',
-        {sortable: true, key: 'date'},
+        { sortable: true, key: 'date' },
         'patient',
-        'biometricType',
-        {sortable: true, key: 'quantitativeValue'},
+        'biometricTypeName',
+        { sortable: true, key: 'quantitativeValue' },
         'qualitativeValue',
         'what',
         'local',
