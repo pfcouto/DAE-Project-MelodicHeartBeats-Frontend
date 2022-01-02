@@ -56,7 +56,6 @@ export default {
         'startDate',
         'endDate'
       ]
-      //   documentsFields: ['filename', 'actions']
     }
   },
   computed: {
@@ -66,9 +65,7 @@ export default {
     prescriptions() {
       return this.patient.prescriptionDTOS || []
     },
-    // documents() {
-    //   return this.student.documents || []
-    // }
+
     isPatient() {
       return this.$auth.user.groups.includes('Doctor')
     }
