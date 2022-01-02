@@ -13,11 +13,12 @@
             <nuxt-link
               class="btn btn-link"
               :to="{
-              name: 'observations-create',
-              query: { code: `${row.item.code}` }
-            }"
-            >
-              <b-icon-pencil-square style="color: orange;" font-scale="2"></b-icon-pencil-square>
+                name: 'observations-create',
+                query: { code: `${row.item.code}` }
+              }">
+              <b-icon-pencil-square
+                style="color: orange"
+                font-scale="2"></b-icon-pencil-square>
             </nuxt-link>
           </template>
         </b-table>
@@ -26,7 +27,10 @@
         <nuxt-link to="/">
           <b-button variant="danger">Back</b-button>
         </nuxt-link>
-        <nuxt-link to="observations/create" style="float: right">
+        <nuxt-link
+          v-if="!isAdmin"
+          to="observations/create"
+          style="float: right">
           <b-button variant="success">NEW</b-button>
         </nuxt-link>
       </div>
@@ -39,10 +43,10 @@ export default {
     return {
       fields: [
         'code',
-        {sortable: true, key: 'date'},
+        { sortable: true, key: 'date' },
         'patient',
         'biometricType',
-        {sortable: true, key: 'quantitativeValue'},
+        { sortable: true, key: 'quantitativeValue' },
         'qualitativeValue',
         'what',
         'local',
@@ -53,6 +57,11 @@ export default {
         }
       ],
       observations: []
+    }
+  },
+  computed: {
+    isAdmin() {
+      return this.$auth.user.groups.includes('Administrator')
     }
   },
   created() {
