@@ -6,10 +6,9 @@
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
-          v-if="!isEditing"
           id="patient"
+          :disabled="isEditing"
           label="Patient"
-          description="The patient is required"
           :state="isPatientValid"
         >
           <b-form-select id="patient" v-model="prc.patient" required>
@@ -26,6 +25,7 @@
           <b-form-datepicker
             id="startDate"
             v-model="prc.startDate"
+            :disabled="isEditing"
             :min="new Date()"
             :max="prc.endDate"
           ></b-form-datepicker>
@@ -41,7 +41,7 @@
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <b-button variant="info" @click="routeBack">RETURN</b-button>
         <div style="float: right">
-          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
+          <!--          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>-->
           <b-button
             v-if="!isEditing"
             variant="success"
@@ -67,9 +67,10 @@
 export default {
   data() {
     return {
+      prcReset: null,
       prc: {
         doctor: this.$auth.user.sub,
-        patient: null,
+        patient: this.$route.query.patientUsername,
         startDate:
           new Date().getFullYear() +
           '-' +
@@ -117,23 +118,24 @@ export default {
   async mounted() {
     await this.$route
 
+    this.$axios
+      .get('/api/patients')
+      .then((response) => {
+        this.patients = response.data
+      })
+      .catch(() => {
+        this.patients = []
+      })
+
     if (this.isEditing) {
       this.$axios
         .$get('/api/prcs/' + this.$route.query.id)
         .then((response) => {
-          this.prc = response;
+          this.prc = response
+          this.prcReset = response
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
-        })
-    } else {
-      this.$axios
-        .get('/api/patients')
-        .then((response) => {
-          this.patients = response.data
-        })
-        .catch(() => {
-          this.patients = []
+          this.errorMsg = error.response.data.split(":")[1]
         })
     }
   },
@@ -141,16 +143,20 @@ export default {
     routeBack() {
       this.$router.back();
     },
-    reset() {
-      this.errorMsg = false
-      this.prc = {}
-      this.prc.startDate =
-        new Date().getFullYear() +
-        '-' +
-        (new Date().getMonth() + 1) +
-        '-' +
-        new Date().getDate()
-    },
+    // reset() {
+    //   this.errorMsg = false
+    //   if (this.isEditing) {
+    //     this.prc.endDate = this.prcReset.endDate
+    //   } else {
+    //     this.prc = {}
+    //   }
+    //   this.prc.startDate =
+    //     new Date().getFullYear() +
+    //     '-' +
+    //     (new Date().getMonth() + 1) +
+    //     '-' +
+    //     new Date().getDate()
+    // },
     create() {
       this.$axios
         .$post('/api/prcs', this.prc)
@@ -160,19 +166,19 @@ export default {
         })
         .catch((error) => {
           this.$toast.error("PRC not created").goAway(3000)
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     update() {
       this.$axios
-        .$put('/api/prcs/' + this.$route.query.id, this.prc)
+        .$patch('/api/prcs/' + this.$route.query.id + '/endDate', {endDate: this.prc.endDate})
         .then(() => {
-          this.$toast.success("PRC #" + this.$route.query.id + " updated successfully").goAway(3000)
+          this.$toast.success("PRC #" + this.$route.query.id + " end date updated successfully").goAway(3000)
           this.$router.push('/prcs')
         })
         .catch((error) => {
-          this.$toast.error("PRC #" + this.$route.query.id + " was not updated").goAway(3000)
-          this.errorMsg = error.response.data
+          this.$toast.error("PRC #" + this.$route.query.id + " end date was not updated").goAway(3000)
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
   }

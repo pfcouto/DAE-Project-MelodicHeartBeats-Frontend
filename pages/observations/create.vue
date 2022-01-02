@@ -148,7 +148,6 @@
 <script>
 export default {
   middleware({ redirect, store }) {
-    console.log(store.state.auth.user.groups[0])
     if (
       store.state.auth.user.groups &&
       store.state.auth.user.groups.includes('Administrator')
@@ -177,7 +176,6 @@ export default {
   computed: {
     isPatient() {
       if (this.$auth.user.groups && this.$auth.user.groups.includes('Patient')) {
-        this.observation.patient = this.$auth.user.sub
         return true
       } else {
         return false
@@ -246,6 +244,10 @@ export default {
     }
     await this.fetchPatients()
     await this.fetchBiometricsType()
+
+    if (this.isPatient) {
+      this.observation.patient = this.$auth.user.sub
+    }
   },
   methods: {
     loadMinMax() {
@@ -281,7 +283,7 @@ export default {
           this.$router.push('/observations')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     create() {
@@ -291,7 +293,7 @@ export default {
           this.$router.push('/observations')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     async fetchObservationData() {
@@ -302,7 +304,7 @@ export default {
           // console.log(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     fetchPatients() {

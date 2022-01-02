@@ -3,25 +3,23 @@
     <div class="middleCard">
       <div class="xOverflow">
         <b-table hover :items="coloredPRCs" :fields="fields">
-          <template #cell(patient)="row">
-            <nuxt-link :to="`/patients/${row.item.patient}`">
-              {{ row.item.patient }}
-            </nuxt-link>
-          </template>
           <template #cell(details)="row">
-            <nuxt-link class="btn btn-link align-self-auto" :to="`/PRCs/${row.item.id}`">
+            <nuxt-link class="btn btn-link align-self-auto" :to="`/prcs/${row.item.id}`">
               <b-icon-file-earmark-text style="color: darkcyan;" font-scale="2"></b-icon-file-earmark-text>
             </nuxt-link>
             <nuxt-link
               class="btn btn-link"
               :to="{
-              name: 'PRCs-create',
+              name: 'prcs-create',
               query: { id: `${row.item.id}` }
             }"
             >
-              <b-icon-pencil-square style="color: orange;" font-scale="2"></b-icon-pencil-square>
+              <b-icon-pencil-square v-if="isDoctor" style="color: orange;" font-scale="2"></b-icon-pencil-square>
             </nuxt-link>
-            <b-icon-trash style="color: red;" font-scale="2" @click="deletePRC(row)"></b-icon-trash>
+            <b-icon-shield-lock v-if="isDoctor && row.item.active" style="color: red;" font-scale="2"
+                                @click="toggleActive(row)"></b-icon-shield-lock>
+            <b-icon-key v-if="isDoctor && !row.item.active" style="color: green;" font-scale="2"
+                        @click="toggleActive(row)"></b-icon-key>
           </template>
         </b-table>
       </div>
@@ -29,7 +27,7 @@
         <nuxt-link to="/">
           <b-button variant="danger">BACK</b-button>
         </nuxt-link>
-        <nuxt-link to="PRCs/create" style="float: right">
+        <nuxt-link v-if="!isPatient" to="prcs/create" style="float: right">
           <b-button variant="success">NEW</b-button>
         </nuxt-link>
       </div>
@@ -43,11 +41,25 @@ export default {
       fields: ['id', {sortable: true, key: 'patient'}, {sortable: true, key: 'startDate'}, {
         sortable: true,
         key: 'endDate'
-      }],
+      },
+        {
+          key: 'details',
+          tdClass: 'text-center',
+          label: ''
+        }],
       PRCs: []
     }
   },
   computed: {
+    isAdmin() {
+      return this.$auth.user.groups && this.$auth.user.groups.includes('Administrator');
+    },
+    isDoctor() {
+      return this.$auth.user.groups && this.$auth.user.groups.includes('Doctor');
+    },
+    isPatient() {
+      return this.$auth.user.groups.includes("Patient")
+    },
     coloredPRCs() {
       if (!this.PRCs || this.PRCs.length < 1) return []
       return this.PRCs.map(prc => {
@@ -68,12 +80,12 @@ export default {
     }
   },
   methods: {
-    deletePRC(row) {
-      this.$axios.$delete('/api/PRCs/' + row.item.id).then(() => {
-        this.$toast.success("PRC #" + row.item.id + " deleted successfully").goAway(3000)
-        this.PRCs.splice(row.index, 1)
+    toggleActive(row) {
+      this.$axios.$patch('/api/prcs/' + row.item.id + '/active', {active: !row.item.active}).then(() => {
+        this.$toast.success("PRC #" + row.item.id + " updated successfully").goAway(3000)
+        this.PRCs[row.index].active = !row.item.active
       }).catch(() => {
-        this.$toast.error("PRC #" + row.item.id + " was not deleted").goAway(3000)
+        this.$toast.error("PRC #" + row.item.id + " was not updated").goAway(3000)
       })
     },
   }

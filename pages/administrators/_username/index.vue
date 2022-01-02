@@ -35,11 +35,7 @@
       </template>
     </b-table>
     <p v-else>No documents.</p> -->
-    <nuxt-link to="/administrators">Back</nuxt-link>
-    <!-- &nbsp;
-    <nuxt-link :to="`/patients/${username}/send-email`">Send e-mail</nuxt-link>
-    &nbsp;
-    <nuxt-link :to="`/patients/upload`">Upload</nuxt-link> -->
+    <b-button variant="info" @click="routeBack">RETURN</b-button>
   </b-container>
 </template>
 <script>
@@ -79,21 +75,9 @@ export default {
       })
   },
   methods: {
-    // download(fileToDownload) {
-    //   const documentId = fileToDownload.id
-    //   this.$axios
-    //     .$get('/api/documents/download/' + documentId, {
-    //       responseType: 'arraybuffer'
-    //     })
-    //     .then((file) => {
-    //       const url = window.URL.createObjectURL(new Blob([file]))
-    //       const link = document.createElement('a')
-    //       link.href = url
-    //       link.setAttribute('download', fileToDownload.filename)
-    //       document.body.appendChild(link)
-    //       link.click()
-    //     })
-    // }
+    routeBack() {
+      this.$router.back();
+    }
   }
 }
 </script>

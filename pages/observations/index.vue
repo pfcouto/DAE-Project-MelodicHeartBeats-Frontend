@@ -80,7 +80,7 @@ export default {
           this.fetchBiometricTypes()
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     fetchBiometricTypes() {

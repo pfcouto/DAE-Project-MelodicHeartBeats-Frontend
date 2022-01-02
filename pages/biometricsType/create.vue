@@ -327,7 +327,7 @@ export default {
           this.$router.push('/biometricsType')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     update() {
@@ -340,7 +340,7 @@ export default {
           this.$router.push('/biometricsType')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     fetchBiometricType() {
@@ -350,7 +350,7 @@ export default {
           this.initializeBiometricType(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     initializeBiometricType(biometricType) {

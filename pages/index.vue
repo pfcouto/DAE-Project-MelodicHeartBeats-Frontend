@@ -1,16 +1,20 @@
 <template>
   <b-container class="major">
     <b-container class="userContainer">
-      <b-card-img style="border-radius: 0" src="~/assets/homePage.jpg">
-      </b-card-img>
+        <b-card-img style="border-radius: 0" src="~/assets/melodicHearts.jpg"></b-card-img>
+      <hr class="w-100 mb-0" />
       <b-container class="userInfoContainer">
         <div class="spaceBetween">
-          <h4 style="flex: 1; color: darkcyan; font-weight: bold">{{ role + ": " + username }}</h4>
-          <a @click="updatePassword">
-            <b-icon-key variant="info" font-scale="2"></b-icon-key>
-          </a>
+          <h4 style="flex: 1; color: #00A0A0; font-weight: bold">{{ username }}</h4>
+          <div>
+            <a class="mr-1" @click="updateProfile">
+              <b-icon-person style="color: #00A0A0" font-scale="2"></b-icon-person>
+            </a>
+            <a @click="updatePassword">
+              <b-icon-key style="color: #00A0A0"  font-scale="2"></b-icon-key>
+            </a>
+          </div>
         </div>
-        <hr/>
         <div v-if="isPatient" class="text-center">
           {{ activePRC ? ("PRC #" + activePRC.id + "  -  " + daysRemaining + " days left!") : "No active PRC" }}
         </div>
@@ -32,7 +36,7 @@
           <nuxt-link to="/prescriptions" class="headerCardComponent">
             <h6>Prescriptions</h6>
           </nuxt-link>
-          <nuxt-link v-if="isDoctor" to="/prcs" class="headerCardComponent">
+          <nuxt-link to="/prcs" class="headerCardComponent">
             <h6>PRCs</h6>
           </nuxt-link>
         </b-container>
@@ -125,7 +129,6 @@ export default {
   components: {PieChart, LineChart},
   data() {
     return {
-      role: this.$auth.user.groups[0],
       username: this.$auth.user.sub,
       prescriptions: [],
       activePRC: null,
@@ -233,12 +236,12 @@ export default {
 
     if (!this.isPatient) {
       // Doctors
-      this.$axios.get("/api/doctors").then((response) => {
+      this.$axios.get("/api/doctors/").then((response) => {
         this.doctors = response.data
       })
 
       // Patients
-      this.$axios.get("/api/patients").then((response) => {
+      this.$axios.get("/api/patients/").then((response) => {
         this.patients = response.data
       })
 
@@ -270,7 +273,7 @@ export default {
       this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prc").then((prc) => {
         this.activePRC = prc
       }).then(() => {
-        if(!this.activePRC)
+        if (!this.activePRC)
           return
         document.getElementById("pInternal").style.width = this.percentDaysRemaining + "%";
       })
@@ -351,6 +354,17 @@ export default {
       } else {
         return 'EXPIRED'
       }
+    },
+    updateProfile() {
+      let path = "/"
+      if (this.$auth.user.groups.includes("Administrator")) {
+        path += "administrators/"
+      } else if (this.$auth.user.groups.includes("Doctor")) {
+        path += "doctors/"
+      } else {
+        path += "patients/"
+      }
+      this.$router.push(path + this.$auth.user.sub)
     },
     updatePassword() {
       this.$router.push("/password")

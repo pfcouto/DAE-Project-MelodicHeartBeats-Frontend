@@ -128,7 +128,7 @@ export default {
         })
         .catch((error) => {
           this.$toast.error('Something went wrong! Password not updated').goAway(3000)
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
   }

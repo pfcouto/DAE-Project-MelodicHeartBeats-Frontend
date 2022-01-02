@@ -17,7 +17,7 @@
       />
       <p v-else>No prescriptions passed.</p>
     </div>
-    <b-button @click="routeBack">BACK</b-button>
+    <b-button variant="info" @click="routeBack">RETURN</b-button>
   </b-container>
 </template>
 <script>

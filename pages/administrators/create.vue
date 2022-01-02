@@ -282,7 +282,7 @@ export default {
           // console.log(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     }
   },
@@ -305,7 +305,7 @@ export default {
           this.$router.push('/administrators')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     update() {
@@ -318,7 +318,7 @@ export default {
           this.$router.push('/administrators')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     initializeAdministrator(editingAdministrator) {
