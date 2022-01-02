@@ -16,6 +16,7 @@
 
           <template #cell(details)="row">
             <nuxt-link
+              
               class="btn btn-link"
               :to="{
                 name: 'observations-create',
@@ -32,7 +33,9 @@
         <nuxt-link to="/">
           <b-button variant="danger">Back</b-button>
         </nuxt-link>
-        <nuxt-link to="observations/create" style="float: right">
+        <nuxt-link
+          to="observations/create"
+          style="float: right">
           <b-button variant="success">NEW</b-button>
         </nuxt-link>
       </div>
@@ -61,10 +64,14 @@ export default {
       observations: []
     }
   },
+  computed: {
+    isPatient() {
+      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient'
+    }
+  },
   created() {
     this.fetchBiometricTypes()
   },
-
   methods: {
     deleteBioType(code) {
       this.$axios
@@ -77,9 +84,16 @@ export default {
         })
     },
     fetchBiometricTypes() {
-      this.$axios.$get('/api/observations/').then((response) => {
-        this.observations = response
-      })
+      this.$axios
+        .$get(
+          '/api/' +
+            (this.$auth.user.groups[0] === 'Patient'
+              ? 'patients/' + this.$auth.user.sub + '/observations'
+              : 'observations/')
+        )
+        .then((response) => {
+          this.observations = response
+        })
     }
   }
 }
