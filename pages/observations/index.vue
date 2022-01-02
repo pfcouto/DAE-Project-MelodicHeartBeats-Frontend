@@ -16,7 +16,7 @@
 
           <template #cell(details)="row">
             <nuxt-link
-              v-if="!isPatient"
+              
               class="btn btn-link"
               :to="{
                 name: 'observations-create',
@@ -34,7 +34,6 @@
           <b-button variant="danger">Back</b-button>
         </nuxt-link>
         <nuxt-link
-          v-if="!isPatient"
           to="observations/create"
           style="float: right">
           <b-button variant="success">NEW</b-button>
@@ -85,9 +84,16 @@ export default {
         })
     },
     fetchBiometricTypes() {
-      this.$axios.$get('/api/observations/').then((response) => {
-        this.observations = response
-      })
+      this.$axios
+        .$get(
+          '/api/' +
+            (this.$auth.user.groups[0] === 'Patient'
+              ? 'patients/' + this.$auth.user.sub + '/observations'
+              : 'observations/')
+        )
+        .then((response) => {
+          this.observations = response
+        })
     }
   }
 }

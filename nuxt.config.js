@@ -93,7 +93,7 @@ export default {
   toast: {
     position: 'top-center',
     defaultProps: {
-      timeout: 3
+      timeout: 3,
     }
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build

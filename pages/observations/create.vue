@@ -27,7 +27,14 @@
             v-model="observation.patient"
             required
             :state="isPatientValid">
+            this.$auth.user.sub
             <option :key="null" :value="null">Choose the patient...</option>
+            <option
+              v-if="isPatient"
+              :key="this.$auth.user.sub"
+              :value="this.$auth.user.sub">
+              {{ this.$auth.user.sub }}
+            </option>
             <option
               v-for="patient in patients"
               :key="patient.username"
@@ -141,9 +148,10 @@
 <script>
 export default {
   middleware({ redirect, store }) {
+    console.log(store.state.auth.user.groups[0])
     if (
       store.state.auth.user.groups &&
-      store.state.auth.user.groups[0] === 'Patient'
+      store.state.auth.user.groups[0] === 'Administrator'
     ) {
       return redirect('/forbiden')
     }
@@ -167,6 +175,14 @@ export default {
     }
   },
   computed: {
+    isPatient() {
+      if (this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient') {
+        this.observation.patient = this.$auth.user.sub
+        return true
+      } else {
+        return false
+      }
+    },
     isEditing() {
       return this.$route.query.code != null
     },
@@ -290,19 +306,21 @@ export default {
         })
     },
     fetchPatients() {
-      this.$axios
-        .get('/api/patients')
-        .then((response) => {
-          this.patients = response.data
-        })
-        .catch(() => {
-          this.patients = []
-        })
+      if (!this.isPatient) {
+        this.$axios
+          .get('/api/patients')
+          .then((response) => {
+            this.patients = response.data
+          })
+          .catch(() => {
+            this.patients = []
+          })
+      }
     },
     fetchBiometricTypeByName() {},
     fetchBiometricsType() {
       this.$axios
-        .get('/api/biometricsType/' + (this.isEditing ? '' : 'nonDeleted'))
+        .get('/api/biometricsType/nonDeleted')
         .then((response) => {
           this.biometricsType = response.data
         })
