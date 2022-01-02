@@ -162,8 +162,8 @@ export default {
   middleware({ redirect, store }) {
     if (
       store.state.auth.user.groups &&
-      (store.state.auth.user.groups[0] === 'Patient' ||
-        store.state.auth.user.groups[0] === 'Doctor')
+      (store.state.auth.user.groups.includes('Patient') ||
+        store.state.auth.user.groups.includes('Doctor'))
     ) {
       return redirect('/forbiden')
     }

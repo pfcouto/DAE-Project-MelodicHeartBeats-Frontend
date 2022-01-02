@@ -57,7 +57,7 @@ export default {
     }
   },
   created() {
-    if (this.$auth.user.groups[0] !== "Patient") {
+    if (!this.$auth.user.groups.includes("Patient")) {
       this.$axios.$get('/api/prcs/').then((PRCs) => {
         this.PRCs = PRCs
       })

@@ -109,7 +109,7 @@ export default {
     }
   },
   beforeCreate() {
-    if (this.$auth.user.groups[0] !== "Doctor") {
+    if (!this.$auth.user.groups.includes("Doctor")) {
       this.$toast.error('Doctors only!').goAway(3000)
       this.$router.back();
     }

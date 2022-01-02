@@ -16,7 +16,7 @@
 
           <template #cell(details)="row">
             <nuxt-link
-              
+
               class="btn btn-link"
               :to="{
                 name: 'observations-create',
@@ -66,7 +66,7 @@ export default {
   },
   computed: {
     isPatient() {
-      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient'
+      return this.$auth.user.groups && this.$auth.user.groups.includes('Patient')
     }
   },
   created() {
@@ -87,7 +87,7 @@ export default {
       this.$axios
         .$get(
           '/api/' +
-            (this.$auth.user.groups[0] === 'Patient'
+            (this.$auth.user.groups.includes('Patient')
               ? 'patients/' + this.$auth.user.sub + '/observations'
               : 'observations/')
         )

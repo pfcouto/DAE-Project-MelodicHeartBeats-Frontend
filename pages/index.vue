@@ -209,13 +209,13 @@ export default {
       return Math.ceil(daysLeftStart + 1)
     },
     isAdmin() {
-      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Administrator';
+      return this.$auth.user.groups && this.$auth.user.groups.includes('Administrator');
     },
     isDoctor() {
-      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Doctor';
+      return this.$auth.user.groups && this.$auth.user.groups.includes('Doctor');
     },
     isPatient() {
-      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient';
+      return this.$auth.user.groups && this.$auth.user.groups.includes('Patient');
     },
   },
   watch: {
@@ -257,12 +257,12 @@ export default {
     }
 
     // prescriptions chart
-    if (this.$auth.user.groups[0] === "Doctor") {
+    if (this.$auth.user.groups.includes('Doctor')) {
       this.$axios.$get('/api/doctors/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
         this.prescriptions = prescriptions
         this.refreshPrescriptionsGraph()
       })
-    } else if (this.$auth.user.groups[0] === "Patient") {
+    } else if (this.$auth.user.groups.includes('Patient')) {
       this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
         this.prescriptions = prescriptions
         this.refreshPrescriptionsGraph()

@@ -64,11 +64,11 @@ export default {
     }
   },
   created() {
-    if (this.$auth.user.groups[0] === "Doctor") {
+    if (this.$auth.user.groups.includes('Doctor')) {
       this.$axios.$get('/api/doctors/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
         this.prescriptions = prescriptions
       })
-    } else if (this.$auth.user.groups[0] === "Patient") {
+    } else if (this.$auth.user.groups.includes('Patient')) {
       this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
         this.prescriptions = prescriptions
       })

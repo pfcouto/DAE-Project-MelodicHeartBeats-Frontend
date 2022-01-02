@@ -31,9 +31,9 @@
             <option :key="null" :value="null">Choose the patient...</option>
             <option
               v-if="isPatient"
-              :key="this.$auth.user.sub"
-              :value="this.$auth.user.sub">
-              {{ this.$auth.user.sub }}
+              :key="$auth.user.sub"
+              :value="$auth.user.sub">
+              {{ $auth.user.sub }}
             </option>
             <option
               v-for="patient in patients"
@@ -151,7 +151,7 @@ export default {
     console.log(store.state.auth.user.groups[0])
     if (
       store.state.auth.user.groups &&
-      store.state.auth.user.groups[0] === 'Administrator'
+      store.state.auth.user.groups.includes('Administrator')
     ) {
       return redirect('/forbiden')
     }
@@ -176,7 +176,7 @@ export default {
   },
   computed: {
     isPatient() {
-      if (this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient') {
+      if (this.$auth.user.groups && this.$auth.user.groups.includes('Patient')) {
         this.observation.patient = this.$auth.user.sub
         return true
       } else {
