@@ -11,6 +11,15 @@
   width: 100%;
 }
 
+.errorDiv {
+  padding: 12px;
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  top: 40%;
+  color: red;
+}
+
 canvas {
   max-height: 350px;
 }
