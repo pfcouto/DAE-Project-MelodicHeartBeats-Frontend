@@ -17,6 +17,7 @@
                 query: { code: `${row.item.code}` }
               }">
               <b-icon-pencil-square
+                v-if="!isAdmin"
                 style="color: orange"
                 font-scale="2"></b-icon-pencil-square>
             </nuxt-link>

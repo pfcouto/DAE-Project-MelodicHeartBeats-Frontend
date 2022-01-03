@@ -6,6 +6,9 @@
     <p>BirthDate: {{ administrator.birthDate }}</p>
     <p>Email: {{ administrator.email }}</p>
     <p>PhoneNumber: {{ administrator.phoneNumber }}</p>
+    <p v-if="isAdministrator">
+      Blocked: {{ administrator.blocked ? 'YES' : 'NO' }}
+    </p>
 
     <h4>BiometricTypes</h4>
     <b-table
@@ -13,12 +16,10 @@
       striped
       hover
       :items="biometricTypes"
-      :fields="biometricTypeFields"
-    />
+      :fields="biometricTypeFields" />
     <p v-else>No Biometric Types Created.</p>
 
     <nuxt-link to="/administrators">Back</nuxt-link>
-
   </b-container>
 </template>
 <script>
@@ -34,7 +35,7 @@ export default {
         'valueMin',
         'unity',
         'admin',
-        'delete'
+        'deleted_at'
       ]
     }
   },
@@ -44,6 +45,9 @@ export default {
     },
     biometricTypes() {
       return this.administrator.biometricsTypeDTOS || []
+    },
+    isAdministrator() {
+      return this.$auth.user.groups[0] === 'Administrator'
     }
   },
   created() {
@@ -52,7 +56,6 @@ export default {
       .then((administrator) => {
         this.administrator = administrator || {}
       })
-  },
-
+  }
 }
 </script>

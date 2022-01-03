@@ -7,6 +7,7 @@
     <p>Email: {{ doctor.email }}</p>
     <p>Phone Number: {{ doctor.phoneNumber }}</p>
     <p>Office: {{ doctor.office }}</p>
+    <p v-if="isAdministrator">Blocked: {{ doctor.blocked ? 'YES' : 'NO' }}</p>
     <h4>PRCs</h4>
     <div class="xOverflow">
       <b-table
@@ -42,6 +43,9 @@ export default {
     },
     prescriptions() {
       return this.doctor.prescriptionDTOS || []
+    },
+    isAdministrator() {
+      return this.$auth.user.groups[0] === 'Administrator'
     }
   },
   created() {
