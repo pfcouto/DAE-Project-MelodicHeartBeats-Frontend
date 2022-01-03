@@ -20,6 +20,7 @@
           <b-input
             id="username"
             v-model.trim="administrator.username"
+            :disabled="isEditing"
             :state="isUsernameValid"
             trim
           />
@@ -98,7 +99,7 @@
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
 
-        <b-button variant="info" @click="routeBack">RETURN</b-button>
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
@@ -282,7 +283,7 @@ export default {
           // console.log(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     }
   },
@@ -305,7 +306,7 @@ export default {
           this.$router.push('/administrators')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     update() {
@@ -318,7 +319,7 @@ export default {
           this.$router.push('/administrators')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     initializeAdministrator(editingAdministrator) {

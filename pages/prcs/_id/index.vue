@@ -1,14 +1,38 @@
 <template>
   <b-container>
     <div class="middleCard">
-      <h1>Prescription #{{ prescription.id }}</h1>
-      <p>Doctor: {{ prescription.doctor }}</p>
-      <p>Patient {{ prescription.patient }}</p>
-      <p>Description: {{ prescription.description }}</p>
-      <p>Start Date: {{ prescription.startDate }}</p>
-      <p>End Date: {{ prescription.endDate }}</p>
+      <h1>PRC #{{ prc.id }}</h1>
+      <p>Patient: {{ prc.patient }}</p>
+      <p>Start Date: {{ prc.startDate }}</p>
+      <p>End Date: {{ prc.endDate }}</p>
+      <p>Status: {{ prc.active ? "Active" : "Not Active" }}</p>
+      <div class="xOverflow">
+        <b-table
+          v-if="prc && prc.prescriptions && prc.prescriptions.length>0"
+          striped
+          hover
+          :items="prc.prescriptions"
+          :fields="prescriptionsFields"
+          @row-clicked="item => rowClicked(item)"
+        >
+          <template #cell(details)="row">
+            <nuxt-link class="btn btn-link align-self-auto" :to="`/prescriptions/${row.item.id}`">
+              <b-icon-file-earmark-text style="color: darkcyan;" font-scale="2"></b-icon-file-earmark-text>
+            </nuxt-link>
+          </template>
+        </b-table>
+        <p v-else>No prescriptions yet.</p>
+      </div>
 
-      <b-button variant="info" @click="routeBack">RETURN</b-button>
+      <div class="spaceBetween">
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
+        <nuxt-link :to="{
+                name: 'prcs-create',
+                query: { id: prc.id }
+              }">
+          <b-button variant="info">EDIT</b-button>
+        </nuxt-link>
+      </div>
     </div>
   </b-container>
 </template>
@@ -16,17 +40,34 @@
 export default {
   data() {
     return {
-      prescription: {},
+      prc: {},
+      prescriptionsFields: [
+        'id',
+        'doctor',
+        'patient',
+        'description',
+        'startDate',
+        'endDate',
+        {
+          key: 'details',
+          tdClass: 'text-center',
+          label: ''
+        }
+      ],
+      prescriptions: null
     }
   },
 
   async created() {
     await this.$route
-    this.$axios.$get(`/api/prescriptions/${this.$route.params.id}`).then((response) => {
-      this.prescription = response
+    this.$axios.$get(`/api/prcs/${this.$route.params.id}/withPrescriptions`).then((response) => {
+      this.prc = response
     })
   },
   methods: {
+    rowClicked(row) {
+      this.$router.push('/prescriptions/' + row.id)
+    },
     routeBack() {
       this.$router.back();
     }

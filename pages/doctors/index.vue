@@ -55,10 +55,10 @@ export default {
   },
   computed: {
     isDoctor() {
-      return this.$auth.user.groups[0] === "Doctor"
+      return this.$auth.user.groups.includes('Doctor')
     },
     isAdministrator() {
-      return this.$auth.user.groups[0] === "Administrator"
+      return this.$auth.user.groups.includes('Administrator')
     },
     coloredDoctors() {
       if (!this.isAdministrator) {

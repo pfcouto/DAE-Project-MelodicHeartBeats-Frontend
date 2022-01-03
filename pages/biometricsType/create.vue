@@ -100,14 +100,20 @@
             </option>
           </b-form-select>
         </b-form-group>
-        <div v-if="biometricType.qualitatives && biometricType.qualitatives.length > 0"
-             class="middleCard mb-3 xOverflow">
+        <div
+          v-if="
+            biometricType.qualitatives && biometricType.qualitatives.length > 0
+          "
+          class="middleCard mb-3 xOverflow">
           <b-table hover :items="biometricType.qualitatives" :fields="fields">
             <template #cell(remove)="row">
-              <b-button variant="danger" @click.prevent="removeQualitative(row.item)">Remove</b-button>
+              <b-button
+                variant="danger"
+                @click.prevent="removeQualitative(row.item)"
+                >Remove</b-button
+              >
             </template>
           </b-table>
-
         </div>
         <div class="pDoubleInputs flex-row d-flex spaceBetween mb-3">
           <div class="doubleInputs w-100 flex-grow-1 d-flex spaceBetween">
@@ -128,7 +134,7 @@
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <nuxt-link to="/biometricsType">
-          <b-button variant="info"> Return</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
@@ -153,6 +159,15 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store }) {
+    if (
+      store.state.auth.user.groups &&
+      (store.state.auth.user.groups.includes('Patient') ||
+        store.state.auth.user.groups.includes('Doctor'))
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       biometricType: {
@@ -164,15 +179,18 @@ export default {
         admin: null,
         qualitatives: []
       },
-      newQualitative: {value: null, meaning: null},
+      newQualitative: { value: null, meaning: null },
       admins: [],
       errorMsg: false,
-      fields: ['value', "meaning",
+      fields: [
+        'value',
+        'meaning',
         {
           key: 'remove',
           tdClass: 'text-right',
           label: ''
-        }],
+        }
+      ]
     }
   },
   computed: {
@@ -190,12 +208,16 @@ export default {
     },
     isValueMaxValid() {
       return (
-        this.biometricType.valueMax !== '' && this.biometricType.valueMax >= 0 && this.biometricType.valueMax >= this.biometricType.valueMin
+        this.biometricType.valueMax !== '' &&
+        this.biometricType.valueMax >= 0 &&
+        this.biometricType.valueMax >= this.biometricType.valueMin
       )
     },
     isValueMinValid() {
       return (
-        this.biometricType.valueMin !== '' && this.biometricType.valueMin >= 0 && this.biometricType.valueMin <= this.biometricType.valueMax
+        this.biometricType.valueMin !== '' &&
+        this.biometricType.valueMin >= 0 &&
+        this.biometricType.valueMin <= this.biometricType.valueMax
       )
     },
     isUnityValid() {
@@ -244,16 +266,30 @@ export default {
   methods: {
     addNewQualitative() {
       if (!this.newQualitative.value) {
-        this.$toast.error('The "Quantitative Value" is a mandatory field').goAway(3000)
+        this.$toast
+          .error('The "Quantitative Value" is a mandatory field')
+          .goAway(3000)
         return
       }
       if (!this.biometricType.valueMax || !this.biometricType.valueMin) {
-        this.$toast.error('Value Min and Value Max fields must be already filled').goAway(3000)
-        return;
+        this.$toast
+          .error('Value Min and Value Max fields must be already filled')
+          .goAway(3000)
+        return
       }
-      if (this.biometricType.valueMax < this.newQualitative.value || this.biometricType.valueMin > this.newQualitative.value) {
-        this.$toast.error('The "Quantitative Value" must be between ' + this.biometricType.valueMin + ' and ' + this.biometricType.valueMax).goAway(3000)
-        return;
+      if (
+        this.biometricType.valueMax < this.newQualitative.value ||
+        this.biometricType.valueMin > this.newQualitative.value
+      ) {
+        this.$toast
+          .error(
+            'The "Quantitative Value" must be between ' +
+              this.biometricType.valueMin +
+              ' and ' +
+              this.biometricType.valueMax
+          )
+          .goAway(3000)
+        return
       }
       if (!this.biometricType.qualitatives) {
         this.biometricType.qualitatives = []
@@ -262,7 +298,11 @@ export default {
         (o) => o.value === this.newQualitative.value
       )
       if (obj.length > 0) {
-        this.$toast.error('The quantitative value inserted already has a qualitative label assigned').goAway(3000)
+        this.$toast
+          .error(
+            'The quantitative value inserted already has a qualitative label assigned'
+          )
+          .goAway(3000)
         return
       }
       this.biometricType.qualitatives.push(this.newQualitative)
@@ -287,7 +327,7 @@ export default {
           this.$router.push('/biometricsType')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     update() {
@@ -300,7 +340,7 @@ export default {
           this.$router.push('/biometricsType')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     fetchBiometricType() {
@@ -310,7 +350,7 @@ export default {
           this.initializeBiometricType(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     initializeBiometricType(biometricType) {

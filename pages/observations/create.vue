@@ -27,7 +27,14 @@
             v-model="observation.patient"
             required
             :state="isPatientValid">
+            this.$auth.user.sub
             <option :key="null" :value="null">Choose the patient...</option>
+            <option
+              v-if="isPatient"
+              :key="$auth.user.sub"
+              :value="$auth.user.sub">
+              {{ $auth.user.sub }}
+            </option>
             <option
               v-for="patient in patients"
               :key="patient.username"
@@ -115,10 +122,10 @@
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <nuxt-link to="/observations">
-          <b-button variant="info"> Return</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <div style="float: right">
-          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
+          <b-button variant="dark" type="reset" @click="reset">RESET</b-button>
           <b-button
             v-if="!isEditing"
             variant="success"
@@ -140,6 +147,14 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store }) {
+    if (
+      store.state.auth.user.groups &&
+      store.state.auth.user.groups.includes('Administrator')
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       observation: {
@@ -159,6 +174,13 @@ export default {
     }
   },
   computed: {
+    isPatient() {
+      if (this.$auth.user.groups && this.$auth.user.groups.includes('Patient')) {
+        return true
+      } else {
+        return false
+      }
+    },
     isEditing() {
       return this.$route.query.code != null
     },
@@ -222,6 +244,10 @@ export default {
     }
     await this.fetchPatients()
     await this.fetchBiometricsType()
+
+    if (this.isPatient) {
+      this.observation.patient = this.$auth.user.sub
+    }
   },
   methods: {
     loadMinMax() {
@@ -231,7 +257,6 @@ export default {
       this.$axios
         .$get('/api/biometricsType/' + this.observation.biometricType)
         .then((bio) => {
-          this.observation.biometricType = bio.code
           this.biometricTypeMin = bio.valueMin
           this.biometricTypeMax = bio.valueMax
         })
@@ -258,7 +283,7 @@ export default {
           this.$router.push('/observations')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     create() {
@@ -268,7 +293,7 @@ export default {
           this.$router.push('/observations')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     async fetchObservationData() {
@@ -279,23 +304,25 @@ export default {
           // console.log(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     fetchPatients() {
-      this.$axios
-        .get('/api/patients')
-        .then((response) => {
-          this.patients = response.data
-        })
-        .catch(() => {
-          this.patients = []
-        })
+      if (!this.isPatient) {
+        this.$axios
+          .get('/api/patients')
+          .then((response) => {
+            this.patients = response.data
+          })
+          .catch(() => {
+            this.patients = []
+          })
+      }
     },
     fetchBiometricTypeByName() {},
     fetchBiometricsType() {
       this.$axios
-        .get('/api/biometricsType/' + (this.isEditing ? '' : 'nonDeleted'))
+        .get('/api/biometricsType/nonDeleted')
         .then((response) => {
           this.biometricsType = response.data
         })

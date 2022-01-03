@@ -1,5 +1,6 @@
 <template>
   <b-container>
+
     <h4>Administrator Details</h4>
     <p>Username: {{ administrator.username }}</p>
     <p>Name: {{ administrator.name }}</p>
@@ -20,6 +21,40 @@
     <p v-else>No Biometric Types Created.</p>
 
     <nuxt-link to="/administrators">Back</nuxt-link>
+
+    <b-container class="middleCard">
+      <h4>Administrator Details</h4>
+      <p>Username: {{ administrator.username }}</p>
+      <p>Name: {{ administrator.name }}</p>
+      <p>BirthDate: {{ administrator.birthDate }}</p>
+      <p>Email: {{ administrator.email }}</p>
+      <p>PhoneNumber: {{ administrator.phoneNumber }}</p>
+      <p v-if="isAdministrator">
+      Blocked: {{ administrator.blocked ? 'YES' : 'NO' }}
+    </p>
+
+      <h4>BiometricTypes</h4>
+      <div class="xOverflow">
+        <b-table
+          v-if="biometricTypes.length"
+          striped
+          hover
+          :items="biometricTypes"
+          :fields="biometricTypeFields"
+        />
+        <p v-else>No Biometric Types Created.</p>
+      </div>
+      <div class="spaceBetween">
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
+        <nuxt-link :to="{
+                name: 'administrators-create',
+                query: { username: administrator.username }
+              }">
+          <b-button variant="info">EDIT</b-button>
+        </nuxt-link>
+      </div>
+    </b-container>
+
   </b-container>
 </template>
 <script>
@@ -56,6 +91,11 @@ export default {
       .then((administrator) => {
         this.administrator = administrator || {}
       })
+  },
+  methods: {
+    routeBack() {
+      this.$router.back();
+    }
   }
 }
 </script>

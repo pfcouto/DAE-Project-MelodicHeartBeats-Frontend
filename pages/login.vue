@@ -1,26 +1,22 @@
 <template>
   <b-container class="loginContainer">
     <div class="middleCard loginCard">
-      <h1>Welcome To Your Heath Platform</h1>
-      <br/>
-      <br/>
-      <br/>
+      <b-card-img style="border-radius: 0" src="~/assets/melodicHearts.jpg"></b-card-img>
 
-      <b-form-group
-        id="username"
+      <b-form-group id="username"
         label="Username"
         :state="isUsernameValid"
       >
         <b-input
           id="username"
           v-model.trim="username"
-          class="inputField"
           :state="isUsernameValid"
           trim
         ></b-input>
       </b-form-group>
       <b-form-group
         id="password"
+        class="loginFieldset"
         label="Password"
       >
         <b-input
@@ -69,13 +65,7 @@ export default {
 <style>
 
 fieldset {
-  width: 80%;
-}
-
-@media (max-width: 550px) {
-  fieldset {
-    width: 100%;
-  }
+  width: 100%;
 }
 
 .loginContainer {

@@ -65,7 +65,7 @@ export default {
       return this.$auth.user.groups[0] === 'Doctor'
     },
     isAdministrator() {
-      return this.$auth.user.groups[0] === 'Administrator'
+      return this.$auth.user.groups.includes('Administrator')
     },
     coloredPatients() {
       if (!this.isAdministrator) {
@@ -82,13 +82,13 @@ export default {
     }
   },
   created() {
-    if (this.$auth.user.groups[0] === 'Administrator') {
+    if (this.$auth.user.groups.includes('Administrator')) {
       this.$axios.$get('/api/patients/all').then((patients) => {
         this.patients = patients
       })
     }
 
-    if (this.$auth.user.groups[0] === 'Doctor') {
+    if (this.$auth.user.groups.includes('Doctor')) {
       this.$axios.$get('/api/patients/').then((patients) => {
         this.patients = patients
       })
