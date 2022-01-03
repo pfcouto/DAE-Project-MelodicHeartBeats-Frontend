@@ -82,6 +82,14 @@
 </template>
 <script>
 export default {
+  middleware({redirect, store}) {
+    if (
+      !store.state.auth.user.groups ||
+      !store.state.auth.user.groups.includes('Doctor')
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       prescription: {
@@ -154,6 +162,9 @@ export default {
   },
   watch: {
     'prescription.patient'() {
+      if (!this.prescription.patient) {
+        return
+      }
       this.$axios.$get("/api/patients/" + this.prescription.patient +
         "/prc"
       ).then((response) => {
