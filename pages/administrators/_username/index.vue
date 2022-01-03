@@ -1,27 +1,5 @@
 <template>
   <b-container>
-
-    <h4>Administrator Details</h4>
-    <p>Username: {{ administrator.username }}</p>
-    <p>Name: {{ administrator.name }}</p>
-    <p>BirthDate: {{ administrator.birthDate }}</p>
-    <p>Email: {{ administrator.email }}</p>
-    <p>PhoneNumber: {{ administrator.phoneNumber }}</p>
-    <p v-if="isAdministrator">
-      Blocked: {{ administrator.blocked ? 'YES' : 'NO' }}
-    </p>
-
-    <h4>BiometricTypes</h4>
-    <b-table
-      v-if="biometricTypes.length"
-      striped
-      hover
-      :items="biometricTypes"
-      :fields="biometricTypeFields" />
-    <p v-else>No Biometric Types Created.</p>
-
-    <nuxt-link to="/administrators">Back</nuxt-link>
-
     <b-container class="middleCard">
       <h4>Administrator Details</h4>
       <p>Username: {{ administrator.username }}</p>
@@ -30,8 +8,8 @@
       <p>Email: {{ administrator.email }}</p>
       <p>PhoneNumber: {{ administrator.phoneNumber }}</p>
       <p v-if="isAdministrator">
-      Blocked: {{ administrator.blocked ? 'YES' : 'NO' }}
-    </p>
+        Blocked: {{ administrator.blocked ? 'YES' : 'NO' }}
+      </p>
 
       <h4>BiometricTypes</h4>
       <div class="xOverflow">
@@ -40,25 +18,35 @@
           striped
           hover
           :items="biometricTypes"
-          :fields="biometricTypeFields"
-        />
+          :fields="biometricTypeFields" />
         <p v-else>No Biometric Types Created.</p>
       </div>
       <div class="spaceBetween">
         <b-button variant="danger" @click="routeBack">BACK</b-button>
-        <nuxt-link :to="{
-                name: 'administrators-create',
-                query: { username: administrator.username }
-              }">
+        <nuxt-link
+          :to="{
+            name: 'administrators-create',
+            query: { username: administrator.username }
+          }">
           <b-button variant="info">EDIT</b-button>
         </nuxt-link>
       </div>
     </b-container>
-
   </b-container>
 </template>
 <script>
 export default {
+  middleware({ redirect, store, route }) {  
+    if (
+      store.state.auth.user.groups &&
+      !(
+        store.state.auth.user.groups.includes('Administrator') &&
+        store.state.auth.user.sub === route.params.username
+      )
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       administrator: {},
@@ -94,7 +82,7 @@ export default {
   },
   methods: {
     routeBack() {
-      this.$router.back();
+      this.$router.back()
     }
   }
 }

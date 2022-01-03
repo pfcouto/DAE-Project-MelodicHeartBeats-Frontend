@@ -15,15 +15,13 @@
           label="Username"
           label-for="username"
           :invalid-feedback="invalidUsernameFeedback"
-          :state="isUsernameValid"
-        >
+          :state="isUsernameValid">
           <b-input
             id="username"
             v-model.trim="patient.username"
             :disabled="isEditing"
             :state="isUsernameValid"
-            trim
-          />
+            trim />
         </b-form-group>
         <b-form-group
           v-if="!isEditing"
@@ -32,14 +30,12 @@
           label="Password"
           label-for="password"
           :invalid-feedback="invalidPasswordFeedback"
-          :state="isPasswordValid"
-        >
+          :state="isPasswordValid">
           <b-input
             v-model="patient.password"
             :state="isPasswordValid"
             type="password"
-            required
-          />
+            required />
         </b-form-group>
         <b-form-group
           id="name"
@@ -47,17 +43,15 @@
           label="Name"
           label-for="name"
           :invalid-feedback="invalidNameFeedback"
-          :state="isNameValid"
-        >
-          <b-input v-model.trim="patient.name" :state="isNameValid" required/>
+          :state="isNameValid">
+          <b-input v-model.trim="patient.name" :state="isNameValid" required />
         </b-form-group>
 
         <b-form-group
           id="birthDate"
           description="The birthDate is required"
           label="Birth Date"
-          label-for="birthDate"
-        >
+          label-for="birthDate">
           <b-form-datepicker id="birthDate" v-model="patient.birthDate">
           </b-form-datepicker>
         </b-form-group>
@@ -68,14 +62,12 @@
           label="Email"
           label-for="email"
           :invalid-feedback="invalidEmailFeedback"
-          :state="isEmailValid"
-        >
+          :state="isEmailValid">
           <b-input
             ref="email"
             v-model.trim="patient.email"
             :state="isEmailValid"
-            required
-          />
+            required />
         </b-form-group>
         <b-form-group
           id="phoneNumber"
@@ -83,14 +75,12 @@
           label="Phone Number"
           label-for="phoneNumber"
           :invalid-feedback="invalidPhoneNumberFeedback"
-          :state="isPhoneNumberValid"
-        >
+          :state="isPhoneNumberValid">
           <b-input
             ref="phoneNumber"
             v-model.trim="patient.phoneNumber"
             :state="isPhoneNumberValid"
-            required
-          />
+            required />
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
@@ -101,16 +91,14 @@
             v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="create"
-          >
+            @click.prevent="create">
             CREATE
           </b-button>
           <b-button
             v-else
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="update"
-          >
+            @click.prevent="update">
             UPDATE
           </b-button>
         </div>
@@ -120,6 +108,19 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store, route }) {
+    if (
+      store.state.auth.user.groups &&
+      !(
+        store.state.auth.user.groups.includes('Administrator') ||
+        store.state.auth.user.groups.includes('Doctor') ||
+        (store.state.auth.user.groups.includes('Patient') &&
+          store.state.auth.user.sub === route.query.username)
+      )
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       patient: {
@@ -275,7 +276,7 @@ export default {
           // console.log(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.split(":")[1]
+          this.errorMsg = error.response.data.split(':')[1]
         })
     }
   },
@@ -286,7 +287,7 @@ export default {
   // },
   methods: {
     routeBack() {
-      this.$router.back();
+      this.$router.back()
     },
     reset() {
       this.errorMsg = false
@@ -298,7 +299,7 @@ export default {
           this.$router.push('/patients')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.split(":")[1]
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     update() {
@@ -308,7 +309,7 @@ export default {
           this.$router.push('/patients')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.split(":")[1]
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     initializePatient(editingPatient) {

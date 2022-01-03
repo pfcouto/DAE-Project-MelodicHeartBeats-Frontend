@@ -16,16 +16,16 @@
           striped
           hover
           :items="prescriptions"
-          :fields="prescriptionsFields"
-        />
+          :fields="prescriptionsFields" />
         <p v-else>No prescriptions passed.</p>
       </div>
       <div class="spaceBetween">
         <b-button variant="danger" @click="routeBack">BACK</b-button>
-        <nuxt-link :to="{
-                name: 'doctors-create',
-                query: { username: doctor.username }
-              }">
+        <nuxt-link
+          :to="{
+            name: 'doctors-create',
+            query: { username: doctor.username }
+          }">
           <b-button variant="info">EDIT</b-button>
         </nuxt-link>
       </div>
@@ -34,6 +34,18 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store, route }) {
+    if (
+      store.state.auth.user.groups &&
+      !(
+        store.state.auth.user.groups.includes('Administrator') ||
+        (store.state.auth.user.groups.includes('Doctor') &&
+          store.state.auth.user.sub === route.params.username)
+      )
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       doctor: {},
@@ -65,7 +77,7 @@ export default {
   },
   methods: {
     routeBack() {
-      this.$router.back();
+      this.$router.back()
     }
   }
 }

@@ -7,21 +7,32 @@
             <template #cell(actions)="row">
               <nuxt-link
                 class="btn btn-link"
-                :to="`/doctors/${row.item.username}`"
-              >
-                <b-icon-file-earmark-text style="color: darkcyan;" font-scale="2"></b-icon-file-earmark-text>
+                :to="`/doctors/${row.item.username}`">
+                <b-icon-file-earmark-text
+                  style="color: darkcyan"
+                  font-scale="2"></b-icon-file-earmark-text>
               </nuxt-link>
               <nuxt-link
                 class="btn btn-link"
                 :to="{
                   name: 'doctors-create',
                   query: { username: `${row.item.username}` }
-                }"
-              >
-                <b-icon-pencil-square v-if="!row.item.blocked" style="color: orange;" font-scale="2"></b-icon-pencil-square>
+                }">
+                <b-icon-pencil-square
+                  v-if="!row.item.blocked"
+                  style="color: orange"
+                  font-scale="2"></b-icon-pencil-square>
               </nuxt-link>
-              <b-icon-trash v-if="isAdministrator && !row.item.blocked" style="color: red;" font-scale="2" @click="blockOrUnblockDoctor(row)"></b-icon-trash>
-              <b-icon-arrow-clockwise v-if="isAdministrator && row.item.blocked" style="color: green;" font-scale="2" @click="blockOrUnblockDoctor(row)"></b-icon-arrow-clockwise>
+              <b-icon-trash
+                v-if="isAdministrator && !row.item.blocked"
+                style="color: red"
+                font-scale="2"
+                @click="blockOrUnblockDoctor(row)"></b-icon-trash>
+              <b-icon-arrow-clockwise
+                v-if="isAdministrator && row.item.blocked"
+                style="color: green"
+                font-scale="2"
+                @click="blockOrUnblockDoctor(row)"></b-icon-arrow-clockwise>
             </template>
           </b-table>
         </div>
@@ -39,6 +50,17 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store, route }) {
+    if (
+      store.state.auth.user.groups &&
+      !(
+        store.state.auth.user.groups.includes('Administrator') ||
+        store.state.auth.user.groups.includes('Doctor')
+      )
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       fields: [
@@ -66,7 +88,7 @@ export default {
       }
       return this.doctors.map((item) => {
         if (item.blocked) {
-          item._rowVariant = "danger"
+          item._rowVariant = 'danger'
         } else {
           item._rowVariant = null
         }
@@ -90,7 +112,9 @@ export default {
               .goAway(3000)
             this.doctors[row.index].blocked = true
           } else {
-            this.$toast.success('Doctor ' + row.item.username + ' unblock successfully').goAway(3000)
+            this.$toast
+              .success('Doctor ' + row.item.username + ' unblock successfully')
+              .goAway(3000)
             this.doctors[row.index].blocked = false
           }
         })

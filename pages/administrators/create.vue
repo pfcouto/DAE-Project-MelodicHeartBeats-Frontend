@@ -15,15 +15,13 @@
           label="Username"
           label-for="username"
           :invalid-feedback="invalidUsernameFeedback"
-          :state="isUsernameValid"
-        >
+          :state="isUsernameValid">
           <b-input
             id="username"
             v-model.trim="administrator.username"
             :disabled="isEditing"
             :state="isUsernameValid"
-            trim
-          />
+            trim />
         </b-form-group>
         <b-form-group
           v-if="!isEditing"
@@ -32,14 +30,12 @@
           label="Password"
           label-for="password"
           :invalid-feedback="invalidPasswordFeedback"
-          :state="isPasswordValid"
-        >
+          :state="isPasswordValid">
           <b-input
             v-model="administrator.password"
             :state="isPasswordValid"
             type="password"
-            required
-          />
+            required />
         </b-form-group>
         <b-form-group
           id="name"
@@ -47,21 +43,18 @@
           label="Name"
           label-for="name"
           :invalid-feedback="invalidNameFeedback"
-          :state="isNameValid"
-        >
+          :state="isNameValid">
           <b-input
             v-model.trim="administrator.name"
             :state="isNameValid"
-            required
-          />
+            required />
         </b-form-group>
 
         <b-form-group
           id="birthDate"
           description="The birthDate is required"
           label="Birth Date"
-          label-for="birthDate"
-        >
+          label-for="birthDate">
           <b-form-datepicker id="birthDate" v-model="administrator.birthDate">
           </b-form-datepicker>
         </b-form-group>
@@ -72,14 +65,12 @@
           label="Email"
           label-for="email"
           :invalid-feedback="invalidEmailFeedback"
-          :state="isEmailValid"
-        >
+          :state="isEmailValid">
           <b-input
             ref="email"
             v-model.trim="administrator.email"
             :state="isEmailValid"
-            required
-          />
+            required />
         </b-form-group>
         <b-form-group
           id="phoneNumber"
@@ -87,14 +78,12 @@
           label="Phone Number"
           label-for="phoneNumber"
           :invalid-feedback="invalidPhoneNumberFeedback"
-          :state="isPhoneNumberValid"
-        >
+          :state="isPhoneNumberValid">
           <b-input
             ref="phoneNumber"
             v-model.trim="administrator.phoneNumber"
             :state="isPhoneNumberValid"
-            required
-          />
+            required />
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
@@ -106,16 +95,14 @@
             v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="create"
-          >
+            @click.prevent="create">
             CREATE
           </b-button>
           <b-button
             v-else
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="update"
-          >
+            @click.prevent="update">
             UPDATE
           </b-button>
         </div>
@@ -125,6 +112,14 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store, route }) {
+    if (
+      store.state.auth.user.groups &&
+      !store.state.auth.user.groups.includes('Administrator')
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       administrator: {
@@ -283,7 +278,7 @@ export default {
           // console.log(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.split(":")[1]
+          this.errorMsg = error.response.data.split(':')[1]
         })
     }
   },
@@ -306,7 +301,7 @@ export default {
           this.$router.push('/administrators')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.split(":")[1]
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     update() {
@@ -319,7 +314,7 @@ export default {
           this.$router.push('/administrators')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.split(":")[1]
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     initializeAdministrator(editingAdministrator) {
