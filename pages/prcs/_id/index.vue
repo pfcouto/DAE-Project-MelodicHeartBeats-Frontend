@@ -24,7 +24,15 @@
         <p v-else>No prescriptions yet.</p>
       </div>
 
-      <b-button variant="danger" @click="routeBack">BACK</b-button>
+      <div class="spaceBetween">
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
+        <nuxt-link :to="{
+                name: 'prcs-create',
+                query: { id: prc.id }
+              }">
+          <b-button variant="info">EDIT</b-button>
+        </nuxt-link>
+      </div>
     </div>
   </b-container>
 </template>

@@ -37,6 +37,7 @@
           <b-form-datepicker
             id="startDate"
             v-model="prescription.startDate"
+            :disabled="isEditing"
             :state="isStartDateValid"
             :min="new Date()"
             :max="prescription.endDate"
