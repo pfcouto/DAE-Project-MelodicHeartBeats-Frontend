@@ -8,7 +8,7 @@
       <p>Start Date: {{ prescription.startDate }}</p>
       <p>End Date: {{ prescription.endDate }}</p>
 
-      <b-button variant="info" @click="routeBack">RETURN</b-button>
+      <b-button variant="danger" @click="routeBack">BACK</b-button>
     </div>
   </b-container>
 </template>

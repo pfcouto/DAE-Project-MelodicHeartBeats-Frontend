@@ -31,7 +31,7 @@
       </div>
       <div class="spaceBetween">
         <nuxt-link to="/">
-          <b-button variant="danger">Back</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <nuxt-link
           to="observations/create"

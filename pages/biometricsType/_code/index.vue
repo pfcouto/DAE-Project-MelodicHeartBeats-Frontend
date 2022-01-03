@@ -1,22 +1,26 @@
 <template>
   <b-container>
-    <h4>Biometric Type Details</h4>
-    <p>Code: {{ biometricType.code }}</p>
-    <p>Description: {{ biometricType.name }}</p>
-    <p>Max Value: {{ biometricType.valueMax }}</p>
-    <p>Min Value: {{ biometricType.valueMin }}</p>
-    <p>Unity: {{ biometricType.unity }}</p>
-    <p>Created by: {{ biometricType.admin }}</p>
+    <b-container class="middleCard">
+      <h4>Biometric Type Details</h4>
+      <p>Code: {{ biometricType.code }}</p>
+      <p>Description: {{ biometricType.name }}</p>
+      <p>Max Value: {{ biometricType.valueMax }}</p>
+      <p>Min Value: {{ biometricType.valueMin }}</p>
+      <p>Unity: {{ biometricType.unity }}</p>
+      <p>Created by: {{ biometricType.admin }}</p>
 
-    <h4>Qualitatives</h4>
-    <b-table
-      v-if="qualitativeValues.length"
-      striped
-      hover
-      :items="qualitativeValues"
-      :fields="qualitativeValuesFields" />
-    <p v-else>No Qualitative Values Created.</p>
-    <b-button @click="routeBack">BACK</b-button>
+      <h4>Qualitatives</h4>
+      <div class="xOverflow">
+        <b-table
+          v-if="qualitativeValues.length"
+          striped
+          hover
+          :items="qualitativeValues"
+          :fields="qualitativeValuesFields"/>
+        <p v-else>No Qualitative Values Created.</p>
+      </div>
+      <b-button @click="routeBack">BACK</b-button>
+    </b-container>
   </b-container>
 </template>
 <script>

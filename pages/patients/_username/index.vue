@@ -1,23 +1,33 @@
 <template>
   <b-container>
-    <h4>Patient Details</h4>
-    <p>Username: {{ patient.username }}</p>
-    <p>Name: {{ patient.name }}</p>
-    <p>BirthDate: {{ patient.birthDate }}</p>
-    <p>Email: {{ patient.email }}</p>
-    <p>PhoneNumber: {{ patient.phoneNumber }}</p>
-    <h4>Prescriptions</h4>
-    <div class="xOverflow">
-      <b-table
-        v-if="prescriptions.length"
-        striped
-        hover
-        :items="prescriptions"
-        :fields="prescriptionsFields"
-      />
-      <p v-else>No prescriptions passed.</p>
-    </div>
-    <b-button variant="info" @click="routeBack">RETURN</b-button>
+    <b-container class="middleCard">
+      <h4>Patient Details</h4>
+      <p>Username: {{ patient.username }}</p>
+      <p>Name: {{ patient.name }}</p>
+      <p>BirthDate: {{ patient.birthDate }}</p>
+      <p>Email: {{ patient.email }}</p>
+      <p>PhoneNumber: {{ patient.phoneNumber }}</p>
+      <h4>Prescriptions</h4>
+      <div class="xOverflow">
+        <b-table
+          v-if="prescriptions.length"
+          striped
+          hover
+          :items="prescriptions"
+          :fields="prescriptionsFields"
+        />
+        <p v-else>No prescriptions passed.</p>
+      </div>
+      <div class="spaceBetween">
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
+        <nuxt-link :to="{
+                name: 'patients-create',
+                query: { username: patient.username }
+              }">
+          <b-button variant="info">EDIT</b-button>
+        </nuxt-link>
+      </div>
+    </b-container>
   </b-container>
 </template>
 <script>

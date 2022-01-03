@@ -1,41 +1,34 @@
 <template>
   <b-container>
-    <h4>Administrator Details</h4>
-    <p>Username: {{ administrator.username }}</p>
-    <p>Name: {{ administrator.name }}</p>
-    <p>BirthDate: {{ administrator.birthDate }}</p>
-    <p>Email: {{ administrator.email }}</p>
-    <p>PhoneNumber: {{ administrator.phoneNumber }}</p>
+    <b-container class="middleCard">
+      <h4>Administrator Details</h4>
+      <p>Username: {{ administrator.username }}</p>
+      <p>Name: {{ administrator.name }}</p>
+      <p>BirthDate: {{ administrator.birthDate }}</p>
+      <p>Email: {{ administrator.email }}</p>
+      <p>PhoneNumber: {{ administrator.phoneNumber }}</p>
 
-    <h4>BiometricTypes</h4>
-    <b-table
-      v-if="biometricTypes.length"
-      striped
-      hover
-      :items="biometricTypes"
-      :fields="biometricTypeFields"
-    />
-    <p v-else>No Biometric Types Created.</p>
-
-    <!-- <h4>Documents</h4>
-    <b-table
-      v-if="documents.length"
-      striped
-      hover
-      :items="documents"
-      :fields="documentsFields"
-    >
-      <template #cell(actions)="row">
-        <b-btn
-          class="btn btn-link"
-          target="_blank"
-          @click.prevent="download(row.item)"
-          >Download</b-btn
-        >
-      </template>
-    </b-table>
-    <p v-else>No documents.</p> -->
-    <b-button variant="info" @click="routeBack">RETURN</b-button>
+      <h4>BiometricTypes</h4>
+      <div class="xOverflow">
+        <b-table
+          v-if="biometricTypes.length"
+          striped
+          hover
+          :items="biometricTypes"
+          :fields="biometricTypeFields"
+        />
+        <p v-else>No Biometric Types Created.</p>
+      </div>
+      <div class="spaceBetween">
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
+        <nuxt-link :to="{
+                name: 'administrators-create',
+                query: { username: administrator.username }
+              }">
+          <b-button variant="info">EDIT</b-button>
+        </nuxt-link>
+      </div>
+    </b-container>
   </b-container>
 </template>
 <script>
@@ -51,9 +44,7 @@ export default {
         'valueMin',
         'unity',
         'admin',
-        'delete'
       ]
-      //   documentsFields: ['filename', 'actions']
     }
   },
   computed: {

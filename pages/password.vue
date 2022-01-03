@@ -39,7 +39,7 @@
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
 
         <br/>
-        <b-button variant="info" @click="routeBack">RETURN</b-button>
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button

@@ -59,6 +59,7 @@ a:hover {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
 
   }
+
   .headerCardUser {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
   }

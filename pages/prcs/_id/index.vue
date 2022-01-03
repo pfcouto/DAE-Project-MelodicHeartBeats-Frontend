@@ -14,11 +14,17 @@
           :items="prc.prescriptions"
           :fields="prescriptionsFields"
           @row-clicked="item => rowClicked(item)"
-        />
+        >
+          <template #cell(details)="row">
+            <nuxt-link class="btn btn-link align-self-auto" :to="`/prescriptions/${row.item.id}`">
+              <b-icon-file-earmark-text style="color: darkcyan;" font-scale="2"></b-icon-file-earmark-text>
+            </nuxt-link>
+          </template>
+        </b-table>
         <p v-else>No prescriptions yet.</p>
       </div>
 
-      <b-button variant="info" @click="routeBack">RETURN</b-button>
+      <b-button variant="danger" @click="routeBack">BACK</b-button>
     </div>
   </b-container>
 </template>
@@ -33,7 +39,12 @@ export default {
         'patient',
         'description',
         'startDate',
-        'endDate'
+        'endDate',
+        {
+          key: 'details',
+          tdClass: 'text-center',
+          label: ''
+        }
       ],
       prescriptions: null
     }

@@ -55,7 +55,7 @@
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <b-button variant="info" @click="routeBack">RETURN</b-button>
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
         <div style="float: right">
           <nuxt-link v-if="prescription.patient && !patientValid"
                      :to="{name: 'prcs-create', query: { patientUsername: prescription.patient }}">
