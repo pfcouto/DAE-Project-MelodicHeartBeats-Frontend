@@ -3,50 +3,47 @@
     <b-container class="userContainer">
       <b-card-img style="border-radius: 0" src="~/assets/melodicHearts.jpg"></b-card-img>
       <hr class="w-100 mb-0"/>
-      <b-container class="userInfoContainer">
-        <div class="spaceBetween">
-          <h4 style="flex: 1; color: #00A0A0; font-weight: bold">{{ username }}</h4>
-          <div>
-            <a class="mr-1" @click="updateProfile">
-              <b-icon-person style="color: #00A0A0" font-scale="2"></b-icon-person>
-            </a>
-            <a @click="updatePassword">
-              <b-icon-key style="color: #00A0A0" font-scale="2"></b-icon-key>
-            </a>
+      <b-container class="userInfoContainer spaceBetween flex-column h-100">
+        <div class="mb-2">
+          <div class="spaceBetween">
+            <h4 style="flex: 1; color: #00A0A0; font-weight: bold">{{ username }}</h4>
+            <div>
+              <a class="mr-1" @click="updateProfile">
+                <b-icon-person style="color: #00A0A0" font-scale="2"></b-icon-person>
+              </a>
+              <a @click="updatePassword">
+                <b-icon-key style="color: #00A0A0" font-scale="2"></b-icon-key>
+              </a>
+            </div>
           </div>
+          <div v-if="isPatient" class="mt-4 mb-4">
+            <div class="text-center">
+              {{ activePRC ? ("PRC #" + activePRC.id + "  -  " + daysRemaining + " days left!") : "No active PRC" }}
+            </div>
+            <div v-if="activePRC" class="progress percentExternal">
+              <div id="pInternal" class="progress-bar percentInternal" role="progressbar" style="width: 100%"
+                   aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+          <b-container v-if="!isAdmin" class="headerCardUser mt-6">
+            <nuxt-link to="/observations" class="headerCardComponent">
+              <h6>Observations</h6>
+            </nuxt-link>
+            <nuxt-link v-if="isDoctor" to="/doctors" class="headerCardComponent">
+              <h6>Doctors</h6>
+            </nuxt-link>
+            <nuxt-link v-if="isDoctor" to="/patients" class="headerCardComponent">
+              <h6>Patients</h6>
+            </nuxt-link>
+            <nuxt-link to="/prescriptions" class="headerCardComponent">
+              <h6>Prescriptions</h6>
+            </nuxt-link>
+            <nuxt-link to="/prcs" class="headerCardComponent">
+              <h6>PRCs</h6>
+            </nuxt-link>
+          </b-container>
         </div>
-        <div v-if="isPatient" class="mt-4 mb-4">
-          <div class="text-center">
-            {{ activePRC ? ("PRC #" + activePRC.id + "  -  " + daysRemaining + " days left!") : "No active PRC" }}
-          </div>
-          <div v-if="activePRC" class="progress percentExternal">
-            <div id="pInternal" class="progress-bar percentInternal" role="progressbar" style="width: 100%"
-                 aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-        <b-container v-if="!isAdmin" class="headerCardUser mt-6">
-          <nuxt-link to="/observations" class="headerCardComponent">
-            <h6>Observations</h6>
-          </nuxt-link>
-          <nuxt-link v-if="isDoctor" to="/doctors" class="headerCardComponent">
-            <h6>Doctors</h6>
-          </nuxt-link>
-          <nuxt-link v-if="isDoctor" to="/patients" class="headerCardComponent">
-            <h6>Patients</h6>
-          </nuxt-link>
-          <nuxt-link to="/prescriptions" class="headerCardComponent">
-            <h6>Prescriptions</h6>
-          </nuxt-link>
-          <nuxt-link to="/prcs" class="headerCardComponent">
-            <h6>PRCs</h6>
-          </nuxt-link>
-        </b-container>
-
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <b-button class="logout" @click="logout">Logout</b-button>
+        <b-button class="logout mb-2" @click="logout">Logout</b-button>
       </b-container>
     </b-container>
     <b-container class="cardGroup">

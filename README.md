@@ -1,4 +1,4 @@
-# Melodic Heartbeats
+# MelodicHeartbeats
 
 ## Build Setup
 

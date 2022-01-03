@@ -65,6 +65,14 @@
 </template>
 <script>
 export default {
+  middleware({redirect, store}) {
+    if (
+      !store.state.auth.user.groups ||
+      !store.state.auth.user.groups.includes('Doctor')
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       prcReset: null,

@@ -27,7 +27,6 @@ export default {
       prescription: {},
     }
   },
-
   async created() {
     await this.$route
     this.$axios.$get(`/api/prescriptions/${this.$route.params.id}`).then((response) => {
