@@ -154,11 +154,11 @@ export default {
         .then((response) => {
           if (store.state.auth.user.groups.includes('Patient')) {
             if (
-              response.data.patient !== store.state.auth.user.sub &&
+              response.data.patient !== store.state.auth.user.sub ||
               response.data.doctor !== 'null'
-            ){
-				return redirect('/forbiden')	
-			}
+            ) {
+              return redirect('/forbiden')
+            }
           }
         })
     }
@@ -173,7 +173,7 @@ export default {
     return {
       observation: {
         date: null,
-        patient: null,
+        patient: this.$route.query.patientUsername ?? null,
         biometricType: null,
         quantitativeValue: null,
         qualitativeValue: null,
