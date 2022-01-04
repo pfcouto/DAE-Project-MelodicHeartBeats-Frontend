@@ -145,11 +145,10 @@
   </b-container>
 </template>
 <script>
-import axios from 'axios'
 export default {
   async middleware({ redirect, store, route }) {
     if (route.query.code !== undefined) {
-      await axios
+      await store.$axios
         .get('/api/observations/' + route.query.code)
         .then((response) => {
           if (store.state.auth.user.groups.includes('Patient')) {
