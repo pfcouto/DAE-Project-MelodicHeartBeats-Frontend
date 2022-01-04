@@ -1,13 +1,18 @@
 <template>
   <b-container>
-    <div class="middleCard">
-      <h1>
+    <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
+      <h2 class="font-weight-bold">
         {{
           isEditing
             ? 'Update ' + observation.patient + ' Observation '
             : 'Create a new Observation'
         }}
-      </h1>
+      </h2>
+    </b-container>
+    <div class="middleCard">
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group id="date" label="Date" :state="isDateValid">
           <b-form-datepicker
@@ -120,8 +125,6 @@
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-
-        <b-button variant="danger" @click="routeBack">BACK</b-button>
 
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset">RESET</b-button>

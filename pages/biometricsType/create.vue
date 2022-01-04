@@ -1,13 +1,18 @@
 <template>
   <b-container>
-    <div class="middleCard">
-      <h1>
+    <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
+      <h2 class="font-weight-bold">
         {{
           isEditing
             ? 'Update Biometric Type ' + biometricType.name
             : 'Create a new Biometric Type'
         }}
-      </h1>
+      </h2>
+    </b-container>
+    <div class="middleCard">
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
           id="name"
@@ -110,7 +115,8 @@
               <b-button
                 variant="danger"
                 @click.prevent="removeQualitative(row.item)"
-                >Remove</b-button
+              >Remove
+              </b-button
               >
             </template>
           </b-table>
@@ -133,9 +139,6 @@
         </div>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <nuxt-link to="/biometricsType">
-          <b-button variant="danger">BACK</b-button>
-        </nuxt-link>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
@@ -159,7 +162,7 @@
 </template>
 <script>
 export default {
-  middleware({ redirect, store }) {
+  middleware({redirect, store}) {
     if (
       store.state.auth.user.groups &&
       (store.state.auth.user.groups.includes('Patient') ||
@@ -179,7 +182,7 @@ export default {
         admin: null,
         qualitatives: []
       },
-      newQualitative: { value: null, meaning: null },
+      newQualitative: {value: null, meaning: null},
       admins: [],
       errorMsg: false,
       fields: [
@@ -264,6 +267,9 @@ export default {
       })
   },
   methods: {
+    routeBack() {
+      this.$router.back()
+    },
     addNewQualitative() {
       if (!this.newQualitative.value) {
         this.$toast
@@ -284,9 +290,9 @@ export default {
         this.$toast
           .error(
             'The "Quantitative Value" must be between ' +
-              this.biometricType.valueMin +
-              ' and ' +
-              this.biometricType.valueMax
+            this.biometricType.valueMin +
+            ' and ' +
+            this.biometricType.valueMax
           )
           .goAway(3000)
         return

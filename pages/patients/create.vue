@@ -1,13 +1,18 @@
 <template>
   <b-container>
-    <div class="middleCard">
-      <h1>
+    <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
+      <h2 class="font-weight-bold">
         {{
           isEditing
             ? 'Patient ' + $route.query.username
             : 'Create a new Patient'
         }}
-      </h1>
+      </h2>
+    </b-container>
+    <div class="middleCard">
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
           id="username"
@@ -21,7 +26,7 @@
             v-model.trim="patient.username"
             :disabled="isEditing"
             :state="isUsernameValid"
-            trim />
+            trim/>
         </b-form-group>
         <b-form-group
           v-if="!isEditing"
@@ -35,7 +40,7 @@
             v-model="patient.password"
             :state="isPasswordValid"
             type="password"
-            required />
+            required/>
         </b-form-group>
         <b-form-group
           id="name"
@@ -44,7 +49,7 @@
           label-for="name"
           :invalid-feedback="invalidNameFeedback"
           :state="isNameValid">
-          <b-input v-model.trim="patient.name" :state="isNameValid" required />
+          <b-input v-model.trim="patient.name" :state="isNameValid" required/>
         </b-form-group>
 
         <b-form-group
@@ -67,7 +72,7 @@
             ref="email"
             v-model.trim="patient.email"
             :state="isEmailValid"
-            required />
+            required/>
         </b-form-group>
         <b-form-group
           id="phoneNumber"
@@ -80,11 +85,10 @@
             ref="phoneNumber"
             v-model.trim="patient.phoneNumber"
             :state="isPhoneNumberValid"
-            required />
+            required/>
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <b-button variant="danger" @click="routeBack">BACK</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
@@ -108,7 +112,7 @@
 </template>
 <script>
 export default {
-  middleware({ redirect, store, route }) {
+  middleware({redirect, store, route}) {
     if (
       store.state.auth.user.groups &&
       !(

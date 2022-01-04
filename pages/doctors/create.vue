@@ -1,11 +1,16 @@
 <template>
   <b-container>
-    <div class="middleCard">
-      <h1>
+    <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
+      <h2 class="font-weight-bold">
         {{
           isEditing ? 'Doctor ' + $route.query.username : 'Create a new Doctor'
         }}
-      </h1>
+      </h2>
+    </b-container>
+    <div class="middleCard">
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
           id="username"
@@ -33,7 +38,7 @@
             v-model="doctor.password"
             :state="isPasswordValid"
             required
-            placeholder="Enter your password" />
+            placeholder="Enter your password"/>
         </b-form-group>
         <b-form-group
           id="name"
@@ -46,7 +51,7 @@
             v-model.trim="doctor.name"
             :state="isNameValid"
             required
-            placeholder="Enter your name" />
+            placeholder="Enter your name"/>
         </b-form-group>
         <b-form-group
           id="birthDate"
@@ -69,7 +74,7 @@
             v-model.trim="doctor.email"
             :state="isEmailValid"
             required
-            placeholder="Enter your e-mail" />
+            placeholder="Enter your e-mail"/>
         </b-form-group>
         <b-form-group
           id="phoneNumber"
@@ -83,7 +88,7 @@
             v-model.trim="doctor.phoneNumber"
             :state="isPhoneNumberValid"
             required
-            placeholder="Enter your phone number" />
+            placeholder="Enter your phone number"/>
         </b-form-group>
         <b-form-group
           id="office"
@@ -97,11 +102,10 @@
             v-model.trim="doctor.office"
             :state="isOfficeValid"
             required
-            placeholder="Enter your office" />
+            placeholder="Enter your office"/>
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <b-button variant="danger" @click="routeBack">BACK</b-button>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
           <b-button
@@ -125,7 +129,7 @@
 </template>
 <script>
 export default {
-  middleware({ redirect, store, route }) {
+  middleware({redirect, store, route}) {
     if (
       store.state.auth.user.groups &&
       !(

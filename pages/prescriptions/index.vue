@@ -5,7 +5,7 @@
         <b-button variant="danger">BACK</b-button>
       </a>
       <h2 class="font-weight-bold">Prescriptions</h2>
-      <nuxt-link to="prescriptions/create" class="float-right">
+      <nuxt-link v-if="isDoctor" to="prescriptions/create" class="float-right">
         <b-button variant="success">NEW</b-button>
       </nuxt-link>
     </b-container>
@@ -61,7 +61,7 @@
           class="float-right"
           variant="outline-success"
           @click="createSuggestedPrescription(item, idx)"
-          >CREATE
+        >CREATE
         </b-button>
       </div>
     </b-container>
@@ -73,8 +73,8 @@ export default {
     return {
       fields: [
         'id',
-        { sortable: true, key: 'doctor' },
-        { sortable: true, key: 'patient' },
+        {sortable: true, key: 'doctor'},
+        {sortable: true, key: 'patient'},
         {
           key: 'description',
           tdClass: 'customDesc'
@@ -83,7 +83,7 @@ export default {
           sortable: true,
           key: 'startDate'
         },
-        { sortable: true, key: 'endDate' },
+        {sortable: true, key: 'endDate'},
         {
           key: 'details',
           tdClass: 'text-center',
@@ -95,6 +95,9 @@ export default {
     }
   },
   computed: {
+    isDoctor() {
+      return this.$auth.user.groups.includes('Doctor')
+    },
     dataAtualFormatada() {
       const data = new Date()
       const dia = data.getDate().toString()

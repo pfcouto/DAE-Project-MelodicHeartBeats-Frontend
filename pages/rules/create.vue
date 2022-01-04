@@ -1,11 +1,16 @@
 <template>
   <b-container>
-    <div class="middleCard">
-      <h1>
+    <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
+      <h2 class="font-weight-bold">
         {{
           isEditing ? 'Rule #' + $route.query.id : 'New Rule'
         }}
-      </h1>
+      </h2>
+    </b-container>
+    <div class="middleCard">
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
           v-if="!isEditing"
@@ -53,7 +58,6 @@
 
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <b-button variant="danger" @click="routeBack">BACK</b-button>
         <div style="float: right">
           <nuxt-link v-if="rule.patient && !patientValid"
                      :to="{name: 'prcs-create', query: { patientUsername: rule.patient }}">

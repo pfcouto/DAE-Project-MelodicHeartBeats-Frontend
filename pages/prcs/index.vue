@@ -4,8 +4,8 @@
       <a class="float-left" @click="routeBack">
         <b-button variant="danger">BACK</b-button>
       </a>
-      <h2 class="font-weight-bold">PRCS</h2>
-      <nuxt-link v-if="!isPatient" to="prcs/create" class="float-right">
+      <h2 class="font-weight-bold">PRCs</h2>
+      <nuxt-link v-if="isDoctor" to="prcs/create" class="float-right">
         <b-button variant="success">NEW</b-button>
       </nuxt-link>
     </b-container>
