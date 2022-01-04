@@ -1,5 +1,8 @@
 <template>
   <b-container>
+    <b-container class="middleCard text-center flex-row">
+      <h2 class="font-weight-bold">Patients</h2>
+    </b-container>
     <div class="middleCard">
       <div class="xOverflow">
         <b-table striped hover :items="coloredPatients" :fields="fields">
@@ -47,7 +50,7 @@
 </template>
 <script>
 export default {
-  middleware({ redirect, store, route }) {
+  middleware({redirect, store, route}) {
     if (
       store.state.auth.user.groups &&
       !(
@@ -62,11 +65,11 @@ export default {
     return {
       fields: [
         'username',
-        { sortable: true, key: 'name' },
-        { sortable: true, key: 'birthDate' },
+        {sortable: true, key: 'name'},
+        {sortable: true, key: 'birthDate'},
         'email',
         'phoneNumber',
-        { key: 'actions', tdClass: 'text-center', label: '' }
+        {key: 'actions', tdClass: 'text-center', label: ''}
       ],
       patients: []
     }

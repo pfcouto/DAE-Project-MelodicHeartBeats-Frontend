@@ -1,6 +1,9 @@
 <template>
-  <div>
+  <b-container>
     <b-container>
+      <b-container class="middleCard text-center flex-row">
+        <h2 class="font-weight-bold">Administrators</h2>
+      </b-container>
       <div class="middleCard">
         <div class="xOverflow">
           <b-table
@@ -51,7 +54,7 @@
         </div>
       </div>
     </b-container>
-  </div>
+  </b-container>
 </template>
 <script>
 export default {

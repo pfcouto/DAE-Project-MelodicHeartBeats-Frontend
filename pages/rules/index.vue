@@ -1,5 +1,8 @@
 <template>
   <b-container>
+    <b-container class="middleCard text-center flex-row">
+      <h2 class="font-weight-bold">Rules</h2>
+    </b-container>
     <div class="middleCard">
       <div class="xOverflow">
         <b-table hover :items="rules" :fields="fields">

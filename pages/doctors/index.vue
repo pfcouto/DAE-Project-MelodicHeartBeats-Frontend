@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <b-container>
+    <b-container class="middleCard text-center flex-row">
+      <h2 class="font-weight-bold">Doctors</h2>
+    </b-container>
     <b-container>
       <div class="middleCard">
         <div class="xOverflow">
@@ -46,11 +49,11 @@
         </div>
       </div>
     </b-container>
-  </div>
+  </b-container>
 </template>
 <script>
 export default {
-  middleware({ redirect, store, route }) {
+  middleware({redirect, store, route}) {
     if (
       store.state.auth.user.groups &&
       !(
@@ -65,12 +68,12 @@ export default {
     return {
       fields: [
         'username',
-        { sortable: true, key: 'name' },
-        { sortable: true, key: 'birthDate' },
+        {sortable: true, key: 'name'},
+        {sortable: true, key: 'birthDate'},
         'email',
         'phoneNumber',
         'office',
-        { key: 'actions', tdClass: 'text-center', label: '' }
+        {key: 'actions', tdClass: 'text-center', label: ''}
       ],
       doctors: []
     }
