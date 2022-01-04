@@ -2,7 +2,13 @@
   <b-container>
     <b-container>
       <b-container class="middleCard text-center flex-row">
+        <a class="float-left" @click="routeBack">
+          <b-button variant="danger">BACK</b-button>
+        </a>
         <h2 class="font-weight-bold">Administrators</h2>
+        <nuxt-link to="administrators/create" class="float-right">
+          <b-button variant="success">NEW</b-button>
+        </nuxt-link>
       </b-container>
       <div class="middleCard">
         <div class="xOverflow">
@@ -44,21 +50,13 @@
             </template>
           </b-table>
         </div>
-        <div class="spaceBetween">
-          <nuxt-link to="/">
-            <b-button variant="danger">BACK</b-button>
-          </nuxt-link>
-          <nuxt-link to="administrators/create" style="float: right">
-            <b-button variant="success">NEW</b-button>
-          </nuxt-link>
-        </div>
       </div>
     </b-container>
   </b-container>
 </template>
 <script>
 export default {
-  middleware({ redirect, store, route }) {
+  middleware({redirect, store, route}) {
     if (
       store.state.auth.user.groups &&
       !store.state.auth.user.groups.includes('Administrator')
@@ -70,11 +68,11 @@ export default {
     return {
       fields: [
         'username',
-        { sortable: true, key: 'name' },
-        { sortable: true, key: 'birthDate' },
+        {sortable: true, key: 'name'},
+        {sortable: true, key: 'birthDate'},
         'email',
         'phoneNumber',
-        { key: 'actions', tdClass: 'text-center', label: '' }
+        {key: 'actions', tdClass: 'text-center', label: ''}
         // { key: 'blocked', label: 'Is Blocked' }
       ],
       administrators: []
@@ -98,6 +96,9 @@ export default {
     })
   },
   methods: {
+    routeBack() {
+      this.$router.back()
+    },
     blockOrUnblockAdministrator(row) {
       this.$axios
         .$patch('/api/administrators/' + row.item.username)

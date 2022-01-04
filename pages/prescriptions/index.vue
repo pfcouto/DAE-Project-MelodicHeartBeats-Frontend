@@ -1,7 +1,13 @@
 <template>
   <b-container>
     <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
       <h2 class="font-weight-bold">Prescriptions</h2>
+      <nuxt-link to="prescriptions/create" class="float-right">
+        <b-button variant="success">NEW</b-button>
+      </nuxt-link>
     </b-container>
     <div class="middleCard">
       <div class="xOverflow">
@@ -36,17 +42,9 @@
           </template>
         </b-table>
       </div>
-      <div class="spaceBetween">
-        <nuxt-link to="/">
-          <b-button variant="danger">BACK</b-button>
-        </nuxt-link>
-        <nuxt-link to="prescriptions/create" style="float: right">
-          <b-button variant="success">NEW</b-button>
-        </nuxt-link>
-      </div>
     </div>
     <b-container
-      v-if="suggestedPrescriptions && suggestedPrescriptions.length > 0"
+      v-if="suggestedPrescriptions && suggestedPrescriptions.length"
       class="middleCard">
       <h4>Suggested Prescriptions</h4>
     </b-container>
@@ -139,6 +137,9 @@ export default {
     }
   },
   methods: {
+    routeBack() {
+      this.$router.back()
+    },
     getVariant(prescription) {
       const today = this.dataAtualFormatada
       if (prescription.startDate > today) {

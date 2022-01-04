@@ -1,7 +1,16 @@
 <template>
   <b-container>
     <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
       <h2 class="font-weight-bold">Observations</h2>
+      <nuxt-link
+        v-if="!isAdmin"
+        to="observations/create"
+        class="float-right">
+        <b-button variant="success">NEW</b-button>
+      </nuxt-link>
     </b-container>
     <div class="middleCard">
       <div class="xOverflow">
@@ -38,15 +47,6 @@
           </template>
         </b-table>
       </div>
-      <div class="spaceBetween">
-        <b-button variant="danger" @click="routeBack">BACK</b-button>
-        <nuxt-link
-          v-if="!isAdmin"
-          to="observations/create"
-          style="float: right">
-          <b-button variant="success">NEW</b-button>
-        </nuxt-link>
-      </div>
     </div>
   </b-container>
 </template>
@@ -56,10 +56,10 @@ export default {
     return {
       fields: [
         'code',
-        { sortable: true, key: 'date' },
+        {sortable: true, key: 'date'},
         'patient',
         'biometricTypeName',
-        { sortable: true, key: 'quantitativeValue' },
+        {sortable: true, key: 'quantitativeValue'},
         'qualitativeValue',
         'what',
         'local',
@@ -107,9 +107,9 @@ export default {
       this.$axios
         .$get(
           '/api/' +
-            (this.$auth.user.groups.includes('Patient')
-              ? 'patients/' + this.$auth.user.sub + '/observations'
-              : 'observations/')
+          (this.$auth.user.groups.includes('Patient')
+            ? 'patients/' + this.$auth.user.sub + '/observations'
+            : 'observations/')
         )
         .then((response) => {
           this.observations = response

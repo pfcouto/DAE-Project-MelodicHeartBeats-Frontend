@@ -1,7 +1,13 @@
 <template>
   <b-container>
     <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
       <h2 class="font-weight-bold">Patients</h2>
+      <nuxt-link to="patients/create" class="float-right">
+        <b-button v-if="!isAdministrator" variant="success">NEW</b-button>
+      </nuxt-link>
     </b-container>
     <div class="middleCard">
       <div class="xOverflow">
@@ -36,14 +42,6 @@
               @click="blockOrUnblockPatient(row)"></b-icon-arrow-clockwise>
           </template>
         </b-table>
-      </div>
-      <div class="spaceBetween">
-        <nuxt-link to="/">
-          <b-button variant="danger">BACK</b-button>
-        </nuxt-link>
-        <nuxt-link to="patients/create" style="float: right">
-          <b-button v-if="!isAdministrator" variant="success">NEW</b-button>
-        </nuxt-link>
       </div>
     </div>
   </b-container>
@@ -109,6 +107,9 @@ export default {
     }
   },
   methods: {
+    routeBack() {
+      this.$router.back()
+    },
     blockOrUnblockPatient(row) {
       this.$axios
         .$patch('/api/patients/' + row.item.username)

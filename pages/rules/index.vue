@@ -1,7 +1,13 @@
 <template>
   <b-container>
     <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
       <h2 class="font-weight-bold">Rules</h2>
+      <nuxt-link to="rules/create" class="float-right">
+        <b-button variant="success">NEW</b-button>
+      </nuxt-link>
     </b-container>
     <div class="middleCard">
       <div class="xOverflow">
@@ -27,14 +33,6 @@
             <b-icon-trash style="color: red;" font-scale="2" @click="deleteRule(row)"></b-icon-trash>
           </template>
         </b-table>
-      </div>
-      <div class="spaceBetween">
-        <nuxt-link to="/">
-          <b-button variant="danger">BACK</b-button>
-        </nuxt-link>
-        <nuxt-link to="rules/create" style="float: right">
-          <b-button variant="success">NEW</b-button>
-        </nuxt-link>
       </div>
     </div>
   </b-container>
@@ -76,6 +74,9 @@ export default {
     })
   },
   methods: {
+    routeBack() {
+      this.$router.back()
+    },
     deleteRule(row) {
       this.$axios.$delete('/api/rules/' + row.item.id).then(() => {
         this.$toast.success("Rule #" + row.item.id + " deleted successfully").goAway(3000)

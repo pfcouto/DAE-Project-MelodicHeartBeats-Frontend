@@ -1,54 +1,50 @@
 <template>
   <b-container>
     <b-container class="middleCard text-center flex-row">
+      <a @click="routeBack">
+        <b-button class="float-left" variant="danger">BACK</b-button>
+      </a>
       <h2 class="font-weight-bold">Doctors</h2>
+      <nuxt-link to="doctors/create" class="float-right">
+        <b-button variant="success">NEW</b-button>
+      </nuxt-link>
     </b-container>
-    <b-container>
-      <div class="middleCard">
-        <div class="xOverflow">
-          <b-table striped hover :items="coloredDoctors" :fields="fields">
-            <template #cell(actions)="row">
-              <nuxt-link
-                class="btn btn-link"
-                :to="`/doctors/${row.item.username}`">
-                <b-icon-file-earmark-text
-                  style="color: darkcyan"
-                  font-scale="2"></b-icon-file-earmark-text>
-              </nuxt-link>
-              <nuxt-link
-                class="btn btn-link"
-                :to="{
+    <div class="middleCard">
+      <div class="xOverflow">
+        <b-table striped hover :items="coloredDoctors" :fields="fields">
+          <template #cell(actions)="row">
+            <nuxt-link
+              class="btn btn-link"
+              :to="`/doctors/${row.item.username}`">
+              <b-icon-file-earmark-text
+                style="color: darkcyan"
+                font-scale="2"></b-icon-file-earmark-text>
+            </nuxt-link>
+            <nuxt-link
+              class="btn btn-link"
+              :to="{
                   name: 'doctors-create',
                   query: { username: `${row.item.username}` }
                 }">
-                <b-icon-pencil-square
-                  v-if="!row.item.blocked"
-                  style="color: orange"
-                  font-scale="2"></b-icon-pencil-square>
-              </nuxt-link>
-              <b-icon-trash
-                v-if="isAdministrator && !row.item.blocked"
-                style="color: red"
-                font-scale="2"
-                @click="blockOrUnblockDoctor(row)"></b-icon-trash>
-              <b-icon-arrow-clockwise
-                v-if="isAdministrator && row.item.blocked"
-                style="color: green"
-                font-scale="2"
-                @click="blockOrUnblockDoctor(row)"></b-icon-arrow-clockwise>
-            </template>
-          </b-table>
-        </div>
-        <div class="spaceBetween">
-          <nuxt-link to="/">
-            <b-button variant="danger">BACK</b-button>
-          </nuxt-link>
-          <nuxt-link to="doctors/create" style="float: right">
-            <b-button variant="success">NEW</b-button>
-          </nuxt-link>
-        </div>
+              <b-icon-pencil-square
+                v-if="!row.item.blocked"
+                style="color: orange"
+                font-scale="2"></b-icon-pencil-square>
+            </nuxt-link>
+            <b-icon-trash
+              v-if="isAdministrator && !row.item.blocked"
+              style="color: red"
+              font-scale="2"
+              @click="blockOrUnblockDoctor(row)"></b-icon-trash>
+            <b-icon-arrow-clockwise
+              v-if="isAdministrator && row.item.blocked"
+              style="color: green"
+              font-scale="2"
+              @click="blockOrUnblockDoctor(row)"></b-icon-arrow-clockwise>
+          </template>
+        </b-table>
       </div>
-    </b-container>
+    </div>
   </b-container>
 </template>
 <script>
@@ -105,6 +101,9 @@ export default {
     })
   },
   methods: {
+    routeBack() {
+      this.$router.back()
+    },
     blockOrUnblockDoctor(row) {
       this.$axios
         .$patch('/api/doctors/' + row.item.username)

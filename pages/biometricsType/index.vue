@@ -1,7 +1,13 @@
 <template>
   <b-container>
     <b-container class="middleCard text-center flex-row">
+      <a class="float-left" @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
       <h2 class="font-weight-bold">Biometric Types</h2>
+      <nuxt-link to="biometricsType/create" class="float-right">
+        <b-button variant="success">NEW</b-button>
+      </nuxt-link>
     </b-container>
     <div class="middleCard">
       <div class="xOverflow">
@@ -43,16 +49,6 @@
           </template>
         </b-table>
       </div>
-      <div class="spaceBetween">
-        <nuxt-link to="/">
-          <b-button variant="danger">BACK</b-button>
-        </nuxt-link>
-        <div class="float-right">
-          <nuxt-link to="biometricsType/create">
-            <b-button variant="success">NEW</b-button>
-          </nuxt-link>
-        </div>
-      </div>
     </div>
     <div class="middleCard">
       <form @submit.prevent="importCSV">
@@ -67,7 +63,8 @@
             class="float-right"
             type="submit"
             :disabled="!hasFile"
-            >IMPORT CSV</b-button
+          >IMPORT CSV
+          </b-button
           >
         </div>
       </form>
@@ -76,7 +73,7 @@
 </template>
 <script>
 export default {
-  middleware({ redirect, store }) {
+  middleware({redirect, store}) {
     if (
       store.state.auth.user.groups &&
       (store.state.auth.user.groups.includes('Patient') ||
@@ -89,13 +86,13 @@ export default {
     return {
       fields: [
         'code',
-        { sortable: true, key: 'name' },
+        {sortable: true, key: 'name'},
         'description',
         {
           sortable: true,
           key: 'valueMin'
         },
-        { sortable: true, key: 'valueMax' },
+        {sortable: true, key: 'valueMax'},
         'unity',
         'admin',
         {
@@ -133,6 +130,9 @@ export default {
     this.fetchBiometricTypes()
   },
   methods: {
+    routeBack() {
+      this.$router.back()
+    },
     importCSV() {
       if (!this.hasFile) {
         return
