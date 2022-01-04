@@ -25,9 +25,9 @@
                 style="color: darkcyan"
                 font-scale="2"></b-icon-file-earmark-text>
             </nuxt-link>
-            <nuxt-link
-              class="btn btn-link"
-              :to="{
+            <nuxt-link v-if="isDoctor"
+                       class="btn btn-link"
+                       :to="{
                 name: 'prescriptions-create',
                 query: { id: `${row.item.id}` }
               }">
@@ -36,6 +36,7 @@
                 font-scale="2"></b-icon-pencil-square>
             </nuxt-link>
             <b-icon-trash
+              v-if="!isPatient"
               style="color: red"
               font-scale="2"
               @click="deletePrescription(row)"></b-icon-trash>
@@ -95,6 +96,9 @@ export default {
     }
   },
   computed: {
+    isPatient() {
+      return this.$auth.user.groups.includes('Patient')
+    },
     isDoctor() {
       return this.$auth.user.groups.includes('Doctor')
     },

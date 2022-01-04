@@ -5,7 +5,7 @@
         <b-button class="float-left" variant="danger">BACK</b-button>
       </a>
       <h2 class="font-weight-bold">Doctors</h2>
-      <nuxt-link to="doctors/create" class="float-right">
+      <nuxt-link v-if="isAdministrator" to="doctors/create" class="float-right">
         <b-button variant="success">NEW</b-button>
       </nuxt-link>
     </b-container>

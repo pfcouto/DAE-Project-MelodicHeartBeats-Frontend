@@ -122,7 +122,19 @@ a:hover {
 }
 
 body {
-  min-width: 330px;
+  min-width: 375px;
+}
+
+@media (max-width: 520px){
+  h2 {
+    font-size: 4.6vw !important;
+  }
+}
+
+@media (max-width: 375px){
+  h2 {
+    font-size: 16px !important;
+  }
 }
 
 svg:not(:disabled):not(.disabled) {
