@@ -120,9 +120,9 @@
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <nuxt-link to="/observations">
-          <b-button variant="danger">BACK</b-button>
-        </nuxt-link>
+
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
+
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset">RESET</b-button>
           <b-button
@@ -269,6 +269,9 @@ export default {
     }
   },
   methods: {
+    routeBack() {
+      this.$router.back()
+    },
     loadMinMax() {
       if (!this.observation.biometricType && !this.isEditing) {
         return

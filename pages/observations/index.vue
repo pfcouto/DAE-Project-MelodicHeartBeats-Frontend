@@ -36,9 +36,7 @@
         </b-table>
       </div>
       <div class="spaceBetween">
-        <nuxt-link to="/">
-          <b-button variant="danger">BACK</b-button>
-        </nuxt-link>
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
         <nuxt-link
           v-if="!isAdmin"
           to="observations/create"
@@ -89,6 +87,9 @@ export default {
     this.fetchBiometricTypes()
   },
   methods: {
+    routeBack() {
+      this.$router.back()
+    },
     deleteBioType(code) {
       this.$axios
         .$delete('/api/biometricsType/' + code)

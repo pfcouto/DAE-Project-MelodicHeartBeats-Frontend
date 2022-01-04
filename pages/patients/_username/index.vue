@@ -2,6 +2,8 @@
   <b-container>
     <b-container class="middleCard">
       <h4>Patient Details</h4>
+    </b-container>
+    <b-container class="middleCard">
       <p>Username: {{ patient.username }}</p>
       <p>Name: {{ patient.name }}</p>
       <p>BirthDate: {{ patient.birthDate }}</p>
@@ -159,11 +161,13 @@ export default {
     this.$axios.$get(`/api/patients/${this.username}`).then((patient) => {
       this.patient = patient || {}
     })
-    this.$axios
-      .$get('/api/patients/' + this.username + '/suggestedPrescriptions')
-      .then((response) => {
-        this.suggestedPrescriptions = response
-      })
+    if (this.$auth.user.groups.includes('Doctor')) {
+      this.$axios
+        .$get('/api/patients/' + this.username + '/suggestedPrescriptions')
+        .then((response) => {
+          this.suggestedPrescriptions = response
+        })
+    }
   },
   methods: {
     createSuggestedPrescription(item, idx) {
@@ -175,6 +179,7 @@ export default {
             .success('Prescription was created successfully')
             .goAway(3000)
           this.suggestedPrescriptions.splice(idx, 1)
+          this.prescriptions.push(item)
         })
         .catch(() => {
           this.$toast
