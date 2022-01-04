@@ -46,7 +46,7 @@
             </nuxt-link>
           </b-container>
         </div>
-        <b-button class="logout mb-2" @click="logout">Logout</b-button>
+        <b-button id="buttonLogout" class="logout mb-2" @click="logout">Logout</b-button>
       </b-container>
     </b-container>
     <b-container class="cardGroup">
