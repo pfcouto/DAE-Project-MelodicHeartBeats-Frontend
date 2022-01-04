@@ -27,7 +27,6 @@
             v-model="observation.patient"
             required
             :state="isPatientValid">
-            this.$auth.user.sub
             <option :key="null" :value="null">Choose the patient...</option>
             <option
               v-if="isPatient"
@@ -146,8 +145,23 @@
   </b-container>
 </template>
 <script>
+import axios from 'axios'
 export default {
-  middleware({ redirect, store }) {
+  async middleware({ redirect, store, route }) {
+    if (route.query.code !== undefined) {
+      await axios
+        .get('/api/observations/' + route.query.code)
+        .then((response) => {
+          if (store.state.auth.user.groups.includes('Patient')) {
+            if (
+              response.data.patient !== store.state.auth.user.sub &&
+              response.data.doctor !== 'null'
+            ){
+				return redirect('/forbiden')	
+			}
+          }
+        })
+    }
     if (
       store.state.auth.user.groups &&
       store.state.auth.user.groups.includes('Administrator')
@@ -159,12 +173,15 @@ export default {
     return {
       observation: {
         date: null,
-        patient: this.$route.query.patientUsername ?? null,
+        patient: null,
         biometricType: null,
         quantitativeValue: null,
         qualitativeValue: null,
         what: null,
-        local: null
+        local: null,
+        doctor: this.$auth.user.groups.includes('Doctor')
+          ? this.$auth.user.sub
+          : null
       },
       patients: [],
       biometricsType: [],
@@ -175,7 +192,10 @@ export default {
   },
   computed: {
     isPatient() {
-      if (this.$auth.user.groups && this.$auth.user.groups.includes('Patient')) {
+      if (
+        this.$auth.user.groups &&
+        this.$auth.user.groups.includes('Patient')
+      ) {
         return true
       } else {
         return false
@@ -235,7 +255,7 @@ export default {
       return true
     }
   },
-  async mounted() {
+  async beforeMount() {
     await this.$route
 
     if (this.isEditing) {
@@ -283,7 +303,7 @@ export default {
           this.$router.push('/observations')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.split(":")[1]
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     create() {
@@ -293,7 +313,7 @@ export default {
           this.$router.push('/observations')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.split(":")[1]
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     async fetchObservationData() {
@@ -304,7 +324,7 @@ export default {
           // console.log(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data.split(":")[1]
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     fetchPatients() {

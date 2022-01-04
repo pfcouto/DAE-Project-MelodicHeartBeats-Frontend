@@ -20,6 +20,26 @@
           :fields="prescriptionsFields" />
         <p v-else>No prescriptions passed.</p>
       </div>
+      <h4>Observations</h4>
+      <div class="xOverflow">
+        <b-table
+          v-if="observations.length"
+          striped
+          hover
+          :items="observations"
+          :fields="observationsFields" />
+        <p v-else>No observations passed.</p>
+      </div>
+      <h4>PRCs</h4>
+      <div class="xOverflow">
+        <b-table
+          v-if="prcs.length"
+          striped
+          hover
+          :items="prcs"
+          :fields="prcsFields" />
+        <p v-else>No prcs passed.</p>
+      </div>
       <div class="spaceBetween">
         <b-button variant="danger" @click="routeBack">BACK</b-button>
         <nuxt-link
@@ -75,14 +95,19 @@ export default {
   data() {
     return {
       patient: {},
-      prescriptionsFields: [
-        'id',
-        'doctor',
-        'patient',
-        'description',
-        'startDate',
-        'endDate'
-      ]
+      prescriptionsFields: ['doctor', 'description', 'startDate', 'endDate'],
+      observationsFields: [
+        'date',
+        'biometricType',
+        'biometricTypeName',
+        'quantitativeValue',
+        'qualitativeValue',
+        'what',
+        'local',
+        'doctor'
+      ],
+      prcsFields: ['startDate', 'endDate', 'active']
+      //   documentsFields: ['filename', 'actions']
     }
   },
   computed: {
@@ -98,6 +123,12 @@ export default {
     },
     isAdministrator() {
       return this.$auth.user.groups[0] === 'Administrator'
+    },
+    observations() {
+      return this.patient.observationDTOS || []
+    },
+    prcs() {
+      return this.patient.prcsdtos || []
     }
   },
   created() {

@@ -13,9 +13,15 @@
               {{ row.item.patient }}
             </nuxt-link>
           </template>
+          <template #cell(doctor)="row">
+            {{
+              row.item.doctor === 'null' ? row.item.patient : row.item.doctor
+            }}
+          </template>
 
           <template #cell(details)="row">
             <nuxt-link
+              v-if="row.item.doctor === 'null' || !isPatient"
               class="btn btn-link"
               :to="{
                 name: 'observations-create',
@@ -56,6 +62,10 @@ export default {
         'qualitativeValue',
         'what',
         'local',
+        {
+          key: 'doctor',
+          label: 'Created by'
+        },
         {
           key: 'details',
           label: '',
