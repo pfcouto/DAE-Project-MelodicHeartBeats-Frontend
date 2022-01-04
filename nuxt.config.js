@@ -57,13 +57,13 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: '/api/auth/login',
+            url: 'http://18.170.87.123:8080/projetoDAE/api/auth/login',
             method: 'post',
             propertyName: 'token'
           },
           logout: false,
           user: {
-            url: '/api/auth/user',
+            url: 'http://18.170.87.123:8080/projetoDAE/api/auth/user',
             method: 'get',
             propertyName: ''
           }
@@ -79,21 +79,20 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    proxy: true,
-    credentials: true
+    baseURL: 'http://18.170.87.123:8080/projetoDAE'
   },
-  proxy: {
-    '/api/': {
-      target: 'http://localhost:8080/projetoDAE/api/',
-      pathRewrite: {
-        '^/api/': ''
-      }
-    }
-  },
+  // proxy: {
+  //   '/api/': {
+  //     target: 'http://18.170.87.123:8080/projetoDAE/api/',
+  //     pathRewrite: {
+  //       '^/api/': ''
+  //     }
+  //   }
+  // },
   toast: {
     position: 'top-center',
     defaultProps: {
-      timeout: 3,
+      timeout: 3
     }
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
