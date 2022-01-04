@@ -8,7 +8,15 @@
       <p>Start Date: {{ prescription.startDate }}</p>
       <p>End Date: {{ prescription.endDate }}</p>
 
-      <b-button variant="info" @click="routeBack">RETURN</b-button>
+      <div class="spaceBetween">
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
+        <nuxt-link :to="{
+                name: 'prescriptions-create',
+                query: { id: prescription.id }
+              }">
+          <b-button variant="info">EDIT</b-button>
+        </nuxt-link>
+      </div>
     </div>
   </b-container>
 </template>
@@ -19,7 +27,6 @@ export default {
       prescription: {},
     }
   },
-
   async created() {
     await this.$route
     this.$axios.$get(`/api/prescriptions/${this.$route.params.id}`).then((response) => {

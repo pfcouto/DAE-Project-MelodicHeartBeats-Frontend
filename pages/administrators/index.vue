@@ -3,27 +3,41 @@
     <b-container>
       <div class="middleCard">
         <div class="xOverflow">
-          <b-table striped hover :items="coloredAdministrators" :fields="fields">
+          <b-table
+            striped
+            hover
+            :items="coloredAdministrators"
+            :fields="fields">
             <template #cell(actions)="row">
               <nuxt-link
                 class="btn btn-link"
-                :to="`/administrators/${row.item.username}`"
-              >
-                <b-icon-file-earmark-text style="color: darkcyan;" font-scale="2"></b-icon-file-earmark-text>
+                :to="`/administrators/${row.item.username}`">
+                <b-icon-file-earmark-text
+                  style="color: darkcyan"
+                  font-scale="2"></b-icon-file-earmark-text>
               </nuxt-link>
               <nuxt-link
                 class="btn btn-link"
                 :to="{
                   name: 'administrators-create',
                   query: { username: `${row.item.username}` }
-                }"
-              >
-                <b-icon-pencil-square style="color: orange;" font-scale="2"></b-icon-pencil-square>
+                }">
+                <b-icon-pencil-square
+                  style="color: orange"
+                  font-scale="2"></b-icon-pencil-square>
               </nuxt-link>
-              <b-icon-trash v-if="!row.item.blocked" style="color: red;" font-scale="2"
-                            @click="blockOrUnblockAdministrator(row)"></b-icon-trash>
-              <b-icon-arrow-clockwise v-else style="color: green;" font-scale="2"
-                                      @click="blockOrUnblockAdministrator(row)"></b-icon-arrow-clockwise>
+              <b-icon-trash
+                v-if="!row.item.blocked"
+                style="color: red"
+                font-scale="2"
+                @click="blockOrUnblockAdministrator(row)"></b-icon-trash>
+              <b-icon-arrow-clockwise
+                v-else
+                style="color: green"
+                font-scale="2"
+                @click="
+                  blockOrUnblockAdministrator(row)
+                "></b-icon-arrow-clockwise>
             </template>
           </b-table>
         </div>
@@ -41,15 +55,23 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store, route }) {
+    if (
+      store.state.auth.user.groups &&
+      !store.state.auth.user.groups.includes('Administrator')
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       fields: [
         'username',
-        {sortable: true, key: 'name'},
-        {sortable: true, key: 'birthDate'},
+        { sortable: true, key: 'name' },
+        { sortable: true, key: 'birthDate' },
         'email',
         'phoneNumber',
-        {key: 'actions', tdClass: 'text-center', label: ''}
+        { key: 'actions', tdClass: 'text-center', label: '' }
         // { key: 'blocked', label: 'Is Blocked' }
       ],
       administrators: []
@@ -59,7 +81,7 @@ export default {
     coloredAdministrators() {
       return this.administrators.map((item) => {
         if (item.blocked) {
-          item._rowVariant = "danger"
+          item._rowVariant = 'danger'
         } else {
           item._rowVariant = null
         }

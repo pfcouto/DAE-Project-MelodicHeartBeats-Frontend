@@ -6,18 +6,16 @@
       </h1>
       <form :disabled="!isFormValid" @submit.prevent="create">
         <b-form-group
-          v-if="!isEditing"
           id="patient"
+          :disabled="isEditing"
           label="Patient"
           description="The patient is required"
-          :state="isPatientValid"
-        >
+          :state="isPatientValid">
           <b-form-select id="patient" v-model="prc.patient" required>
             <option
               v-for="patient in patients"
               :key="patient.username"
-              :value="patient.username"
-            >
+              :value="patient.username">
               {{ patient.name }}
             </option>
           </b-form-select>
@@ -26,36 +24,33 @@
           <b-form-datepicker
             id="startDate"
             v-model="prc.startDate"
+            :disabled="isEditing"
             :min="new Date()"
-            :max="prc.endDate"
-          ></b-form-datepicker>
+            :max="prc.endDate"></b-form-datepicker>
         </b-form-group>
         <b-form-group id="endDate" label="End Date">
           <b-form-datepicker
             id="endDate"
             v-model="prc.endDate"
-            :min="prc.startDate"
-          ></b-form-datepicker>
+            :min="prc.startDate"></b-form-datepicker>
         </b-form-group>
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
-        <b-button variant="info" @click="routeBack">RETURN</b-button>
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
         <div style="float: right">
-          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
+          <!--          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>-->
           <b-button
             v-if="!isEditing"
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="create"
-          >
+            @click.prevent="create">
             CREATE
           </b-button>
           <b-button
             v-else
             variant="success"
             :disabled="!isFormValid"
-            @click.prevent="update"
-          >
+            @click.prevent="update">
             UPDATE
           </b-button>
         </div>
@@ -65,11 +60,21 @@
 </template>
 <script>
 export default {
+  middleware({redirect, store}) {
+    if (
+      !store.state.auth.user.groups ||
+      !store.state.auth.user.groups.includes('Doctor')
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
+      prcReset: null,
       prc: {
         doctor: this.$auth.user.sub,
-        patient: null,
+        patient: this.$route.query.patientUsername ?? null,
+
         startDate:
           new Date().getFullYear() +
           '-' +
@@ -109,72 +114,79 @@ export default {
     }
   },
   beforeCreate() {
-    if (this.$auth.user.groups[0] !== "Doctor") {
+    if (!this.$auth.user.groups.includes("Doctor")) {
+
       this.$toast.error('Doctors only!').goAway(3000)
-      this.$router.back();
+      this.$router.back()
     }
   },
   async mounted() {
     await this.$route
 
+    this.$axios
+      .get('/api/patients')
+      .then((response) => {
+        this.patients = response.data
+      })
+      .catch(() => {
+        this.patients = []
+      })
+
     if (this.isEditing) {
       this.$axios
         .$get('/api/prcs/' + this.$route.query.id)
         .then((response) => {
-          this.prc = response;
+          this.prc = response
+          this.prcReset = response
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
-        })
-    } else {
-      this.$axios
-        .get('/api/patients')
-        .then((response) => {
-          this.patients = response.data
-        })
-        .catch(() => {
-          this.patients = []
+          this.errorMsg = error.response.data.split(":")[1]
         })
     }
   },
   methods: {
     routeBack() {
-      this.$router.back();
+      this.$router.back()
     },
-    reset() {
-      this.errorMsg = false
-      this.prc = {}
-      this.prc.startDate =
-        new Date().getFullYear() +
-        '-' +
-        (new Date().getMonth() + 1) +
-        '-' +
-        new Date().getDate()
-    },
+    // reset() {
+    //   this.errorMsg = false
+    //   if (this.isEditing) {
+    //     this.prc.endDate = this.prcReset.endDate
+    //   } else {
+    //     this.prc = {}
+    //   }
+    //   this.prc.startDate =
+    //     new Date().getFullYear() +
+    //     '-' +
+    //     (new Date().getMonth() + 1) +
+    //     '-' +
+    //     new Date().getDate()
+    // },
     create() {
       this.$axios
         .$post('/api/prcs', this.prc)
         .then(() => {
-          this.$toast.success("PRC created successfully").goAway(3000)
+          this.$toast.success('PRC created successfully').goAway(3000)
           this.$router.push('/prcs')
         })
         .catch((error) => {
           this.$toast.error("PRC not created").goAway(3000)
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     update() {
       this.$axios
-        .$put('/api/prcs/' + this.$route.query.id, this.prc)
+        .$patch('/api/prcs/' + this.$route.query.id + '/endDate', {endDate: this.prc.endDate})
         .then(() => {
-          this.$toast.success("PRC #" + this.$route.query.id + " updated successfully").goAway(3000)
+
+          this.$toast.success("PRC #" + this.$route.query.id + " end date updated successfully").goAway(3000)
           this.$router.push('/prcs')
         })
         .catch((error) => {
-          this.$toast.error("PRC #" + this.$route.query.id + " was not updated").goAway(3000)
-          this.errorMsg = error.response.data
+          this.$toast.error("PRC #" + this.$route.query.id + " end date was not updated").goAway(3000)
+          this.errorMsg = error.response.data.split(":")[1]
         })
-    },
+    }
   }
 }
 </script>

@@ -27,13 +27,12 @@
             v-model="observation.patient"
             required
             :state="isPatientValid">
-            this.$auth.user.sub
             <option :key="null" :value="null">Choose the patient...</option>
             <option
               v-if="isPatient"
-              :key="this.$auth.user.sub"
-              :value="this.$auth.user.sub">
-              {{ this.$auth.user.sub }}
+              :key="$auth.user.sub"
+              :value="$auth.user.sub">
+              {{ $auth.user.sub }}
             </option>
             <option
               v-for="patient in patients"
@@ -122,10 +121,10 @@
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <nuxt-link to="/observations">
-          <b-button variant="info"> Return</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <div style="float: right">
-          <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
+          <b-button variant="dark" type="reset" @click="reset">RESET</b-button>
           <b-button
             v-if="!isEditing"
             variant="success"
@@ -146,12 +145,26 @@
   </b-container>
 </template>
 <script>
+import axios from 'axios'
 export default {
-  middleware({ redirect, store }) {
-    console.log(store.state.auth.user.groups[0])
+  async middleware({ redirect, store, route }) {
+    if (route.query.code !== undefined) {
+      await axios
+        .get('/api/observations/' + route.query.code)
+        .then((response) => {
+          if (store.state.auth.user.groups.includes('Patient')) {
+            if (
+              response.data.patient !== store.state.auth.user.sub ||
+              response.data.doctor !== 'null'
+            ) {
+              return redirect('/forbiden')
+            }
+          }
+        })
+    }
     if (
       store.state.auth.user.groups &&
-      store.state.auth.user.groups[0] === 'Administrator'
+      store.state.auth.user.groups.includes('Administrator')
     ) {
       return redirect('/forbiden')
     }
@@ -160,12 +173,15 @@ export default {
     return {
       observation: {
         date: null,
-        patient: null,
+        patient: this.$route.query.patientUsername ?? null,
         biometricType: null,
         quantitativeValue: null,
         qualitativeValue: null,
         what: null,
-        local: null
+        local: null,
+        doctor: this.$auth.user.groups.includes('Doctor')
+          ? this.$auth.user.sub
+          : null
       },
       patients: [],
       biometricsType: [],
@@ -176,8 +192,10 @@ export default {
   },
   computed: {
     isPatient() {
-      if (this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient') {
-        this.observation.patient = this.$auth.user.sub
+      if (
+        this.$auth.user.groups &&
+        this.$auth.user.groups.includes('Patient')
+      ) {
         return true
       } else {
         return false
@@ -237,7 +255,7 @@ export default {
       return true
     }
   },
-  async mounted() {
+  async beforeMount() {
     await this.$route
 
     if (this.isEditing) {
@@ -246,6 +264,10 @@ export default {
     }
     await this.fetchPatients()
     await this.fetchBiometricsType()
+
+    if (this.isPatient) {
+      this.observation.patient = this.$auth.user.sub
+    }
   },
   methods: {
     loadMinMax() {
@@ -281,7 +303,7 @@ export default {
           this.$router.push('/observations')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     create() {
@@ -291,7 +313,7 @@ export default {
           this.$router.push('/observations')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     async fetchObservationData() {
@@ -302,7 +324,7 @@ export default {
           // console.log(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     fetchPatients() {

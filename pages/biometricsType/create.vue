@@ -134,7 +134,7 @@
 
         <p v-show="errorMsg" class="text-danger">{{ errorMsg }}</p>
         <nuxt-link to="/biometricsType">
-          <b-button variant="info"> Return</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <div style="float: right">
           <b-button variant="dark" type="reset" @click="reset"> RESET</b-button>
@@ -162,8 +162,8 @@ export default {
   middleware({ redirect, store }) {
     if (
       store.state.auth.user.groups &&
-      (store.state.auth.user.groups[0] === 'Patient' ||
-        store.state.auth.user.groups[0] === 'Doctor')
+      (store.state.auth.user.groups.includes('Patient') ||
+        store.state.auth.user.groups.includes('Doctor'))
     ) {
       return redirect('/forbiden')
     }
@@ -327,7 +327,7 @@ export default {
           this.$router.push('/biometricsType')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     update() {
@@ -340,7 +340,7 @@ export default {
           this.$router.push('/biometricsType')
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     fetchBiometricType() {
@@ -350,7 +350,7 @@ export default {
           this.initializeBiometricType(response)
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     initializeBiometricType(biometricType) {

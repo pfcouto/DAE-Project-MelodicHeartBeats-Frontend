@@ -13,16 +13,22 @@
               {{ row.item.patient }}
             </nuxt-link>
           </template>
+          <template #cell(doctor)="row">
+            {{
+              row.item.doctor === 'null' ? row.item.patient : row.item.doctor
+            }}
+          </template>
 
           <template #cell(details)="row">
             <nuxt-link
-              
+              v-if="row.item.doctor === 'null' || !isPatient"
               class="btn btn-link"
               :to="{
                 name: 'observations-create',
                 query: { code: `${row.item.code}` }
               }">
               <b-icon-pencil-square
+                v-if="!isAdmin"
                 style="color: orange"
                 font-scale="2"></b-icon-pencil-square>
             </nuxt-link>
@@ -31,9 +37,10 @@
       </div>
       <div class="spaceBetween">
         <nuxt-link to="/">
-          <b-button variant="danger">Back</b-button>
+          <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <nuxt-link
+          v-if="!isAdmin"
           to="observations/create"
           style="float: right">
           <b-button variant="success">NEW</b-button>
@@ -56,6 +63,10 @@ export default {
         'what',
         'local',
         {
+          key: 'doctor',
+          label: 'Created by'
+        },
+        {
           key: 'details',
           label: '',
           tdClass: 'text-center'
@@ -65,8 +76,13 @@ export default {
     }
   },
   computed: {
+    isAdmin() {
+      return this.$auth.user.groups.includes('Administrator')
+    },
     isPatient() {
-      return this.$auth.user.groups && this.$auth.user.groups[0] === 'Patient'
+      return (
+        this.$auth.user.groups && this.$auth.user.groups.includes('Patient')
+      )
     }
   },
   created() {
@@ -80,14 +96,14 @@ export default {
           this.fetchBiometricTypes()
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(':')[1]
         })
     },
     fetchBiometricTypes() {
       this.$axios
         .$get(
           '/api/' +
-            (this.$auth.user.groups[0] === 'Patient'
+            (this.$auth.user.groups.includes('Patient')
               ? 'patients/' + this.$auth.user.sub + '/observations'
               : 'observations/')
         )

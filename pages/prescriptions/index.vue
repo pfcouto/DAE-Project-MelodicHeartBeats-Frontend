@@ -20,7 +20,7 @@
             }"
             >
               <b-icon-pencil-square style="color: orange;" font-scale="2"></b-icon-pencil-square>
-            </nuxt-link >
+            </nuxt-link>
             <b-icon-trash style="color: red;" font-scale="2" @click="deletePrescription(row)"></b-icon-trash>
           </template>
         </b-table>
@@ -55,6 +55,15 @@ export default {
     }
   },
   computed: {
+    dataAtualFormatada() {
+      const data = new Date();
+      const dia = data.getDate().toString();
+      const diaF = (dia.length === 1) ? '0' + dia : dia;
+      const mes = (data.getMonth() + 1).toString();
+      const mesF = (mes.length === 1) ? '0' + mes : mes;
+      const anoF = data.getFullYear();
+      return anoF + "-" + mesF + "-" + diaF;
+    },
     coloredPrescriptions() {
       if (!this.prescriptions || this.prescriptions.length < 1) return []
       return this.prescriptions.map(prescription => {
@@ -64,11 +73,11 @@ export default {
     }
   },
   created() {
-    if (this.$auth.user.groups[0] === "Doctor") {
+    if (this.$auth.user.groups.includes('Doctor')) {
       this.$axios.$get('/api/doctors/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
         this.prescriptions = prescriptions
       })
-    } else if (this.$auth.user.groups[0] === "Patient") {
+    } else if (this.$auth.user.groups.includes('Patient')) {
       this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
         this.prescriptions = prescriptions
       })
@@ -80,14 +89,13 @@ export default {
   },
   methods: {
     getVariant(prescription) {
-      const now = new Date()
-      const today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
+      const today = this.dataAtualFormatada
       if (prescription.startDate > today) {
         return 'secondary'
-      } else if (prescription.endDate >= today) {
-        return 'success'
-      } else {
+      } else if (prescription.endDate < today) {
         return 'danger'
+      } else {
+        return 'success'
       }
     },
     deletePrescription(row) {

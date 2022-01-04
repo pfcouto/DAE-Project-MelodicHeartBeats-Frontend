@@ -76,8 +76,8 @@ export default {
   middleware({ redirect, store }) {
     if (
       store.state.auth.user.groups &&
-      (store.state.auth.user.groups[0] === 'Patient' ||
-        store.state.auth.user.groups[0] === 'Doctor')
+      (store.state.auth.user.groups.includes('Patient') ||
+        store.state.auth.user.groups.includes('Doctor'))
     ) {
       return redirect('/forbiden')
     }
@@ -158,7 +158,7 @@ export default {
           this.fetchBiometricTypes()
         })
         .catch((error) => {
-          this.errorMsg = error.response.data
+          this.errorMsg = error.response.data.split(":")[1]
         })
     },
     fetchBiometricTypes() {

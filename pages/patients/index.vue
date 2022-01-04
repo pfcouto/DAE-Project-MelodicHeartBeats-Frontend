@@ -6,23 +6,31 @@
           <template #cell(actions)="row">
             <nuxt-link
               class="btn btn-link"
-              :to="`/patients/${row.item.username}`"
-            >
-              <b-icon-file-earmark-text style="color: darkcyan;" font-scale="2"></b-icon-file-earmark-text>
+              :to="`/patients/${row.item.username}`">
+              <b-icon-file-earmark-text
+                style="color: darkcyan"
+                font-scale="2"></b-icon-file-earmark-text>
             </nuxt-link>
             <nuxt-link
               class="btn btn-link"
               :to="{
                 name: 'patients-create',
                 query: { username: `${row.item.username}` }
-              }"
-            >
-              <b-icon-pencil-square style="color: orange;" font-scale="2"></b-icon-pencil-square>
+              }">
+              <b-icon-pencil-square
+                style="color: orange"
+                font-scale="2"></b-icon-pencil-square>
             </nuxt-link>
-            <b-icon-trash v-if="isAdministrator && !row.item.blocked" style="color: red;" font-scale="2"
-                          @click="blockOrUnblockPatient(row)"></b-icon-trash>
-            <b-icon-arrow-clockwise v-if="isAdministrator && row.item.blocked" style="color: green;" font-scale="2"
-                                    @click="blockOrUnblockPatient(row)"></b-icon-arrow-clockwise>
+            <b-icon-trash
+              v-if="isAdministrator && !row.item.blocked"
+              style="color: red"
+              font-scale="2"
+              @click="blockOrUnblockPatient(row)"></b-icon-trash>
+            <b-icon-arrow-clockwise
+              v-if="isAdministrator && row.item.blocked"
+              style="color: green"
+              font-scale="2"
+              @click="blockOrUnblockPatient(row)"></b-icon-arrow-clockwise>
           </template>
         </b-table>
       </div>
@@ -31,7 +39,7 @@
           <b-button variant="danger">BACK</b-button>
         </nuxt-link>
         <nuxt-link to="patients/create" style="float: right">
-          <b-button variant="success">NEW</b-button>
+          <b-button v-if="!isAdministrator" variant="success">NEW</b-button>
         </nuxt-link>
       </div>
     </div>
@@ -39,25 +47,36 @@
 </template>
 <script>
 export default {
+  middleware({ redirect, store, route }) {
+    if (
+      store.state.auth.user.groups &&
+      !(
+        store.state.auth.user.groups.includes('Administrator') ||
+        store.state.auth.user.groups.includes('Doctor')
+      )
+    ) {
+      return redirect('/forbiden')
+    }
+  },
   data() {
     return {
       fields: [
         'username',
-        {sortable: true, key: 'name'},
-        {sortable: true, key: 'birthDate'},
+        { sortable: true, key: 'name' },
+        { sortable: true, key: 'birthDate' },
         'email',
         'phoneNumber',
-        {key: 'actions', tdClass: 'text-center', label: ''}
+        { key: 'actions', tdClass: 'text-center', label: '' }
       ],
       patients: []
     }
   },
   computed: {
     isDoctor() {
-      return this.$auth.user.groups[0] === "Doctor"
+      return this.$auth.user.groups[0] === 'Doctor'
     },
     isAdministrator() {
-      return this.$auth.user.groups[0] === "Administrator"
+      return this.$auth.user.groups.includes('Administrator')
     },
     coloredPatients() {
       if (!this.isAdministrator) {
@@ -65,7 +84,7 @@ export default {
       }
       return this.patients.map((item) => {
         if (item.blocked) {
-          item._rowVariant = "danger"
+          item._rowVariant = 'danger'
         } else {
           item._rowVariant = null
         }
@@ -74,13 +93,13 @@ export default {
     }
   },
   created() {
-    if (this.$auth.user.groups[0] === 'Administrator') {
+    if (this.$auth.user.groups.includes('Administrator')) {
       this.$axios.$get('/api/patients/all').then((patients) => {
         this.patients = patients
       })
     }
 
-    if (this.$auth.user.groups[0] === 'Doctor') {
+    if (this.$auth.user.groups.includes('Doctor')) {
       this.$axios.$get('/api/patients/').then((patients) => {
         this.patients = patients
       })
@@ -93,16 +112,12 @@ export default {
         .then(() => {
           if (!this.patients[row.index].blocked) {
             this.$toast
-              .success(
-                'Patient ' + row.item.username + ' blocked successfully'
-              )
+              .success('Patient ' + row.item.username + ' blocked successfully')
               .goAway(3000)
             this.patients[row.index].blocked = true
           } else {
             this.$toast
-              .success(
-                'Patient ' + row.item.username + ' unblock successfully'
-              )
+              .success('Patient ' + row.item.username + ' unblock successfully')
               .goAway(3000)
             this.patients[row.index].blocked = false
           }
