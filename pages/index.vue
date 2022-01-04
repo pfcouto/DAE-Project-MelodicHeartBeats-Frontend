@@ -41,6 +41,9 @@
             <nuxt-link to="/prcs" class="headerCardComponent">
               <h6>PRCs</h6>
             </nuxt-link>
+            <nuxt-link v-if="isDoctor" to="/rules" class="headerCardComponent">
+              <h6>Rules</h6>
+            </nuxt-link>
           </b-container>
         </div>
         <b-button class="logout mb-2" @click="logout">Logout</b-button>
@@ -69,6 +72,9 @@
         <nuxt-link to="/prcs" class="headerCardComponent">
           <h6>PRCs</h6>
         </nuxt-link>
+        <nuxt-link to="/rules" class="headerCardComponent">
+          <h6>Rules</h6>
+        </nuxt-link>
       </b-container>
       <div class="gridCustom gridMiddle">
         <b-container class="customCard">
@@ -94,17 +100,13 @@
         </b-container>
       </div>
       <div class="gridCustom">
-        <b-container v-if="isAdmin" class="customCard">
+        <b-container v-if="isAdmin" class="customCard d-flex text-center" style="justify-content: space-evenly">
           <nuxt-link to="administrators">
             <h2>{{ administrators.length }} Administrator{{ administrators.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
-        </b-container>
-        <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="doctors">
             <h2>{{ doctors.length }} Doctor{{ doctors.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>
-        </b-container>
-        <b-container v-if="isAdmin" class="customCard">
           <nuxt-link to="patients">
             <h2>{{ patients.length }} Patient{{ patients.length === 1 ? "" : "s" }} </h2>
           </nuxt-link>

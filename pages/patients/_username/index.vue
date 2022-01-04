@@ -17,49 +17,64 @@
           striped
           hover
           :items="prescriptions"
-          :fields="prescriptionsFields" />
+          :fields="prescriptionsFields"/>
         <p v-else>No prescriptions passed.</p>
       </div>
       <div class="spaceBetween">
         <b-button variant="danger" @click="routeBack">BACK</b-button>
-        <nuxt-link
-          :to="{
+        <div>
+          <nuxt-link
+            :to="{
             name: 'patients-create',
             query: { username: patient.username }
           }">
-          <b-button variant="info">EDIT</b-button>
-        </nuxt-link>
-        <nuxt-link
-          v-if="isDoctor"
-          :to="{
+            <b-button variant="info">EDIT</b-button>
+          </nuxt-link>
+          <nuxt-link
+            v-if="isDoctor"
+            :to="{
             name: 'prescriptions-create',
             query: { patientUsername: patient.username }
           }">
-          <b-button variant="success">Create Presciption</b-button>
-        </nuxt-link>
-        <nuxt-link
-          v-if="isDoctor"
-          :to="{
+            <b-button variant="success">Create Presciption</b-button>
+          </nuxt-link>
+          <nuxt-link
+            v-if="isDoctor"
+            :to="{
             name: 'observations-create',
             query: { patientUsername: patient.username }
           }">
-          <b-button variant="success">Create Observation</b-button>
-        </nuxt-link>
-        <nuxt-link
-          v-if="isDoctor"
-          :to="{
+            <b-button variant="success">Create Observation</b-button>
+          </nuxt-link>
+          <nuxt-link
+            v-if="isDoctor"
+            :to="{
             name: 'prcs-create',
             query: { patientUsername: patient.username }
           }">
-          <b-button variant="success">Create PRC</b-button>
-        </nuxt-link>
+            <b-button variant="success">Create PRC</b-button>
+          </nuxt-link>
+        </div>
+      </div>
+    </b-container>
+    <b-container v-if="suggestedPrescriptions && suggestedPrescriptions.length>0" class="middleCard">
+      <h4>Suggested Prescriptions</h4>
+    </b-container>
+    <b-container class="gridCustomSuggested">
+      <div v-for="(item,idx) in suggestedPrescriptions" :key="idx" class="gridCustomSuggestedCard">
+        <p>Patient: {{ item.patient }}</p>
+        <p>Start Date: {{ item.startDate }}</p>
+        <p>End Date: {{ item.endDate }}</p>
+        <p>Prescription: {{ item.description }}</p>
+        <b-button class="float-right" variant="outline-success" @click="createSuggestedPrescription(item,idx)">CREATE
+        </b-button>
       </div>
     </b-container>
   </b-container>
 </template>
 <script>
 export default {
-  middleware({ redirect, store, route }) {
+  middleware({redirect, store, route}) {
     if (
       store.state.auth.user.groups &&
       !(
@@ -82,7 +97,8 @@ export default {
         'description',
         'startDate',
         'endDate'
-      ]
+      ],
+      suggestedPrescriptions: []
     }
   },
   computed: {
@@ -104,8 +120,20 @@ export default {
     this.$axios.$get(`/api/patients/${this.username}`).then((patient) => {
       this.patient = patient || {}
     })
+    this.$axios.$get('/api/patients/' + this.username + '/suggestedPrescriptions').then((response) => {
+      this.suggestedPrescriptions = response
+    })
   },
   methods: {
+    createSuggestedPrescription(item, idx) {
+      item.doctor = this.$auth.user.sub
+      this.$axios.$post("/api/prescriptions", item).then(() => {
+        this.$toast.success("Prescription was created successfully").goAway(3000)
+        this.suggestedPrescriptions.splice(idx, 1)
+      }).catch(() => {
+        this.$toast.error("Prescription was not created! Maybe patient dont have an active prc").goAway(3000)
+      })
+    },
     routeBack() {
       this.$router.back()
     }

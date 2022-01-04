@@ -34,6 +34,19 @@
         </nuxt-link>
       </div>
     </div>
+    <b-container v-if="suggestedPrescriptions && suggestedPrescriptions.length>0" class="middleCard">
+      <h4>Suggested Prescriptions</h4>
+    </b-container>
+    <b-container class="gridCustomSuggested">
+      <div v-for="(item,idx) in suggestedPrescriptions" :key="idx" class="gridCustomSuggestedCard">
+        <p>Patient: {{ item.patient }}</p>
+        <p>Start Date: {{ item.startDate }}</p>
+        <p>End Date: {{ item.endDate }}</p>
+        <p>Prescription: {{ item.description }}</p>
+        <b-button class="float-right" variant="outline-success" @click="createSuggestedPrescription(item,idx)">CREATE
+        </b-button>
+      </div>
+    </b-container>
   </b-container>
 </template>
 <script>
@@ -51,7 +64,8 @@ export default {
         tdClass: 'text-center',
         label: ''
       }],
-      prescriptions: []
+      prescriptions: [],
+      suggestedPrescriptions: []
     }
   },
   computed: {
@@ -77,6 +91,9 @@ export default {
       this.$axios.$get('/api/doctors/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
         this.prescriptions = prescriptions
       })
+      this.$axios.$get('/api/prescriptions/suggestedPrescriptions').then((response) => {
+        this.suggestedPrescriptions = response
+      })
     } else if (this.$auth.user.groups.includes('Patient')) {
       this.$axios.$get('/api/patients/' + this.$auth.user.sub + "/prescriptions").then((prescriptions) => {
         this.prescriptions = prescriptions
@@ -86,6 +103,8 @@ export default {
         this.prescriptions = prescriptions
       })
     }
+
+
   },
   methods: {
     getVariant(prescription) {
@@ -98,6 +117,15 @@ export default {
         return 'success'
       }
     },
+    createSuggestedPrescription(item, idx) {
+      item.doctor = this.$auth.user.sub
+      this.$axios.$post("/api/prescriptions", item).then(() => {
+        this.$toast.success("Prescription was created successfully").goAway(3000)
+        this.suggestedPrescriptions.splice(idx, 1)
+      }).catch(() => {
+        this.$toast.error("Prescription was not created! Maybe patient dont have an active prc").goAway(3000)
+      })
+    },
     deletePrescription(row) {
       this.$axios.$delete('/api/prescriptions/' + row.item.id).then(() => {
         this.$toast.success("Prescription #" + row.item.id + " deleted successfully").goAway(3000)
@@ -109,3 +137,5 @@ export default {
   }
 }
 </script>
+<style>
+</style>
