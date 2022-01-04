@@ -20,6 +20,42 @@
   color: red;
 }
 
+.gridCustomSuggested {
+  display: grid;
+  margin-top: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 12px;
+  row-gap: 12px;
+  padding: 0;
+  grid-auto-rows: 1fr;
+}
+
+@media (max-width: 1100px) {
+  .gridCustomSuggested {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .gridCustomSuggested {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .gridCustomSuggested {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+.gridCustomSuggestedCard {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  background-color: white;
+  color: #757575 !important;
+  width: 100%;
+  padding: 20px;
+}
+
 canvas {
   max-height: 350px;
 }
