@@ -1,7 +1,17 @@
 <template>
   <b-container>
-    <b-container class="middleCard">
-      <h4>Patient Details</h4>
+    <b-container class="middleCard text-center flex-row">
+      <a @click="routeBack">
+        <b-button class="float-left" variant="danger">BACK</b-button>
+      </a>
+      <h2 class="font-weight-bold">Patient Details</h2>
+      <nuxt-link class="float-right btn"
+                 :to="{
+              name: 'patients-create',
+              query: { username: patient.username }
+            }">
+        <b-button variant="info">EDIT</b-button>
+      </nuxt-link>
     </b-container>
     <b-container class="middleCard">
       <p>Username: {{ patient.username }}</p>
@@ -12,77 +22,72 @@
       <p v-if="isAdministrator">
         Blocked: {{ patient.blocked ? 'YES' : 'NO' }}
       </p>
-      <h4>Prescriptions</h4>
-      <div class="xOverflow">
+    </b-container>
+    <b-container class="middleCard">
+      <h4>{{ prescriptions.length ? "Prescriptions" : "No Prescriptions" }}</h4>
+    </b-container>
+    <b-container class="middleCard">
+      <div v-if="prescriptions.length" class="xOverflow">
         <b-table
-          v-if="prescriptions.length"
           striped
           hover
           :items="prescriptions"
-          :fields="prescriptionsFields" />
-        <p v-else>No prescriptions passed.</p>
+          :fields="prescriptionsFields"/>
       </div>
-      <h4>Observations</h4>
-      <div class="xOverflow">
-        <b-table
-          v-if="observations.length"
-          striped
-          hover
-          :items="observations"
-          :fields="observationsFields" />
-        <p v-else>No observations passed.</p>
-      </div>
-      <h4>PRCs</h4>
-      <div class="xOverflow">
-        <b-table
-          v-if="prcs.length"
-          striped
-          hover
-          :items="prcs"
-          :fields="prcsFields" />
-        <p v-else>No prcs passed.</p>
-      </div>
-      <div class="spaceBetween">
-        <b-button variant="danger" @click="routeBack">BACK</b-button>
-        <div>
-          <nuxt-link
-            :to="{
-              name: 'patients-create',
-              query: { username: patient.username }
-            }">
-            <b-button variant="info">EDIT</b-button>
-          </nuxt-link>
-          <nuxt-link
-            v-if="isDoctor"
-            :to="{
+      <nuxt-link
+        v-if="isDoctor"
+        :to="{
               name: 'prescriptions-create',
               query: { patientUsername: patient.username }
             }">
-            <b-button variant="success">Create Presciption</b-button>
-          </nuxt-link>
-          <nuxt-link
-            v-if="isDoctor"
-            :to="{
+        <b-button class="float-right" variant="outline-success">CREATE PRESCRIPTION</b-button>
+      </nuxt-link>
+    </b-container>
+    <b-container class="middleCard">
+      <h4>Observations</h4>
+    </b-container>
+    <b-container class="middleCard">
+      <div v-if="observations.length" class="xOverflow">
+        <b-table
+          striped
+          hover
+          :items="observations"
+          :fields="observationsFields"/>
+      </div>
+      <nuxt-link
+        v-if="isDoctor"
+        :to="{
               name: 'observations-create',
               query: { patientUsername: patient.username }
             }">
-            <b-button variant="success">Create Observation</b-button>
-          </nuxt-link>
-          <nuxt-link
-            v-if="isDoctor"
-            :to="{
+        <b-button class="float-right" variant="outline-success">CREATE OBSERVATION</b-button>
+      </nuxt-link>
+    </b-container>
+    <b-container class="middleCard">
+      <h4>{{ prcs.length ? "PRCs" : "No PRCs" }}</h4>
+    </b-container>
+    <b-container class="middleCard">
+      <div v-if="prcs.length" class="xOverflow">
+        <b-table
+          striped
+          hover
+          :items="prcs"
+          :fields="prcsFields"/>
+      </div>
+      <nuxt-link
+        v-if="isDoctor"
+        :to="{
               name: 'prcs-create',
               query: { patientUsername: patient.username }
             }">
-            <b-button variant="success">Create PRC</b-button>
-          </nuxt-link>
-        </div>
-      </div>
+        <b-button class="float-right" variant="outline-success">CREATE PRC</b-button>
+      </nuxt-link>
     </b-container>
     <b-container
-      v-if="suggestedPrescriptions && suggestedPrescriptions.length > 0"
       class="middleCard">
-      <h4>Suggested Prescriptions</h4>
+      <h4>{{
+          suggestedPrescriptions && suggestedPrescriptions.length ? "Suggested Prescriptions" : "No Suggested Prescriptions"
+        }}</h4>
     </b-container>
     <b-container class="gridCustomSuggested">
       <div
@@ -97,7 +102,7 @@
           class="float-right"
           variant="outline-success"
           @click="createSuggestedPrescription(item, idx)"
-          >CREATE
+        >CREATE
         </b-button>
       </div>
     </b-container>
@@ -105,7 +110,7 @@
 </template>
 <script>
 export default {
-  middleware({ redirect, store, route }) {
+  middleware({redirect, store, route}) {
     if (
       store.state.auth.user.groups &&
       !(

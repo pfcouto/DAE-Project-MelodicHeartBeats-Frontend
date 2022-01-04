@@ -1,7 +1,19 @@
 <template>
   <b-container>
+    <b-container class="middleCard text-center flex-row">
+      <a @click="routeBack">
+        <b-button variant="danger">BACK</b-button>
+      </a>
+      <h2 class="font-weight-bold">Doctor Details</h2>
+      <nuxt-link
+        :to="{
+            name: 'doctors-create',
+            query: { username: doctor.username }
+          }">
+        <b-button variant="info">EDIT</b-button>
+      </nuxt-link>
+    </b-container>
     <b-container class="middleCard">
-      <h4>Doctor Details</h4>
       <p>Username: {{ doctor.username }}</p>
       <p>Name: {{ doctor.name }}</p>
       <p>BirthDate {{ doctor.birthDate }}</p>
@@ -9,32 +21,24 @@
       <p>Phone Number: {{ doctor.phoneNumber }}</p>
       <p>Office: {{ doctor.office }}</p>
       <p v-if="isAdministrator">Blocked: {{ doctor.blocked ? 'YES' : 'NO' }}</p>
-      <h4>Prescriptions</h4>
-      <div class="xOverflow">
+    </b-container>
+    <b-container class="middleCard">
+      <h4>{{ prescriptions.length ? "Prescriptions" : "No Prescriptions" }}</h4>
+    </b-container>
+    <b-container class="middleCard">
+      <div v-if="prescriptions.length" class="xOverflow">
         <b-table
-          v-if="prescriptions.length"
           striped
           hover
           :items="prescriptions"
-          :fields="prescriptionsFields" />
-        <p v-else>No prescriptions passed.</p>
-      </div>
-      <div class="spaceBetween">
-        <b-button variant="danger" @click="routeBack">BACK</b-button>
-        <nuxt-link
-          :to="{
-            name: 'doctors-create',
-            query: { username: doctor.username }
-          }">
-          <b-button variant="info">EDIT</b-button>
-        </nuxt-link>
+          :fields="prescriptionsFields"/>
       </div>
     </b-container>
   </b-container>
 </template>
 <script>
 export default {
-  middleware({ redirect, store, route }) {
+  middleware({redirect, store, route}) {
     if (
       store.state.auth.user.groups &&
       !(

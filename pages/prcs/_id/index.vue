@@ -1,14 +1,29 @@
 <template>
   <b-container>
+    <b-container class="middleCard text-center flex-row">
+      <a>
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
+      </a>
+      <h2 class="font-weight-bold">PRC #{{ prc.id }}</h2>
+      <nuxt-link :to="{
+                name: 'prcs-create',
+                query: { id: prc.id }
+              }">
+        <b-button variant="info">EDIT</b-button>
+      </nuxt-link>
+    </b-container>
     <div class="middleCard">
-      <h1>PRC #{{ prc.id }}</h1>
       <p>Patient: {{ prc.patient }}</p>
       <p>Start Date: {{ prc.startDate }}</p>
       <p>End Date: {{ prc.endDate }}</p>
       <p>Status: {{ prc.active ? "Active" : "Not Active" }}</p>
-      <div class="xOverflow">
+    </div>
+    <b-container class="middleCard">
+      <h4>{{ prc.prescriptions.length ? "Prescriptions" : "No Prescriptions" }}</h4>
+    </b-container>
+    <b-container class="middleCard">
+      <div v-if="prc && prc.prescriptions && prc.prescriptions.length" class="xOverflow">
         <b-table
-          v-if="prc && prc.prescriptions && prc.prescriptions.length>0"
           striped
           hover
           :items="prc.prescriptions"
@@ -21,19 +36,8 @@
             </nuxt-link>
           </template>
         </b-table>
-        <p v-else>No prescriptions yet.</p>
       </div>
-
-      <div class="spaceBetween">
-        <b-button variant="danger" @click="routeBack">BACK</b-button>
-        <nuxt-link :to="{
-                name: 'prcs-create',
-                query: { id: prc.id }
-              }">
-          <b-button variant="info">EDIT</b-button>
-        </nuxt-link>
-      </div>
-    </div>
+    </b-container>
   </b-container>
 </template>
 <script>

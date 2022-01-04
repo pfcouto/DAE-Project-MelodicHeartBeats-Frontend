@@ -1,21 +1,22 @@
 <template>
   <b-container>
+    <b-container class="middleCard text-center flex-row">
+      <a>
+        <b-button variant="danger" @click="routeBack">BACK</b-button>
+      </a>
+      <h2 class="font-weight-bold">Rule #{{ rule.id }}</h2>
+      <nuxt-link :to="{
+                name: 'rules-create',
+                query: { id: rule.id }
+              }">
+        <b-button variant="info">EDIT</b-button>
+      </nuxt-link>
+    </b-container>
     <div class="middleCard">
-      <h1>Rule #{{ rule.id }}</h1>
       <p>Biometric Type: {{ rule.biometricTypeName }}</p>
       <p>When: {{ "value " + rule.exp + " " + rule.value }}</p>
       <p>Days: {{ rule.days }}</p>
       <p>Description: {{ rule.description }}</p>
-
-      <div class="spaceBetween">
-        <b-button variant="danger" @click="routeBack">BACK</b-button>
-        <nuxt-link :to="{
-                name: 'rules-create',
-                query: { id: rule.id }
-              }">
-          <b-button variant="info">EDIT</b-button>
-        </nuxt-link>
-      </div>
     </div>
   </b-container>
 </template>
